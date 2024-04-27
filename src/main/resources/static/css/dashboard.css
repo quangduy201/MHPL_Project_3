@@ -1,0 +1,12 @@
+#content {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.calendar {
+    max-width: 300px;
+}
+
+#page-top {
+    overflow: hidden !important;
+}
