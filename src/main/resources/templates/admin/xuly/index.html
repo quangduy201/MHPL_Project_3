@@ -182,6 +182,12 @@
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <h1 class="text-center my-4">Quản lý xử lý vi phạm</h1>
+                <div class="d-flex justify-content-end align-items-center my-5">
+                    <p class="btn btn-primary btn-sm mr-2 m-0"> Thêm </p>
+                    <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
+                    <p class="btn text-white btn-sm  m-0 bg-danger"> Xóa nhiều dòng </p>
+                    <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
+                </div>
                 <table id="xuLyTable" class="table">
                     <thead>
                     <tr>
@@ -239,6 +245,25 @@
 <script>
     $(document).ready(function() {
         $('#xuLyTable').DataTable();
+
+        $("#file-input").on("change", (e) => {
+            const file = e.target.files[0];
+
+            readXlsxFile(file).then((rows) => {
+                rows.shift()
+
+                const isInvalid = rows.find(row => row.length > 6 || isNaN(row[0]) || isNaN(row[1]) || (typeof row[2] !== 'string' && row[2].length <= 0) || isNaN(row[3]) || (typeof row[4] !== 'string' && row[4].length <= 0) || isNaN(row[5]))
+
+                if (isInvalid) {
+                    return;
+                }
+
+                $.post("/admin/thiet-bi/excel", {
+                    data: rows,
+                }, function(responseData) {
+                });
+            })
+        })
     });
 </script>
 </body>

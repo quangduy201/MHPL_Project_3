@@ -23,6 +23,7 @@
             href="../../vendor/datatables/dataTables.bootstrap4.min.css"
             rel="stylesheet"
     />
+    <link href="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/lib/prism.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 
     <!-- Custom styles for this template-->
@@ -182,6 +183,13 @@
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <h1 class="text-center my-4">Quản lý thiết bị</h1>
+                <div class="d-flex justify-content-end align-items-center my-5">
+                    <p class="btn btn-primary btn-sm mr-2 m-0"> Thêm </p>
+                    <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
+                    <p class="btn text-white btn-sm  m-0 bg-danger"> Xóa nhiều dòng </p>
+                    <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
+                </div>
+                <!-- Table -->
                 <table id="thietbiTable" class="table">
                     <thead>
                     <tr>
@@ -228,9 +236,33 @@
 <!-- Core plugin JavaScript-->
 <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
 
+<!-- Read Excel -->
+<script src="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/read-excel-file.min.js"></script>
+
 <script>
     $(document).ready(function() {
         $('#thietbiTable').DataTable();
+
+        $("#file-input").on("change", (e) => {
+            const file = e.target.files[0];
+
+
+
+            readXlsxFile(file).then((rows) => {
+                rows.shift()
+
+                const isInvalid = rows.find(row => row.length > 3 || isNaN(row[0]) || (typeof row[1] !== 'string' && row[1].length <= 0) || (typeof row[2] !== 'string' && row[2].length <= 0))
+
+                if (isInvalid) {
+                    return;
+                }
+
+                $.post("/admin/thiet-bi/excel", {
+                    data: rows,
+                }, function(responseData) {
+                });
+            })
+        })
     });
 </script>
 </body>

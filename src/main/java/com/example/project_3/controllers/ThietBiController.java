@@ -68,6 +68,19 @@ public class ThietBiController {
         return "redirect:/admin/thiet-bi";
     }
 
+    @PostMapping("/excel")
+    public String excel(@RequestParam Object[][] rows) {
+        try {
+            for (Object[] row : rows) {
+                ThietBi tb = new ThietBi(Long.parseLong(row[0].toString()), row[1].toString(), row[2].toString());
+                thietBiService.saveThietBi(tb);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "redirect:/admin/thiet-bi";
+    }
+
     @GetMapping("/delete")
     public String deleteThietBi(@RequestParam String maTB) {
         try {
