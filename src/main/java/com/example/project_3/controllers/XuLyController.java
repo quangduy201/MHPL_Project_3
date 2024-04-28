@@ -1,6 +1,7 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.XuLyRequest;
 import com.example.project_3.services.ThanhVienService;
@@ -84,6 +85,27 @@ public class XuLyController {
             System.out.println(e.getMessage());
         }
         return "redirect:/admin/xu-ly";
+    }
+
+    @PostMapping("/excel")
+    public String excel(@RequestParam Object[][] rows) {
+        try {
+            for (Object[] row : rows) {
+                ThanhVien tv = thanhVienService.getThanhVienById(Long.parseLong(row[1].toString()));
+
+                String ngayXLString = row[4].toString();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                Date ngayXLDate = sdf.parse(ngayXLString);
+
+                XuLy tb = new XuLy(Integer.parseInt(row[0].toString()), tv, row[2].toString(), Integer.parseInt(row[3].toString()), ngayXLDate.toInstant(), Integer.parseInt(row[5].toString()));
+                xuLyService.saveXuLy(tb);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "redirect:/admin/thiet-bi";
     }
 
     @GetMapping("/delete")
