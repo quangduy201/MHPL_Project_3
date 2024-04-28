@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard | Quản lý thiết bị</title>
+    <title>Dashboard | Quản lý xử lý vi phạm</title>
 
     <!-- Custom fonts for this template-->
     <link
@@ -181,27 +181,35 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <h1 class="text-center my-4">Quản lý thiết bị</h1>
-                <table id="thietbiTable" class="table">
+                <h1 class="text-center my-4">Quản lý xử lý vi phạm</h1>
+                <table id="xuLyTable" class="table">
                     <thead>
                     <tr>
-                        <th>Mã thiết bị</th>
-                        <th>Tên thiết bị</th>
-                        <th>Mô tả</th>
+                        <th>Mã xử lý</th>
+                        <th>Mã thành viên</th>
+                        <th>Tên thành viên</th>
+                        <th>Hình thức xử lý</th>
+                        <th>Số tiền</th>
+                        <th>Ngày xử lý</th>
+                        <th>Trạng thái xử lý</th>
                         <th>Tùy chọn</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="tb : ${thietBiList}">
-                        <td th:text="${tb.maTB}"></td>
-                        <td th:text="${tb.tenTB}"></td>
-                        <td th:text="${tb.moTaTB}"></td>
+                    <tr th:each="xl : ${xuLyList}">
+                        <td th:text="${xl.maXL}"></td>
+                        <td th:text="${xl.maTV.getMaTV()}"></td>
+                        <td th:text="${xl.maTV.getHoTen()}"></td>
+                        <td th:text="${xl.hinhThucXL}"></td>
+                        <td th:text="${xl.soTien} ? ${xl.soTien} + ' VNĐ' : 'O VNĐ'"></td>
+                        <td th:text="${xl.ngayXL}"></td>
+                        <td th:text="${xl.trangThaiXL} ? 'Đã xử lý' : 'Đang xử lý'"></td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-primary btn-sm"
-                               th:href="@{/templates/admin/thietbi/edit(maTB=${tb.maTB})}">Sửa</a>
+                               th:href="@{/templates/admin/xuly/edit(maTB=${xl.maXL})}">Sửa</a>
                             <a class="btn btn-primary btn-sm"
-                               th:href="@{/templates/admin/thietbi/delete(maTB=${tb.maTB})}"
-                               onclick="return confirm('Bạn có chắc chắn muốn xóa thiết bị này?')">Xóa</a>
+                               th:href="@{/templates/admin/xuly/delete(maTB=${xl.maXL})}"
+                               onclick="return confirm('Bạn có chắc chắn muốn xóa xử lý này?')">Xóa</a>
                         </td>
                     </tr>
                     </tbody>
@@ -230,7 +238,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#thietbiTable').DataTable();
+        $('#xuLyTable').DataTable();
     });
 </script>
 </body>
