@@ -9,8 +9,28 @@ $(document).ready(function() {
     $('#breach2-date-range').daterangepicker(dateRangeOptions);
 });
 
+// RENDER SELECT
+$(document).ready(function() {
+    $('#member-select-state-1').selectize({
+        sortField: 'text'
+    });
+
+    $('#member-select-state-2').selectize({
+        sortField: 'text'
+    });
+
+    $('#equipment-select-state-1').selectize({
+        sortField: 'text'
+    });
+
+    $('#equipment-select-state-2').selectize({
+        sortField: 'text'
+    });
+});
+
 // RENDER MEMBER CHART
 $(document).ready(function() {
+    var memberAreaChart = null
     function updateChart(newData) {
         var ctx = document.getElementById("memberAreaChart");
         var labels = newData.map(i => i[0]);
@@ -42,26 +62,23 @@ $(document).ready(function() {
             }
         )
 
-        new Chart(ctx, memberChartOptions);
+        if (memberAreaChart !== null) {
+            memberAreaChart.destroy();
+        }
+
+        memberAreaChart = new Chart(ctx, memberChartOptions);
     }
 
     function updateTable(newData) {
-        var html = newData.map(i => `
-            <tr>
-                <td>${i[0]}</td>
-                <td>${i[1]}</td>
-                <td>${i[2]}</td>
-                <td>${i[3]}</td>
-                <td>${i[4]}</td>
-            </tr>
-        `)
+        $('#member-dataTable').DataTable()
+            .rows()
+            .remove()
+            .draw();
 
-        $("#member-dataTable tbody").html(html.join(""))
+        $('#member-dataTable').DataTable()
+            .rows.add(newData)
+            .draw();
     }
-
-    $('#member-dataTable').DataTable({
-        searching: false
-    });
 
     var currentDate = moment();
     var thirtyDaysAgo = moment().subtract(100, 'days');
@@ -74,8 +91,8 @@ $(document).ready(function() {
 
     $.post('/admin/dashboard/member', {
         dateRange: startDate + ' - ' + endDate,
-        khoa: $('#khoa').val(),
-        nganh: $('#nganh').val()
+        khoa: $('#member-select-state-1').val(),
+        nganh: $('#member-select-state-2').val()
     }, function(responseData) {
         updateChart(responseData[0]);
         updateTable(responseData[1]);
@@ -87,8 +104,30 @@ $(document).ready(function() {
 
         $.post('/admin/dashboard/member', {
             dateRange: startDate + ' - ' + endDate,
-            khoa: $('#khoa').val(),
-            nganh: $('#nganh').val()
+            khoa: $('#member-select-state-1').val(),
+            nganh: $('#member-select-state-2').val()
+        }, function(responseData) {
+            updateChart(responseData[0]);
+            updateTable(responseData[1]);
+        });
+    });
+
+    $('#member-select-state-1').on("change", function() {
+        $.post('/admin/dashboard/member', {
+            dateRange: startDate + ' - ' + endDate,
+            khoa: $('#member-select-state-1').val(),
+            nganh: $('#member-select-state-2').val()
+        }, function(responseData) {
+            updateChart(responseData[0]);
+            updateTable(responseData[1]);
+        });
+    });
+
+    $('#member-select-state-2').on("change", function() {
+        $.post('/admin/dashboard/member', {
+            dateRange: startDate + ' - ' + endDate,
+            khoa: $('#member-select-state-1').val(),
+            nganh: $('#member-select-state-2').val()
         }, function(responseData) {
             updateChart(responseData[0]);
             updateTable(responseData[1]);
@@ -98,6 +137,7 @@ $(document).ready(function() {
 
 // RENDER EQUIPMENT 1 CHART
 $(document).ready(function() {
+    var equipmentChart = null;
     function updateChart(newData) {
         var ctx = document.getElementById("equipment1AreaChart");
         var labels = newData.map(i => i[0]);
@@ -129,27 +169,23 @@ $(document).ready(function() {
             }
         )
 
-        new Chart(ctx, equipment1ChartOptions);
+        if (equipmentChart !== null) {
+            equipmentChart.destroy();
+        }
+
+        equipmentChart = new Chart(ctx, equipment1ChartOptions);
     }
 
     function updateTable(newData) {
-        var html = newData.map(i => `
-            <tr>
-                <td>${i[0]}</td>
-                <td>${i[1]}</td>
-                <td>${i[2]}</td>
-                <td>${i[3]}</td>
-                <td>${i[4]}</td>
-                <td>${i[5]}</td>
-            </tr>
-        `)
+        $('#equipment1-dataTable').DataTable()
+            .rows()
+            .remove()
+            .draw();
 
-        $("#equipment1-dataTable tbody").html(html.join(""))
+        $('#equipment1-dataTable').DataTable()
+            .rows.add(newData)
+            .draw();
     }
-
-    $('#equipment1-dataTable').DataTable({
-        searching: false
-    });
 
     var currentDate = moment();
     var thirtyDaysAgo = moment().subtract(100, 'days');
@@ -162,8 +198,7 @@ $(document).ready(function() {
 
     $.post('/admin/dashboard/equipment-1', {
         dateRange: startDate + ' - ' + endDate,
-        khoa: $('#khoa').val(),
-        nganh: $('#nganh').val()
+        maTB: $('#equipment-select-state-1').val(),
     }, function(responseData) {
         updateChart(responseData[0]);
         updateTable(responseData[1]);
@@ -175,8 +210,17 @@ $(document).ready(function() {
 
         $.post('/admin/dashboard/equipment-1', {
             dateRange: startDate + ' - ' + endDate,
-            khoa: $('#khoa').val(),
-            nganh: $('#nganh').val()
+            maTB: $('#equipment-select-state-1').val(),
+        }, function(responseData) {
+            updateChart(responseData[0]);
+            updateTable(responseData[1]);
+        });
+    });
+
+    $('#equipment-select-state-1').on("change", function() {
+        $.post('/admin/dashboard/equipment-1', {
+            dateRange: startDate + ' - ' + endDate,
+            maTB: $('#equipment-select-state-1').val(),
         }, function(responseData) {
             updateChart(responseData[0]);
             updateTable(responseData[1]);
@@ -186,6 +230,7 @@ $(document).ready(function() {
 
 // RENDER EQUIPMENT 2 CHART
 $(document).ready(function() {
+    var equipmentChart = null;
     function updateChart(newData) {
         var ctx = document.getElementById("equipment2AreaChart");
         var labels = newData.map(i => i[0]);
@@ -217,26 +262,23 @@ $(document).ready(function() {
             }
         )
 
-        new Chart(ctx, equipment2ChartOptions);
+        if (equipmentChart !== null) {
+            equipmentChart.destroy();
+        }
+
+        equipmentChart = new Chart(ctx, equipment2ChartOptions);
     }
 
     function updateTable(newData) {
-        var html = newData.map(i => `
-            <tr>
-                <td>${i[0]}</td>
-                <td>${i[1]}</td>
-                <td>${i[2]}</td>
-                <td>${i[3]}</td>
-                <td>${i[4]}</td>
-            </tr>
-        `)
+        $('#equipment2-dataTable').DataTable()
+            .rows()
+            .remove()
+            .draw();
 
-        $("#equipment2-dataTable tbody").html(html.join(""))
+        $('#equipment2-dataTable').DataTable()
+            .rows.add(newData)
+            .draw();
     }
-
-    $('#equipment2-dataTable').DataTable({
-        searching: false
-    });
 
     var currentDate = moment();
     var thirtyDaysAgo = moment().subtract(100, 'days');
@@ -273,6 +315,7 @@ $(document).ready(function() {
 
 // RENDER BREACH 1 CHART
 $(document).ready(function() {
+    var breachChart = null;
     function updateChart(newData) {
         var ctx = document.getElementById("breach1AreaChart");
         var labels = newData.map(i => i[0]);
@@ -304,26 +347,23 @@ $(document).ready(function() {
             }
         )
 
-        new Chart(ctx, breach1ChartOptions);
+        if (breachChart !== null) {
+            breachChart.destroy();
+        }
+
+        breachChart = new Chart(ctx, breach1ChartOptions);
     }
 
     function updateTable(newData) {
-        var html = newData.map(i => `
-            <tr>
-                <td>${i[0]}</td>
-                <td>${i[1]}</td>
-                <td>${i[2]}</td>
-                <td>${i[3]}</td>
-                <td>${i[4]}</td>
-            </tr>
-        `)
+        $('#breach1-dataTable').DataTable()
+            .rows()
+            .remove()
+            .draw();
 
-        $("#breach1-dataTable tbody").html(html.join(""))
+        $('#breach1-dataTable').DataTable()
+            .rows.add(newData)
+            .draw();
     }
-
-    $('#breach1-dataTable').DataTable({
-        searching: false
-    });
 
     var currentDate = moment();
     var thirtyDaysAgo = moment().subtract(100, 'days');
@@ -360,6 +400,7 @@ $(document).ready(function() {
 
 // RENDER BREACH 2 CHART
 $(document).ready(function() {
+    var breachChart = null;
     function updateChart(newData) {
         var ctx = document.getElementById("breach2AreaChart");
         var labels = newData.map(i => i[0]);
@@ -391,26 +432,23 @@ $(document).ready(function() {
             }
         )
 
-        new Chart(ctx, breach2ChartOptions);
+        if (breachChart !== null) {
+            breachChart.destroy();
+        }
+
+        breachChart = new Chart(ctx, breach2ChartOptions);
     }
 
     function updateTable(newData) {
-        var html = newData.map(i => `
-            <tr>
-                <td>${i[0]}</td>
-                <td>${i[1]}</td>
-                <td>${i[2]}</td>
-                <td>${i[3]}</td>
-                <td>${i[4]}</td>
-            </tr>
-        `)
+        $('#breach2-dataTable').DataTable()
+            .rows()
+            .remove()
+            .draw();
 
-        $("#breach2-dataTable tbody").html(html.join(""))
+        $('#breach2-dataTable').DataTable()
+            .rows.add(newData)
+            .draw();
     }
-
-    $('#breach2-dataTable').DataTable({
-        searching: false
-    });
 
     var currentDate = moment();
     var thirtyDaysAgo = moment().subtract(100, 'days');

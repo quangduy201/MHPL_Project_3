@@ -33,11 +33,11 @@ public class ThongKeServiceImpl implements ThongKeService {
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.between(root.get("tgVao"), startTime, endTime));
 
-        if (khoa != null && !khoa.isEmpty()) {
+        if (khoa != null && !khoa.isEmpty() && !"tatca".equals(khoa)) {
             predicates.add(cb.equal(root.get("maTV").get("khoa"), khoa));
         }
 
-        if (nganh != null && !nganh.isEmpty()) {
+        if (nganh != null && !nganh.isEmpty() && !"tatca".equals(nganh)) {
             predicates.add(cb.equal(root.get("maTV").get("nganh"), nganh));
         }
 
@@ -77,7 +77,7 @@ public class ThongKeServiceImpl implements ThongKeService {
         predicates.add(cb.between(root.get("tgMuon"), startTime, endTime));
         predicates.add(cb.and(cb.isNotNull(root.get("tgMuon")), cb.isNotNull(root.get("tgTra"))));
 
-        if (!"-1".equals(maTB) && maTB != null && !maTB.isBlank() && !maTB.isEmpty()) {
+        if (!"tatca".equals(maTB) && maTB != null && !maTB.isBlank() && !maTB.isEmpty()) {
             predicates.add(cb.equal(root.get("maTB").get("maTB"), maTB));
         }
 
@@ -120,7 +120,7 @@ public class ThongKeServiceImpl implements ThongKeService {
         predicates.add(cb.between(root.get("tgMuon"), startTime, endTime));
         predicates.add(cb.and(cb.isNotNull(root.get("tgMuon")), cb.isNull(root.get("tgTra"))));
 
-        if (!"-1".equals(maTB)) {
+        if (!"tatca".equals(maTB)) {
             predicates.add(cb.equal(root.get("maTB").get("maTB"), maTB));
         }
 

@@ -1,5 +1,8 @@
 package com.example.project_3.controllers;
 
+import com.example.project_3.models.ThietBi;
+import com.example.project_3.services.ThanhVienService;
+import com.example.project_3.services.ThietBiService;
 import com.example.project_3.services.ThongKeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +20,22 @@ public class AdminController {
     @Autowired
     private ThongKeService thongKeService;
 
+    @Autowired
+    private ThanhVienService thanhVienService;
+
+    @Autowired
+    private ThietBiService thietBiService;
+
     @GetMapping({"", "/"})
-    public String index() {
+    public String index(Model model) {
+        List<String> khoaList = thanhVienService.getKhoaList();
+        List<String> nganhList = thanhVienService.getNganhList();
+        List<ThietBi> thietBis = thietBiService.getAllThietBi();
+
+        model.addAttribute("khoa", khoaList);
+        model.addAttribute("nganh", nganhList);
+        model.addAttribute("thietbi", thietBis);
+
         return "admin/index";
     }
 
