@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ThanhVienService {
     List<ThanhVien> getAllThanhVien();
+    List<String> getKhoaList();
+    List<String> getNganhList();
     ThanhVien getThanhVienById(Long maTV);
     ThanhVien saveThanhVien(ThanhVien tv);
     void deleteThanhVienById(Long tv);
