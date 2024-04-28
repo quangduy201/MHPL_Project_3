@@ -18,26 +18,19 @@ public class AdminController {
     private ThongKeService thongKeService;
 
     @GetMapping({"", "/"})
-    public String index(Model model) {
-        String dateRange = (String) model.getAttribute("dateRange");
-        String khoa = (String) model.getAttribute("khoa");
-        String nganh = (String) model.getAttribute("nganh");
-
-        List<Object[]> data = getData(dateRange, khoa, nganh, false);
-
-        model.addAttribute("data", data);
+    public String index() {
         return "admin/index";
     }
 
-    @PostMapping({"/", ""})
+    @PostMapping("/dashboard/member")
     @ResponseBody
-    public List<List<Object[]>> updateChartData(@RequestParam(required = false) String dateRange,
+    public List<List<Object[]>> getMemberChart(@RequestParam(required = false) String dateRange,
                                           @RequestParam(required = false) String khoa,
                                           @RequestParam(required = false) String nganh) {
-        return List.of(getData(dateRange, khoa, nganh, false), getData(dateRange, khoa, nganh, true));
+        return List.of(getMemberData(dateRange, khoa, nganh, false), getMemberData(dateRange, khoa, nganh, true));
     }
 
-    private List<Object[]> getData(String dateRange, String khoa, String nganh, boolean isTable) {
+    private List<Object[]> getMemberData(String dateRange, String khoa, String nganh, boolean isTable) {
         LocalDateTime startTime = null;
         LocalDateTime endTime = null;
 
@@ -52,5 +45,71 @@ public class AdminController {
         }
 
         return thongKeService.thongKeThanhVienVaoKhuHocTap(startTime, endTime, khoa, nganh, isTable);
+    }
+
+    @PostMapping("/dashboard/equipment-1")
+    @ResponseBody
+    public List<List<Object[]>> getEquipmentChartV1(@RequestParam(required = false) String dateRange,
+                                               @RequestParam(required = false) String maTB) {
+        return List.of(getEquipmentData(dateRange, maTB, false, true), getEquipmentData(dateRange, maTB, true, true));
+    }
+
+    @PostMapping("/dashboard/equipment-2")
+    @ResponseBody
+    public List<List<Object[]>> getEquipmentChartV2(@RequestParam(required = false) String dateRange,
+                                                    @RequestParam(required = false) String maTB) {
+        return List.of(getEquipmentData(dateRange, maTB, false, false), getEquipmentData(dateRange, maTB, true, false));
+    }
+
+    private List<Object[]> getEquipmentData(String dateRange, String maTB, boolean isTable, boolean isHired) {
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+
+        if (dateRange != null && !dateRange.isEmpty()) {
+            String[] dates = dateRange.split(" - ");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            startTime = LocalDate.parse(dates[0], formatter).atStartOfDay();
+            endTime = LocalDate.parse(dates[1], formatter).atStartOfDay();
+        } else {
+            startTime = LocalDateTime.now().minusDays(30);
+            endTime = LocalDateTime.now();
+        }
+
+        if (isHired) {
+            return thongKeService.thongKeThietBiDaDuocMuon(startTime, endTime, maTB, isTable);
+        }
+
+        return thongKeService.thongKeThietBiDangDuocMuon(startTime, endTime, maTB, isTable);
+    }
+
+    @PostMapping("/dashboard/breach-1")
+    @ResponseBody
+    public List<List<Object[]>> getBreachChartV1(@RequestParam(required = false) String dateRange,
+                                                    @RequestParam(required = false) String maTB) {
+        return List.of(getBreachData(dateRange, maTB, false, true), getBreachData(dateRange, maTB, true, true));
+    }
+
+    @PostMapping("/dashboard/breach-2")
+    @ResponseBody
+    public List<List<Object[]>> getBreachChartV2(@RequestParam(required = false) String dateRange,
+                                                    @RequestParam(required = false) String maTB) {
+        return List.of(getBreachData(dateRange, maTB, false, false), getBreachData(dateRange, maTB, true, false));
+    }
+
+    private List<Object[]> getBreachData(String dateRange, String maTB, boolean isTable, boolean trangThai) {
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+
+        if (dateRange != null && !dateRange.isEmpty()) {
+            String[] dates = dateRange.split(" - ");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            startTime = LocalDate.parse(dates[0], formatter).atStartOfDay();
+            endTime = LocalDate.parse(dates[1], formatter).atStartOfDay();
+        } else {
+            startTime = LocalDateTime.now().minusDays(30);
+            endTime = LocalDateTime.now();
+        }
+
+        return thongKeService.thongKeXuLy(startTime, endTime, trangThai, isTable);
     }
 }
