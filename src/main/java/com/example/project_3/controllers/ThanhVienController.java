@@ -25,7 +25,6 @@ public class ThanhVienController {
 
     @GetMapping({"", "/"})
     public String showThanhVien(Model model, @RequestParam Map<String, String> requestParams) {
-
         Page<ThanhVien> thanhVienList = thanhvienService.getThanhVien(requestParams);
         requestParams.remove("page");
         StringBuilder builder = new StringBuilder();

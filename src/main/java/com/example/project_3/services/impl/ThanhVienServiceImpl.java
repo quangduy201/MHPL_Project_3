@@ -23,16 +23,30 @@ public class ThanhVienServiceImpl implements ThanhVienService {
 
     @Override
     public Page<ThanhVien> getThanhVien(Map<String, String> requestParams) {
-        // maTV LIKE '%...%'
-        // [AND hoTen LIKE '%...%' ]
-        // [AND khoa LIKE '%...%' ]
-        // [AND nganh LIKE '%...%' ]
-        // [AND sdt LIKE '%...%' ]
-        // [AND email like '%...%' ]
-        Specification<ThanhVien> specification = BaseSpecification.buildLikeSpecification(requestParams, true);
+        Specification<ThanhVien> specification;
+        if (requestParams.containsKey("all")) {
+            String value = requestParams.get("all");
+            Map<String, String> params = Map.of(
+                    "maTV", value,
+                    "hoTen", value,
+                    "khoa", value,
+                    "nganh", value,
+                    "sdt", value,
+                    "email", value
+            );
+            specification = BaseSpecification.buildLikeSpecification(params, false);
+        } else {
+            // maTV LIKE '%...%'
+            // [AND hoTen LIKE '%...%' ]
+            // [AND khoa LIKE '%...%' ]
+            // [AND nganh LIKE '%...%' ]
+            // [AND sdt LIKE '%...%' ]
+            // [AND email like '%...%' ]
+            specification = BaseSpecification.buildLikeSpecification(requestParams, true);
+        }
 
         String page = requestParams.get("page");
-        Pageable pageable = Pageable.ofSize(3).withPage(0);
+        Pageable pageable = Pageable.ofSize(10).withPage(0);
         if (page != null && page.trim().matches("^\\d+$"))
             pageable = pageable.withPage(Integer.parseInt(page) - 1);
 
