@@ -3,10 +3,14 @@ package com.example.project_3.services.impl;
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.repositories.ThanhVienRepository;
 import com.example.project_3.services.ThanhVienService;
+import com.example.project_3.specifications.BaseSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class ThanhVienServiceImpl implements ThanhVienService {
@@ -18,8 +22,21 @@ public class ThanhVienServiceImpl implements ThanhVienService {
     }
 
     @Override
-    public List<ThanhVien> getAllThanhVien() {
-        return thanhVienRepository.findAll();
+    public Page<ThanhVien> getThanhVien(Map<String, String> requestParams) {
+        // maTV LIKE '%...%'
+        // [AND hoTen LIKE '%...%' ]
+        // [AND khoa LIKE '%...%' ]
+        // [AND nganh LIKE '%...%' ]
+        // [AND sdt LIKE '%...%' ]
+        // [AND email like '%...%' ]
+        Specification<ThanhVien> specification = BaseSpecification.buildLikeSpecification(requestParams, true);
+
+        String page = requestParams.get("page");
+        Pageable pageable = Pageable.ofSize(3).withPage(0);
+        if (page != null && page.trim().matches("^\\d+$"))
+            pageable = pageable.withPage(Integer.parseInt(page) - 1);
+
+        return thanhVienRepository.findAll(specification, pageable);
     }
 
     @Override

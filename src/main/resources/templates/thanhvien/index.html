@@ -9,6 +9,30 @@
 <body>
     <div class="container">
         <h1 class="text-center my-4">Quản lý thành viên</h1>
+        <div class="mb-3 row">
+            <div class="col">
+                <select class="form-select" aria-label="">
+                    <option selected>Tất cả</option>
+                    <option value="maTV">Mã TV</option>
+                    <option value="hoTen">Họ tên</option>
+                    <option value="khoa">Khoa</option>
+                    <option value="nganh">Ngành</option>
+                    <option value="sdt">SĐT</option>
+                    <option value="email">Email</option>
+                </select>
+            </div>
+            <div class="col">
+                <input type="text"
+                       class="form-control"
+                       id="txt-search"
+                       placeholder="Nhập vào đây để tìm kiếm"
+                       aria-label=""
+                >
+            </div>
+            <div class="col">
+                <button class="btn btn-primary">Thêm thành viên</button>
+            </div>
+        </div>
         <table class="table">
             <thead>
             <tr>
@@ -22,7 +46,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="tv : ${thanhVienList}">
+            <tr th:each="tv : ${tvList}">
                 <td th:text="${tv.maTV}"></td>
                 <td th:text="${tv.hoTen}"></td>
                 <td th:text="${tv.khoa}"></td>
@@ -41,6 +65,76 @@
             </tr>
             </tbody>
         </table>
+
+        <nav th:if="${tvList.totalPages > 1}"
+             th:with="urlPrefix = ${params.isEmpty() ? '/thanhvien?' : '/thanhvien?' + params + '&'}"
+             class="pagination justify-content-center flex-wrap"
+             aria-label="..."
+        >
+            <ul class="pagination">
+                <!-- First page-->
+                <li class="page-item" th:classappend="${tvList.first ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{${urlPrefix} + 'page=1'}">First</a>
+                </li>
+                <!-- Previous page -->
+                <li class="page-item" th:classappend="${tvList.first ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${tvList.number}}">Previous</a>
+                </li>
+
+                <!-- Render all pages if less than or equals to 10 pages -->
+                <th:block th:if="${tvList.totalPages <= 10}">
+                    <li th:each="i: ${#numbers.sequence(1, tvList.totalPages)}" class="page-item" th:classappend="${tvList.number + 1 == i ? 'active' : ''}">
+                        <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${i}}">[[${i}]]</a>
+                    </li>
+                </th:block>
+
+                <!-- Render some pages if more than 10 pages -->
+                <th:block th:if="${tvList.totalPages > 10}">
+                    <th:block th:if="${tvList.number < 5 || tvList.number >= tvList.totalPages - 5}">
+                        <li th:each="i: ${#numbers.sequence(1, 5)}"
+                            class="page-item" th:classappend="${tvList.number + 1 == i ? 'active' : ''}"
+                        >
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${i}}">[[${i}]]</a>
+                        </li>
+
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=6'}">...</a>
+                        </li>
+
+                        <li th:each="i: ${#numbers.sequence(tvList.totalPages - 4, tvList.totalPages)}"
+                            class="page-item" th:classappend="${tvList.number + 1 == i ? 'active' : ''}"
+                        >
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${i}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <th:block th:if="${tvList.number >= 5 && tvList.number < tvList.totalPages - 5}">
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${tvList.number - 4}}">...</a>
+                        </li>
+
+                        <li th:each="i: ${#numbers.sequence(tvList.number - 3, tvList.number + 5)}"
+                            class="page-item" th:classappend="${tvList.number + 1 == i ? 'active' : ''}"
+                        >
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${i}}">[[${i}]]</a>
+                        </li>
+
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${tvList.number + 6}}">...</a>
+                        </li>
+                    </th:block>
+                </th:block>
+
+                <!-- Next page -->
+                <li class="page-item" th:classappend="${tvList.last ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${tvList.number + 2}}">Next</a>
+                </li>
+                <!-- Last page -->
+                <li class="page-item" th:classappend="${tvList.last ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${tvList.totalPages}}">Last</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
