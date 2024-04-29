@@ -1,0 +1,30 @@
+#content {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.calendar {
+    max-width: 300px;
+}
+
+#page-top {
+    overflow: hidden !important;
+}
+
+#member-select-state-1,
+#equipment-select-state-1,
+#equipment-select-state-2,
+#member-select-state-2{
+    max-width: 200px;
+    min-width: 200px;
+    width: 100%;
+}
+
+#member-select-state-1 ~ .selectize-control,
+#equipment-select-state-1 ~ .selectize-control,
+#equipment-select-state-2 ~ .selectize-control,
+#member-select-state-2 ~ .selectize-control {
+    max-width: 200px;
+    min-width: 200px;
+    width: 100%;
+}

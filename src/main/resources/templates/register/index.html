@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng nhập cho user</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+</head>
+<body>
+    <section class="bg-gray-50 dark:bg-gray-50 m-4">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto">
+            <p class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-black">
+                Project 3 - Group 1
+            </p>
+            <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        Đăng ký
+                    </h1>
+                    <form class="space-y-4 md:space-y-6" method="POST" th:object="${tv}">
+                        <div>
+                            <label for="maTV" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mã Thành Viên</label>
+                            <input type="text" name="maTV" id="maTV" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="123456789" th:field="${tv.maTV}"/>
+                            <p th:if="${#fields.hasErrors('maTV')}"
+                               th:errorclass="text-red-500"
+                               th:errors="${tv.maTV}"></p>
+                        </div>
+                        <div>
+                            <label for="hoTen" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Họ tên</label>
+                            <input type="text" name="hoTen" id="hoTen" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nguyễn Văn A" th:field="${tv.hoTen}"/>
+                            <p th:if="${#fields.hasErrors('hoTen')}"
+                               th:errorclass="text-red-500"
+                               th:errors="${tv.hoTen}"></p>
+                        </div>
+                        <div>
+                            <label for="khoa" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Khoa</label>
+                            <input type="text" name="khoa" id="khoa" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="CNTT" th:field="${tv.khoa}"/>
+                            <p th:if="${#fields.hasErrors('khoa')}"
+                               th:errorclass="text-red-500"
+                               th:errors="${tv.khoa}"></p>
+                        </div>
+                        <div>
+                            <label for="nganh" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ngành</label>
+                            <input type="text" name="nganh" id="nganh" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="KTPM" th:field="${tv.nganh}"/>
+                            <p th:if="${#fields.hasErrors('nganh')}"
+                               th:errorclass="text-red-500"
+                               th:errors="${tv.nganh}"></p>
+                        </div>
+                        <div>
+                            <label for="sdt" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SĐT</label>
+                            <input type="text" name="sdt" id="sdt" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="123456789" th:field="${tv.sdt}"/>
+                            <p th:if="${#fields.hasErrors('sdt')}"
+                               th:errorclass="text-red-500"
+                               th:errors="${tv.sdt}"></p>
+                        </div>
+                        <div>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                            <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="example@gmail.com" th:field="${tv.email}"/>
+                            <p th:if="${#fields.hasErrors('email')}"
+                               th:errorclass="text-red-500"
+                               th:errors="${tv.email}"></p>
+                        </div>
+                        <div>
+                            <label for="matKhau" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mật khẩu</label>
+                            <input type="password" name="matKhau" id="matKhau" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" th:field="${tv.matKhau}"/>
+                            <p th:if="${#fields.hasErrors('matKhau')}"
+                               th:errorclass="text-red-500"
+                               th:errors="${tv.matKhau}"></p>
+                        </div>
+                        <div>
+                            <label for="xacNhanMatKhau" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Xác nhận mật khẩu</label>
+                            <input type="password" name="xacNhanMatKhau" id="xacNhanMatKhau" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" th:field="${tv.matKhau}"/>
+                            <p th:if="${#fields.hasErrors('xacNhanMatKhau')}"
+                               th:errorclass="text-red-500"
+                               th:errors="${tv.xacNhanMatKhau}"></p>
+                        </div>
+                        <div class="flex items-center justify-end">
+                            <a href="/" class="text-sm font-medium text-[#1725CA] hover:underline dark:text-[#1725CA]">Về trang chủ</a>
+                        </div>
+                        <div class="flex justify-center items-center">
+                            <button type="submit" class="text-white bg-[#1725CA] rounded-md py-3 px-9 text-xl font-medium">Đăng ký</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

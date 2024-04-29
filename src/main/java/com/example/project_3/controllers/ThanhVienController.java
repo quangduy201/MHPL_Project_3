@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/thanhvien")
+@RequestMapping("/admin/thanhvien")
 public class ThanhVienController {
     private final ThanhVienService thanhvienService;
 
@@ -37,7 +37,7 @@ public class ThanhVienController {
             builder.setLength(builder.length() - 1); // remove the last '&'
         model.addAttribute("tvList", thanhVienList);
         model.addAttribute("params", builder.toString());
-        return "thanhvien/index";
+        return "/admin/thanhvien/index";
     }
 
     @GetMapping("/edit")
@@ -56,9 +56,9 @@ public class ThanhVienController {
             model.addAttribute("tvRequest", thanhVienRequest);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return "redirect:/thanhvien";
+            return "redirect:/admin/thanhvien";
         }
-        return "thanhvien/edit";
+        return "/admin/thanhvien/edit";
     }
 
     @PostMapping("/edit")
@@ -71,7 +71,7 @@ public class ThanhVienController {
             model.addAttribute("thanhVien", thanhVien);
 
             if (result.hasErrors()) {
-                return "thanhvien/edit";
+                return "/admin/thanhvien/edit";
             }
 
             thanhVien.setHoTen(tvRequest.getHoTen());
@@ -84,7 +84,7 @@ public class ThanhVienController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return "redirect:/thanhvien";
+        return "redirect:/admin/thanhvien";
     }
 
     @GetMapping("/delete")
@@ -95,6 +95,6 @@ public class ThanhVienController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return "redirect:/thanhvien";
+        return "redirect:/admin/thanhvien";
     }
 }

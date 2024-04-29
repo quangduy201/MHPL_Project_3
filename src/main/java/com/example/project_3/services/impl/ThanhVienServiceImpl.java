@@ -54,6 +54,16 @@ public class ThanhVienServiceImpl implements ThanhVienService {
     }
 
     @Override
+    public List<String> getKhoaList() {
+        return thanhVienRepository.findAll().stream().map(ThanhVien::getKhoa).toList();
+    }
+
+    @Override
+    public List<String> getNganhList() {
+        return thanhVienRepository.findAll().stream().map(ThanhVien::getNganh).toList();
+    }
+
+    @Override
     public ThanhVien getThanhVienById(Long maTV) {
         return thanhVienRepository.findById(maTV).orElse(null);
     }
