@@ -5,12 +5,13 @@ import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.services.ThanhVienService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/thanhvien")
@@ -23,17 +24,26 @@ public class ThanhVienController {
     }
 
     @GetMapping({"", "/"})
-    public String showAllThanhVien(Model model) {
-        List<ThanhVien> thanhVienList = thanhvienService.getAllThanhVien();
-        model.addAttribute("thanhVienList", thanhVienList);
+    public String showThanhVien(Model model, @RequestParam Map<String, String> requestParams) {
+        Page<ThanhVien> thanhVienList = thanhvienService.getThanhVien(requestParams);
+        requestParams.remove("page");
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry : requestParams.entrySet())
+            builder.append(entry.getKey())
+                    .append('=')
+                    .append(entry.getValue())
+                    .append('&');
+        if (!builder.isEmpty())
+            builder.setLength(builder.length() - 1); // remove the last '&'
+        model.addAttribute("tvList", thanhVienList);
+        model.addAttribute("params", builder.toString());
         return "/admin/thanhvien/index";
     }
 
     @GetMapping("/edit")
-    public String showEdit(Model model, @RequestParam String maTV) {
+    public String showEdit(Model model, @RequestParam Long maTV) {
         try {
-            Long id = Long.parseLong(maTV);
-            ThanhVien thanhVien = thanhvienService.getThanhVienById(id);
+            ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
             model.addAttribute("thanhVien", thanhVien);
 
             ThanhVienRequest thanhVienRequest = ThanhVienRequest.builder()
@@ -53,12 +63,11 @@ public class ThanhVienController {
 
     @PostMapping("/edit")
     public String editThanhVien(Model model,
-                                @RequestParam String maTV,
+                                @RequestParam Long maTV,
                                 @Valid @ModelAttribute("tvRequest") ThanhVienRequest tvRequest,
                                 BindingResult result) {
         try {
-            Long id = Long.parseLong(maTV);
-            ThanhVien thanhVien = thanhvienService.getThanhVienById(id);
+            ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
             model.addAttribute("thanhVien", thanhVien);
 
             if (result.hasErrors()) {
