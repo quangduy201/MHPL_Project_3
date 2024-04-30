@@ -4,148 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard | Quản lý thiết bị</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-
     <!-- Custom fonts for this template-->
-    <link
-            href="/vendor/fontawesome-free/css/all.min.css"
-            rel="stylesheet"
-            type="text/css"
-    />
-    <link
-            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-            rel="stylesheet"
-    />
-    <link
-            href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-            rel="stylesheet"
-    />
-    <link
-            href="/vendor/datatables/dataTables.bootstrap4.min.css"
-            rel="stylesheet"
-    />
-    <link
-            href="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/lib/prism.min.css"
-            rel="stylesheet">
-    <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous"
-            rel="stylesheet"
-    />
-
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet"/>
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/lib/prism.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" rel="stylesheet"/>
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet" />
     <link href="/css/dashboard.css" rel="stylesheet" />
 </head>
-
 <body id="page-top">
-
-<div id="wrapper" class="row">
-    <!-- Sidebar -->
-    <div th:replace="~{fragments/admin_sidebar :: sidebar(active=3)}"></div>
-
-    <!-- Content Wrapper -->
-    <div id="content-wrapper " class="col-10 d-flex flex-column flex-grow-1">
-<!--         Main Content -->
-        <div id="content">
-            <!-- Sidebar Toggle (Topbar) -->
-            <button
-                    id="sidebarToggleTop"
-                    class="btn btn-link d-md-none rounded-circle mr-3"
-            >
-                <i class="fa fa-bars"></i>
-            </button>
-
-            <!-- Topbar -->
-            <div th:replace="~{fragments/admin_topbar :: topbar(
-                    userName='Nhóm 1',
-                    userAvatar='/media/images/poodle.jpg'
-                 )}">
-            </div>
-
-            <!-- Begin Page Content -->
-            <div class="container-fluid">
-                <h1 class="text-center my-4">Quản lý thiết bị</h1>
-                <div class="d-flex justify-content-end align-items-center my-5">
-                    <p class="btn btn-primary btn-sm mr-2 m-0" onclick="openForm()"> Thêm </p>
-                    <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
-                    <p class="btn text-white btn-sm  m-0 bg-danger" onclick="openFormDelete()"> Xóa nhiều dòng </p>
-                    <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
+    <div id="wrapper" class="row">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/admin_sidebar :: sidebar(active=3)}"></div>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper " class="col-10 d-flex flex-column flex-grow-1">
+        <!--         Main Content -->
+            <div id="content">
+                <!-- Sidebar Toggle (Topbar) -->
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <!-- Topbar -->
+                <div th:replace="~{fragments/admin_topbar :: topbar(
+                        userName='Nhóm 1',
+                        userAvatar='/media/images/poodle.jpg'
+                     )}">
                 </div>
-                <!-- Table -->
-                <table id="thietbiTable" class="table">
-                    <thead>
-                    <tr>
-                        <th>Mã thiết bị</th>
-                        <th>Tên thiết bị</th>
-                        <th>Mô tả</th>
-                        <th>Tùy chọn</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="tb : ${thietBiList}">
-                        <td th:text="${tb.maTB}"></td>
-                        <td th:text="${tb.tenTB}"></td>
-                        <td th:text="${tb.moTaTB}"></td>
-                        <td style="white-space: nowrap">
-                            <a class="btn btn-primary btn-sm" th:onclick="'showEdit(\'' + ${tb.maTB} + '\')'">Sửa</a>
-                            <a class="btn btn-primary btn-sm" th:onclick="'deleteThietBi(\'' + ${tb.maTB} + '\')'">Xóa</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <h1 class="text-center my-4">Quản lý thiết bị</h1>
+                    <div class="d-flex justify-content-end align-items-center my-5">
+                        <p class="btn btn-primary btn-sm mr-2 m-0" onclick="openForm()"> Thêm </p>
+                        <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
+                        <p class="btn text-white btn-sm  m-0 bg-danger" onclick="openFormDelete()"> Xóa nhiều dòng </p>
+                        <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
+                    </div>
+                    <!-- Table -->
+                    <table id="thietbiTable" class="table">
+                        <thead>
+                        <tr>
+                            <th>Mã thiết bị</th>
+                            <th>Tên thiết bị</th>
+                            <th>Mô tả</th>
+                            <th>Tùy chọn</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="tbi : ${thietBiList}">
+                            <td th:text="${tbi.maTB}"></td>
+                            <td th:text="${tbi.tenTB}"></td>
+                            <td th:text="${tbi.moTaTB}"></td>
+                            <td style="white-space: nowrap">
+                                <a class="btn btn-primary btn-sm" th:onclick="'showEdit(\'' + ${tbi.maTB} + '\')'">Sửa</a>
+                                <a class="btn btn-primary btn-sm" th:onclick="'deleteThietBi(\'' + ${tbi.maTB} + '\')'">Xóa</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.container-fluid -->
             </div>
-            <!-- /.container-fluid -->
-        </div>
-            <div id="addDiv" class="w-90 mx-auto w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 fixed top-10 left-0 right-0 flex justify-center items-center" style="display: none;">
-                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <div class="flex justify-between items-center mb-4">
-                        <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl text-center dark:text-white mx-auto">THÊM THIẾT BỊ</h1>
+            <div id="addDiv" class="mx-auto rounded-lg shadow mt-5 bg-dark" th:style="${showForm} ? 'display: block;' : 'display: none;'">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="text-xl font-bold text-center mx-auto text-white">THÊM THIẾT BỊ</h2>
                         <button type="button" class="btn btn-sm btn-light" onclick="closeForm()">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <form class="space-y-4 md:space-y-6" method="POST" action="/admin/thiet-bi/add">
-                        <div>
-                            <label for="maTB" class="block mb-2 text-sm font-medium  dark:text-white">Mã thiết bị</label>
-                            <input type="text" name="maTB" id="maTB" class="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nhập mã thiết bị" required />
+                    <form class="space-y-4" method="POST" action="/admin/thiet-bi/add" th:object="${tb}">
+                        <div class="form-group">
+                            <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
+                            <input type="text" name="maTB" id="maTB" class="form-control" placeholder="Nhập mã thiết bị" th:field="${tb.maTB}">
+                            <p th:if="${#fields.hasErrors('maTB')}" class="text-danger" th:errors="${tb.maTB}"></p>
                         </div>
-                        <div>
-                            <label for="tenTB" class="block mb-2 text-sm font-medium  dark:text-white">Tên thiết bị</label>
-                            <input type="text" name="tenTB" id="tenTB" class="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nhập tên thiết bị" required />
+                        <div class="form-group">
+                            <label for="tenTB" class="block mb-2 text-sm font-medium text-white">Tên thiết bị</label>
+                            <input type="text" name="tenTB" id="tenTB" class="form-control" placeholder="Nhập tên thiết bị" th:field="${tb.tenTB}">
+                            <p th:if="${#fields.hasErrors('tenTB')}" class="text-danger" th:errors="${tb.tenTB}"></p>
                         </div>
-                        <div>
-                            <label for="moTaTB" class="block mb-2 text-sm font-medium  dark:text-white">Mô tả</label>
-                            <textarea name="moTaTB" id="moTaTB" class="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 h-32 resize-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nhập mô tả" required ></textarea>
+                        <div class="form-group">
+                            <label for="moTaTB" class="block mb-2 text-sm font-medium text-white">Mô tả</label>
+                            <textarea name="moTaTB" id="moTaTB" class="form-control" rows="3" placeholder="Nhập mô tả" th:field="${tb.moTaTB}"></textarea>
+                            <p th:if="${#fields.hasErrors('moTaTB')}" class="text-danger" th:errors="${tb.moTaTB}"></p>
                         </div>
-                        <div class="flex justify-center items-center p-4">
-                            <button type="reset" class="btn border dark:text-black rounded-md py-3 px-9 text-xl font-medium bg-white">Làm mới</button>
-                            <button type="submit" class="text-white bg-[#1725CA] rounded-md py-3 px-9 text-xl font-medium ml-4">Thêm</button>
+                        <div class="text-center">
+                            <button type="reset" class="btn btn-secondary btn-lg">Làm mới</button>
+                            <button type="submit" class="btn btn-primary btn-lg ml-3">Thêm</button>
                         </div>
                     </form>
                 </div>
             </div>
-            <div id="deleteDiv" class="w-90 mx-auto w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 fixed top-10 left-0 right-0 flex justify-center items-center" style="display: none;">
-                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <div class="flex justify-between items-center mb-4">
-                        <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl text-center dark:text-white mx-auto">XÓA NHIỀU THIẾT BỊ</h1>
+            <div id="editDiv" class="mx-auto rounded-lg shadow mt-5 bg-dark" th:style="${showFormEdit} ? 'display: block;' : 'display: none;'">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="text-xl font-bold text-center mx-auto text-white">SỬA THIẾT BỊ</h2>
+                        <button type="button" class="btn btn-sm btn-light" onclick="closeFormEdit()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form class="space-y-4" method="POST" action="/admin/thiet-bi/edit" th:object="${tb}">
+                        <div class="form-group">
+                            <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
+                            <input type="text" name="maTB" id="ma" class="form-control" placeholder="Nhập mã thiết bị" th:field="${tb.maTB}">
+                            <p th:if="${#fields.hasErrors('maTB')}" class="text-danger" th:errors="${tb.maTB}"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="tenTB" class="block mb-2 text-sm font-medium text-white">Tên thiết bị</label>
+                            <input type="text" name="tenTB" id="ten" class="form-control" placeholder="Nhập tên thiết bị" th:field="${tb.tenTB}">
+                            <p th:if="${#fields.hasErrors('tenTB')}" class="text-danger" th:errors="${tb.tenTB}"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="moTaTB" class="block mb-2 text-sm font-medium text-white">Mô tả</label>
+                            <textarea name="moTaTB" id="moTa" class="form-control" rows="3" placeholder="Nhập mô tả" th:field="${tb.moTaTB}"></textarea>
+                            <p th:if="${#fields.hasErrors('moTaTB')}" class="text-danger" th:errors="${tb.moTaTB}"></p>
+                        </div>
+                        <div class="text-center">
+                            <button type="reset" class="btn btn-secondary btn-lg">Làm mới</button>
+                            <button type="submit" class="btn btn-primary btn-lg ml-3">SỬA</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="deleteDiv" class="mx-auto rounded-lg shadow mt-5 bg-dark" style="width: 500px;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);display: none;">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="text-xl font-bold text-center mx-auto text-white">XÓA NHIỀU THIẾT BỊ</h2>
                         <button type="button" class="btn btn-sm btn-light" onclick="closeFormDelete()">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <form class="space-y-4 md:space-y-6">
-                        <div>
-                            <label for="maTB" class="block mb-2 text-sm font-medium  dark:text-white">Mã thiết bị</label>
-                            <input type="text" name="maTB" id="maTBi" class="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nhập mã thiết bị" required />
+                    <form class="space-y-4">
+                        <div class="form-group">
+                            <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
+                            <input type="text" name="maTB" id="maTBi" class="form-control" placeholder="Nhập mã thiết bị" required>
                         </div>
-                        <div class="flex justify-center items-center p-4">
-                            <button type="button" class="text-white bg-[#1725CA] rounded-md py-3 px-9 text-xl font-medium" onclick="deleteMultipleThietBi()">XÓA</button>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="deleteMultipleThietBi()">XÓA</button>
                         </div>
                     </form>
                 </div>
             </div>
+     </div>
+        <!-- End of Content Wrapper -->
     </div>
-    <!-- End of Content Wrapper -->
-</div>
 <!-- End of Page Wrapper -->
 
 <!-- Bootstrap core JavaScript-->
@@ -166,22 +171,17 @@
 <script src="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/read-excel-file.min.js"></script>
 
 <script>
-
     function showEdit(maTB) {
         $.ajax({
             type: "GET",
             url: "/admin/thiet-bi/edit",
             data: { maTB: maTB },
             success: function(response) {
-                document.getElementById("maTB").value = response.maTB;
-                document.getElementById("tenTB").value = response.tenTB;
-                document.getElementById("moTaTB").value = response.moTaTB;
-
-                document.querySelector("#addDiv h1").innerText = "SỬA THIẾT BỊ";
-                document.querySelector("#addDiv form").action = "/admin/thiet-bi/edit";
-                document.getElementById("maTB").readOnly = true;
-                document.querySelector("#addDiv button[type='submit']").innerText = "Sửa";
-                document.getElementById("addDiv").style.display = "block";
+                document.getElementById("ma").value = response.maTB;
+                document.getElementById("ten").value = response.tenTB;
+                document.getElementById("moTa").value = response.moTaTB;
+                document.getElementById("ma").readOnly = true;
+                document.getElementById("editDiv").style.display = "block";
             },
             error: function(xhr) {
                 console.log("Lỗi khi lấy dữ liệu thiết bị: " + xhr.responseText);
@@ -196,10 +196,7 @@
                 url: "/admin/thiet-bi/delete",
                 data: { maTB: maTB },
                 success: function(response) {
-                    console.log("Thiết bị đã được xóa thành công");
-                    document.getElementById("maTB").value = "";
-                    document.getElementById("tenTB").value = "";
-                    document.getElementById("moTaTB").value = "";
+                    alert("Xóa thiết bị thành công");
                     window.location.reload();
                 },
                 error: function(xhr) {
@@ -217,7 +214,7 @@
                 url: "/admin/thiet-bi/deleteMultiple",
                 data: { maTB: id },
                 success: function(response) {
-                    console.log("Thiết bị đã được xóa thành công");
+                    alert("Xóa thiết bị thành công");
                     document.getElementById("maTB").value = "";
                     window.location.reload();
                 },
@@ -239,10 +236,14 @@
         document.getElementById("maTB").value = "";
         document.getElementById("tenTB").value = "";
         document.getElementById("moTaTB").value = "";
-        document.querySelector("#addDiv h1").innerText = "THÊM THIẾT BỊ";
-        document.querySelector("#addDiv form").action = "/admin/thiet-bi/add";
-        document.getElementById("maTB").readOnly = false;
-        document.querySelector("#addDiv button[type='submit']").innerText = "Thêm";
+    }
+
+    function closeFormEdit() {
+        var form = document.getElementById('editDiv');
+        form.style.display = 'none';
+        document.getElementById("maTB").value = "";
+        document.getElementById("tenTB").value = "";
+        document.getElementById("moTaTB").value = "";
     }
 
     function openFormDelete() {
@@ -258,21 +259,14 @@
 
     $(document).ready(function() {
         $('#thietbiTable').DataTable();
-
         $("#file-input").on("change", (e) => {
             const file = e.target.files[0];
-
-
-
             readXlsxFile(file).then((rows) => {
                 rows.shift()
-
                 const isInvalid = rows.find(row => row.length > 3 || isNaN(row[0]) || (typeof row[1] !== 'string' && row[1].length <= 0) || (typeof row[2] !== 'string' && row[2].length <= 0))
-
                 if (isInvalid) {
                     return;
                 }
-
                 $.post("/admin/thiet-bi/excel", {
                     data: rows,
                 }, function(responseData) {
@@ -282,5 +276,4 @@
     });
 </script>
 </body>
-
 </html>
