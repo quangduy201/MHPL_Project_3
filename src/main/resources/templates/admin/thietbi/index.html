@@ -183,7 +183,7 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <h1 class="text-center my-4">Quản lý thiết bị</h1>
+                <h1 class="text-center my-4 h1">Quản lý thiết bị</h1>
                 <div class="d-flex justify-content-end align-items-center my-5">
                     <p class="btn btn-primary btn-sm mr-2 m-0" onclick="openForm()"> Thêm </p>
                     <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
@@ -380,8 +380,6 @@
 
         $("#file-input").on("change", (e) => {
             const file = e.target.files[0];
-
-
 
             readXlsxFile(file).then((rows) => {
                 rows.shift()
