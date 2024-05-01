@@ -71,7 +71,7 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <form class="space-y-4" method="POST" action="/admin/thiet-bi/add" th:object="${tb}">
+                    <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/thiet-bi/" th:object="${tb}">
                         <div class="form-group">
                             <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
                             <input type="text" name="maTB" id="maTB" class="form-control" placeholder="Nhập mã thiết bị" th:field="${tb.maTB}">
@@ -88,7 +88,7 @@
                             <p th:if="${#fields.hasErrors('moTaTB')}" class="text-danger" th:errors="${tb.moTaTB}"></p>
                         </div>
                         <div class="text-center">
-                            <button type="reset" class="btn btn-secondary btn-lg">Làm mới</button>
+                            <button type="button" class="btn btn-secondary btn-lg" onclick="resetFormAdd()">Làm mới</button>
                             <button type="submit" class="btn btn-primary btn-lg ml-3">Thêm</button>
                         </div>
                     </form>
@@ -102,7 +102,7 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <form class="space-y-4" method="POST" action="/admin/thiet-bi/edit" th:object="${tb}">
+                    <form class="space-y-4" id="editThietBiForm" method="POST" action="/admin/thiet-bi/edit" th:object="${tb}">
                         <div class="form-group">
                             <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
                             <input type="text" name="maTB" id="ma" class="form-control" placeholder="Nhập mã thiết bị" th:field="${tb.maTB}">
@@ -119,7 +119,7 @@
                             <p th:if="${#fields.hasErrors('moTaTB')}" class="text-danger" th:errors="${tb.moTaTB}"></p>
                         </div>
                         <div class="text-center">
-                            <button type="reset" class="btn btn-secondary btn-lg" onclick="resetForm()">Làm mới</button>
+                            <button type="button" class="btn btn-secondary btn-lg" onclick="resetForm()">Làm mới</button>
                             <button type="submit" class="btn btn-primary btn-lg ml-3">SỬA</button>
                         </div>
                     </form>
@@ -204,6 +204,23 @@
 
     function deleteMultipleThietBi() {
         var id = document.getElementById("maTBi").value;
+
+        if (id.trim() === "") {
+            alert("Vui lòng nhập mã thiết bị");
+            return;
+        }
+
+        if (isNaN(id)) {
+            alert("Vui lòng chỉ nhập số");
+            return;
+        }
+
+        if (id.length !== 1 || isNaN(parseInt(id))) {
+            alert("Vui lòng chỉ nhập một kí tự số");
+            return;
+        }
+
+        var id = document.getElementById("maTBi").value;
         if (confirm('Bạn có chắc chắn muốn xóa các thiết bị này?')) {
             $.ajax({
                 type: "GET",
@@ -229,14 +246,43 @@
     function closeForm() {
         var form = document.getElementById('addDiv');
         form.style.display = 'none';
+        document.getElementById("ma").value = "";
+        document.getElementById("ten").value = "";
+        document.getElementById("moTa").value = "";
         document.getElementById("maTB").value = "";
         document.getElementById("tenTB").value = "";
         document.getElementById("moTaTB").value = "";
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+        var form = document.getElementById("editThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
     }
 
     function closeFormEdit() {
         var form = document.getElementById('editDiv');
         form.style.display = 'none';
+        document.getElementById("ma").value = "";
+        document.getElementById("ten").value = "";
+        document.getElementById("moTa").value = "";
+        document.getElementById("maTB").value = "";
+        document.getElementById("tenTB").value = "";
+        document.getElementById("moTaTB").value = "";
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+        var form = document.getElementById("editThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
     }
 
     function openFormDelete() {
@@ -251,10 +297,18 @@
     }
 
     function resetForm() {
+        document.getElementById("ten").value = "";
+        document.getElementById("moTa").value = "";
         var currentValue = document.getElementById("ma").value;
         setTimeout(function() {
             document.getElementById("ma").value = currentValue;
         }, 0);
+    }
+
+    function resetFormAdd() {
+        document.getElementById("maTB").value = "";
+        document.getElementById("tenTB").value = "";
+        document.getElementById("moTaTB").value = "";
     }
 
     $(document).ready(function() {

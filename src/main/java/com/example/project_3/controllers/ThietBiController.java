@@ -3,6 +3,7 @@ package com.example.project_3.controllers;
 import com.example.project_3.models.ThietBi;
 import com.example.project_3.payloads.requests.ThietBiRequest;
 import com.example.project_3.services.ThietBiService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -110,10 +111,11 @@ public class ThietBiController {
         return "redirect:/admin/thiet-bi";
     }
 
-    @PostMapping("/add")
+    @PostMapping({"/", ""})
     public String addThietBi(@Valid @ModelAttribute("tb") ThietBiRequest tb,
                              BindingResult result,
-                             Model model) {
+                             Model model,
+                             HttpServletRequest request) {
         try {
             if (result.hasErrors()) {
                 addThietBiListToModel(model);
