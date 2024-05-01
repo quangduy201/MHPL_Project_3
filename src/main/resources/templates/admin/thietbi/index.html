@@ -299,6 +299,16 @@
     function resetForm() {
         document.getElementById("ten").value = "";
         document.getElementById("moTa").value = "";
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+        var form = document.getElementById("editThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
         var currentValue = document.getElementById("ma").value;
         setTimeout(function() {
             document.getElementById("ma").value = currentValue;
@@ -309,6 +319,16 @@
         document.getElementById("maTB").value = "";
         document.getElementById("tenTB").value = "";
         document.getElementById("moTaTB").value = "";
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+        var form = document.getElementById("editThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
     }
 
     $(document).ready(function() {
