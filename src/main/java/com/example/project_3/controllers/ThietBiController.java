@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -23,10 +24,9 @@ public class ThietBiController {
 
     @GetMapping({"", "/"})
     public String showAllThietBi(Model model) {
-        List<ThietBi> thietBiList = thietBiService.getAllThietBi();
-        model.addAttribute("thietBiList", thietBiList);
-        model.addAttribute("showForm", false);
+        addThietBiListToModel(model);
         model.addAttribute("tb", new ThietBiRequest());
+        model.addAttribute("showForm", false);
         return "/admin/thietbi/index";
     }
 
@@ -53,20 +53,17 @@ public class ThietBiController {
                                 @Valid @ModelAttribute("tb") ThietBiRequest tb,
                                 BindingResult result) {
         try {
-
             if (result.hasErrors()) {
-                List<ThietBi> thietBiList = thietBiService.getAllThietBi();
-                model.addAttribute("thietBiList", thietBiList);
+                addThietBiListToModel(model);
                 model.addAttribute("showFormEdit", true);
                 return "/admin/thietbi/index";
             }
             Long id = Long.parseLong(maTB);
             ThietBi thietbi = thietBiService.getThietBiById(id);
-            model.addAttribute("showFormEdit", false);
             thietbi.setTenTB(tb.getTenTB());
             thietbi.setMoTaTB(tb.getMoTaTB());
-
             thietBiService.saveThietBi(thietbi);
+            model.addAttribute("showFormEdit", false);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -86,7 +83,7 @@ public class ThietBiController {
         return "redirect:/admin/thiet-bi";
     }
 
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public String deleteThietBi(@RequestParam String maTB) {
         try {
             Long id = Long.parseLong(maTB);
@@ -97,7 +94,7 @@ public class ThietBiController {
         return "redirect:/admin/thiet-bi";
     }
 
-    @GetMapping("/deleteMultiple")
+    @DeleteMapping("/deleteMultiple")
     public String deleteMultipleThietBi(@RequestParam String maTB) {
         try {
             Long id = Long.parseLong(maTB);
@@ -118,12 +115,15 @@ public class ThietBiController {
                              BindingResult result,
                              Model model) {
         try {
-            if (result.hasErrors() || existsByMaTB(tb.getMaTB().toString())) {
-                if (existsByMaTB(tb.getMaTB().toString())) {
-                    result.rejectValue("maTB", "error.tb", "Mã thiết bị đã tồn tại");
-                }
-                List<ThietBi> thietBiList = thietBiService.getAllThietBi();
-                model.addAttribute("thietBiList", thietBiList);
+            if (result.hasErrors()) {
+                addThietBiListToModel(model);
+                model.addAttribute("showForm", true);
+                return "/admin/thietbi/index";
+            }
+
+            if (existsByMaTB(tb.getMaTB().toString())) {
+                result.rejectValue("maTB", "error.tb", "Mã thiết bị đã tồn tại");
+                addThietBiListToModel(model);
                 model.addAttribute("showForm", true);
                 return "/admin/thietbi/index";
             }
@@ -131,7 +131,6 @@ public class ThietBiController {
             thietBi.setMaTB(tb.getMaTB());
             thietBi.setTenTB(tb.getTenTB());
             thietBi.setMoTaTB(tb.getMoTaTB());
-
             thietBiService.saveThietBi(thietBi);
             model.addAttribute("showForm", false);
         } catch (Exception e) {
@@ -148,5 +147,10 @@ public class ThietBiController {
             }
         }
         return false;
+    }
+
+    private void addThietBiListToModel(Model model) {
+        List<ThietBi> thietBiList = thietBiService.getAllThietBi();
+        model.addAttribute("thietBiList", thietBiList);
     }
 }
