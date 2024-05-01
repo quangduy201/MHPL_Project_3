@@ -2,9 +2,6 @@
 
 ## 1. Chức năng 1: Quản lý thành viên
 ### Vy - Dũng - Duy
-* GUI, DAL, BLL
-  * `Sequence Diagram`
-  * `Chụp màn hình các file code và GUI`
 
 #### 1.1 Hiển thị danh sách
 #### 1.2 Thêm mới thông tin (thủ công / excel)
@@ -16,9 +13,6 @@
 
 ## 2. Chức năng 2: Quản lý thiết bị
 ### Hưng - An - Giàu
-* GUI, DAL, BLL
-  * `Sequence Diagram`
-  * `Chụp màn hình các file code và GUI`
 
 #### 2.1 Hiển thị danh sách
 #### 2.2 Thêm mới thông tin thiết bị (thủ công / excel)
@@ -27,9 +21,6 @@
 
 ## 3. Chức năng 3: Xử lý vi phạm
 ### Hưng - An - Giàu
-* GUI, DAL, BLL
-  * `Sequence Diagram`
-  * `Chụp màn hình các file code và GUI`
 
 #### 3.1 Hiển thị danh sách
 #### 3.2 Thêm mới thông tin xử lý vi phạm
@@ -38,9 +29,6 @@
 
 ## 4. Chức năng 4: Thống kê
 ### Hưng - An - Giàu
-* GUI, DAL, BLL
-  * `Sequence Diagram`
-  * `Chụp màn hình các file code và GUI`
 
 #### 4.1 Số lượng thành viên vào khu học tập theo: thời gian, khoa, ngành.
 #### 4.2 Thiết bị đã được mượn theo thời gian, tên thiết bị
@@ -51,9 +39,6 @@
 
 ## 5. Chức năng 5: Đăng kí thành viên
 ### Hiếu - Hoa - Hoàng
-* GUI, DAL, BLL
-  * `Sequence Diagram`
-  * `Chụp màn hình các file code và GUI`
 
 #### 5.1 Đăng kí tài khoản thành viên
 #### 5.2 Đăng nhập thành viên
@@ -66,9 +51,6 @@
 
 ## 6. Chức năng 6: Đặt chỗ mượn thiết bị phía thành viên
 ### Vy - Dũng - Duy
-* GUI, DAL, BLL
-  * `Sequence Diagram`
-  * `Chụp màn hình các file code và GUI`
 
 #### 6.1 Tìm kiếm thiết bị theo tên
 #### 6.2 Chọn đặt chỗ mượn thiết bị
