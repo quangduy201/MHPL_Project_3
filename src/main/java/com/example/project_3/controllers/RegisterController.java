@@ -31,6 +31,8 @@ public class RegisterController {
     @PostMapping({"/", ""})
     public String registerSubmit(@Valid @ModelAttribute("tv") RegisterRequest tv, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
+            System.out.printf(tv.getMatKhau());
+            System.out.printf(tv.getXacNhanMatKhau());
             if (!tv.isXacNhanMatKhauValid()) {
                 bindingResult.rejectValue("xacNhanMatKhau", "password.mismatch", "Trường này không khớp với trường mật khẩu");
                 bindingResult.rejectValue("matKhau", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu");
@@ -53,5 +55,4 @@ public class RegisterController {
         // Logic to save the user to the database
         return "redirect:/user";
     }
-
 }
