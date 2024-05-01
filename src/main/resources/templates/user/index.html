@@ -10,7 +10,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
 
-    <title>Dashboard</title>
+    <title>User | Thông tin cá nhân</title>
 
     <!-- Custom fonts for this template-->
     <link
@@ -46,7 +46,7 @@
 
 <div id="wrapper" class="row">
     <!-- Sidebar -->
-    <div th:replace="~{fragments/admin_sidebar :: sidebar(active=1)}"></div>
+    <div th:replace="~{fragments/user_sidebar :: sidebar(active=1)}"></div>
 
     <!-- Content Wrapper -->
     <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
@@ -63,7 +63,9 @@
             <div class="container-fluid">
                 <!-- Member Statistic -->
                 <div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="background-color: #2ecc71;"></div>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="background-color: #2ecc71;">
+                        user
+                    </div>
                 </div>
             </div>
             <!-- /.container-fluid -->
@@ -72,31 +74,20 @@
     <!-- End of Content Wrapper -->
 </div>
 <!-- End of Page Wrapper -->
-<script src="/vendor/jquery/jquery.min.js"></script>
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../vendor/jquery/jquery.min.js"></script>
+<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Core plugin JavaScript-->
-<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Page level plugins -->
-<script src="/vendor/chart.js/Chart.min.js"></script>
+<script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <!-- Datatables -->
-<script src="/vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script src="../vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="/js/demo/chart-area-demo.js"></script>
-<script src="/js/demo/datatables-demo.js"></script>
+<script src="../js/demo/datatables-demo.js"></script>
 
-<!--Date Range Picker -->
-<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-<!-- SELECT -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-
-<script src="/js/utils.js" type="module"></script>
-<script src="/js/dashboard.js" type="module"></script>
+<script src="../js/utils.js" type="module"></script>
 </body>
 </html>

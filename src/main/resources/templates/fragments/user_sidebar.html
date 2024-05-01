@@ -28,7 +28,7 @@
 
         <!-- Nav Item - Utilities Collapse Menu -->
         <li class="nav-item" th:classappend="${active == 2 ? 'active' : ''}">
-            <a class="nav-link" href="/user/trangthaivipham/">
+            <a class="nav-link" href="/user/trang-thai-vi-pham/">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Trạng thái vi phạm</span></a
             >
@@ -36,9 +36,16 @@
 
         <!-- Nav Item - Charts -->
         <li class="nav-item" th:classappend="${active == 3 ? 'active' : ''}">
-            <a class="nav-link" href="/user/muonthietbi/">
+            <a class="nav-link" href="/user/muon-thiet-bi/">
                 <i class="fas fa-fw fa-chart-area"></i>
-                <span>Mượn thiết bị</span></a
+                <span>Các thiết bị đang mượn</span></a
+            >
+        </li>
+
+        <li class="nav-item" th:classappend="${active == 4 ? 'active' : ''}">
+            <a class="nav-link" href="/user/dat-cho-thiet-bi/">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Các thiết bị đang đặt chỗ</span></a
             >
         </li>
     </ul>

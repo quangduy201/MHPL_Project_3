@@ -6,23 +6,16 @@
         <!-- Topbar Navbar -->
         <ul class="navbar-nav admin-topbar_mobile-left">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Thông tin cá nhân</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Thông tin cá nhân
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
+                <a class="nav-link" href="/user">Thông tin cá nhân</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/user/trangthaivipham/">Trạng thái vi phạm</a>
+                <a class="nav-link" href="/user/trang-thai-vi-pham/">Trạng thái vi phạm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/user/muonthietbi/">Mượn thiết bị</a>
+                <a class="nav-link" href="/user/muon-thiet-bi/">Các thiết bị đang mượn</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/user/muon-thiet-bi/">Các thiết bị đang đặt chỗ</a>
             </li>
         </ul>
         <ul class="navbar-nav admin-topbar_mobile-right">
@@ -51,7 +44,16 @@
                 >
                     <a
                             class="dropdown-item"
-                            href="#"
+                            href="/user/thay-doi-mat-khau"
+                            data-toggle="modal"
+                            data-target="#logoutModal"
+                    >
+                        <i class="fas fa-sync-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Đổi mật khẩu
+                    </a>
+                    <a
+                            class="dropdown-item"
+                            href="/"
                             data-toggle="modal"
                             data-target="#logoutModal"
                     >

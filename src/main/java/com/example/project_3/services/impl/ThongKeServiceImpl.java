@@ -1,10 +1,7 @@
 package com.example.project_3.services.impl;
 
-import com.example.project_3.models.ThanhVien;
 import com.example.project_3.models.ThongTinSD;
 import com.example.project_3.models.XuLy;
-import com.example.project_3.repositories.ThanhVienRepository;
-import com.example.project_3.services.RegisterService;
 import com.example.project_3.services.ThongKeService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -12,7 +9,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
