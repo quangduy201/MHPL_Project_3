@@ -362,6 +362,16 @@
         document.getElementById("ht").value = "";
         document.getElementById("soTien").value = "";
         document.getElementById("trangThaiXL").checked = false;
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+        var form = document.getElementById("editThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
     }
 
     $(document).ready(function() {
