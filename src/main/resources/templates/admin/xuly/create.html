@@ -1,13 +1,83 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add handle violations</title>
+    <!-- Thêm CSS của Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Thêm CSS của Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
-<body>
+<body class="bg-gray-100 dark:bg-gray-900">
+<section class="bg-gray-50 dark:bg-gray-50 m-4">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto">
+        <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                    Thêm Xử Lý Vi Phạm
+                </h1>
+                <form class="space-y-4 md:space-y-6" method="POST" action="/admin/xu-ly/add">
+                    <div>
+                        <label for="maXL" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mã Xử Lý</label>
+                        <input type="text" name="maXL" id="maXL" readonly class="bg-gray-200 border border-gray-300 text-gray-600 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Mã Xử Lý" required />
+                    </div>
 
+                    <div>
+                        <label for="maTV" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mã Nhân Viên</label>
+                        <select name="maTV" id="maTV" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                            <option value="">Chọn Mã Nhân Viên</option>
+                            <option value="NV001">NV001</option>
+                            <option value="NV002">NV002</option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('maTV')}"
+                           th:errorclass="text-red-500"
+                           th:errors="${tv.maTV}"></p>
+                    </div>
+                    <div>
+                        <label for="hinhThucXL" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Hình Thức Xử Lý</label>
+                        <select name="hinhThucXL" id="hinhThucXL" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                            <option value="">Chọn Hình Thức Xử Lý</option>
+                            <option value="NV001">Khóa Thẻ 1 Tháng</option>
+                            <option value="NV002">Khóa Thẻ Vĩnh Viễn</option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('hinhThucXL')}"
+                           th:errorclass="text-red-500"
+                           th:errors="${tv.hinhThucXL}"></p>
+                    </div>
+                    <div>
+                        <label for="soTien" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Số Tiền</label>
+                        <input type="text" name="soTien" id="soTien" readonly class="bg-gray-200 border border-gray-300 text-gray-600 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0" required />
+                    </div>
+                    <div>
+                        <label for="ngayXL" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ngày Xử Lý</label>
+                        <input type="text" id="ngayXL" name="ngayXL" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 h-10 resize-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Chọn Thời Gian Xử Lý">
+                        <p th:if="${#fields.hasErrors('ngayXL')}"
+                           th:errorclass="text-red-500"
+                           th:errors="${tv.ngayXL}"></p>
+                    </div>
+                    <div>
+                        <label for="trangThaiXL" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Trạng Thái</label>
+                        <select name="trangThaiXL" id="trangThaiXL" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                            <option value="NV001">Chưa Xử Lý</option>
+                            <option value="NV002">Đã Xử Lý</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-center space-x-4">
+                        <button type="submit" class="text-white bg-blue-500 border border-[#1725CA] rounded-md py-3 px-9 text-xl font-medium">Đồng ý</button>
+                        <button type="button" class="text-[#1725CA] bg-white border border-[#1725CA] rounded-md py-3 px-9 text-xl font-medium">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    flatpickr("#ngayXuLy", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+    });
+</script>
 </html>
