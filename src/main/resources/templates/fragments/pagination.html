@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <title></title>
+</head>
+
+<body>
+    <div th:fragment="pagination(urlPrefix, totalPages, currentPage, pageSize, totalItems)" th:remove="tag">
+        <div class="text-center m-1">
+            <span>Hiển thị từ [[${(currentPage - 1) * pageSize + 1}]]
+                - [[${currentPage * pageSize < totalItems ? currentPage * pageSize : totalItems}]].
+                Tổng cộng [[${totalItems}]]</span>
+        </div>
+
+        <nav th:if="${totalPages > 1}"
+             class="pagination justify-content-center flex-wrap"
+             aria-label="..."
+        >
+            <ul class="pagination">
+                <!-- First page-->
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{${urlPrefix} + 'page=1'}">First</a>
+                </li>
+                <!-- Previous page -->
+                <li class="page-item" th:classappend="${currentPage == 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${currentPage - 1}}">Previous</a>
+                </li>
+
+                <!-- Render all pages if less than or equals to 10 pages -->
+                <th:block th:if="${totalPages <= 10}">
+                    <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item" th:classappend="${i == currentPage ? 'active' : ''}">
+                        <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${i}}">[[${i}]]</a>
+                    </li>
+                </th:block>
+
+                <!-- Render some pages if more than 10 pages -->
+                <th:block th:if="${totalPages > 10}">
+                    <th:block th:if="${currentPage <= 5 || currentPage >= totalPages - 4}">
+                        <li th:each="i: ${#numbers.sequence(1, 5)}"
+                            class="page-item" th:classappend="${i == currentPage ? 'active' : ''}"
+                        >
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${i}}">[[${i}]]</a>
+                        </li>
+
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=6'}">...</a>
+                        </li>
+
+                        <li th:each="i: ${#numbers.sequence(totalPages - 4, totalPages)}"
+                            class="page-item" th:classappend="${i == currentPage ? 'active' : ''}"
+                        >
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${i}}">[[${i}]]</a>
+                        </li>
+                    </th:block>
+
+                    <th:block th:if="${currentPage > 5 && currentPage < totalPages - 4}">
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${currentPage - 5}}">...</a>
+                        </li>
+
+                        <li th:each="i: ${#numbers.sequence(currentPage - 4, currentPage + 4)}"
+                            class="page-item" th:classappend="${i == currentPage ? 'active' : ''}"
+                        >
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${i}}">[[${i}]]</a>
+                        </li>
+
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${currentPage + 5}}">...</a>
+                        </li>
+                    </th:block>
+                </th:block>
+
+                <!-- Next page -->
+                <li class="page-item" th:classappend="${currentPage == totalPages ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${currentPage + 1}}">Next</a>
+                </li>
+                <!-- Last page -->
+                <li class="page-item" th:classappend="${currentPage == totalPages ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{${urlPrefix} + 'page=' + ${totalPages}}">Last</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

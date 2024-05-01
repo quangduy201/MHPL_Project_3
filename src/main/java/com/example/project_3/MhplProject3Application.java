@@ -2,7 +2,6 @@ package com.example.project_3;
 
 import com.example.project_3.utils.Resource;
 import com.example.project_3.utils.Settings;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 

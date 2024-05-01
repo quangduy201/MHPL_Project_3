@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -23,8 +24,9 @@ public class ThietBiController {
 
     @GetMapping({"", "/"})
     public String showAllThietBi(Model model) {
-        List<ThietBi> thietBiList = thietBiService.getAllThietBi();
-        model.addAttribute("thietBiList", thietBiList);
+        addThietBiListToModel(model);
+        model.addAttribute("tb", new ThietBiRequest());
+        model.addAttribute("showForm", false);
         return "/admin/thietbi/index";
     }
 
@@ -48,17 +50,20 @@ public class ThietBiController {
     @PostMapping("/edit")
     public String editThietBi(Model model,
                                 @RequestParam String maTB,
-                                @Valid @ModelAttribute("tbRequest") ThietBiRequest tbRequest,
+                                @Valid @ModelAttribute("tb") ThietBiRequest tb,
                                 BindingResult result) {
         try {
+            if (result.hasErrors()) {
+                addThietBiListToModel(model);
+                model.addAttribute("showFormEdit", true);
+                return "/admin/thietbi/index";
+            }
             Long id = Long.parseLong(maTB);
-            ThietBi tb = thietBiService.getThietBiById(id);
-            model.addAttribute("thietBi", tb);
-
-            tb.setTenTB(tbRequest.getTenTB());
-            tb.setMoTaTB(tbRequest.getMoTaTB());
-
-            thietBiService.saveThietBi(tb);
+            ThietBi thietbi = thietBiService.getThietBiById(id);
+            thietbi.setTenTB(tb.getTenTB());
+            thietbi.setMoTaTB(tb.getMoTaTB());
+            thietBiService.saveThietBi(thietbi);
+            model.addAttribute("showFormEdit", false);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -106,19 +111,46 @@ public class ThietBiController {
     }
 
     @PostMapping("/add")
-    public String addThietBi(@Valid @ModelAttribute("thietBiRequest") ThietBiRequest thietBiRequest,
-                             BindingResult result) {
+    public String addThietBi(@Valid @ModelAttribute("tb") ThietBiRequest tb,
+                             BindingResult result,
+                             Model model) {
         try {
+            if (result.hasErrors()) {
+                addThietBiListToModel(model);
+                model.addAttribute("showForm", true);
+                return "/admin/thietbi/index";
+            }
+
+            if (existsByMaTB(tb.getMaTB().toString())) {
+                result.rejectValue("maTB", "error.tb", "Mã thiết bị đã tồn tại");
+                addThietBiListToModel(model);
+                model.addAttribute("showForm", true);
+                return "/admin/thietbi/index";
+            }
             ThietBi thietBi = new ThietBi();
-            thietBi.setMaTB(thietBiRequest.getMaTB());
-            thietBi.setTenTB(thietBiRequest.getTenTB());
-            thietBi.setMoTaTB(thietBiRequest.getMoTaTB());
-
+            thietBi.setMaTB(tb.getMaTB());
+            thietBi.setTenTB(tb.getTenTB());
+            thietBi.setMoTaTB(tb.getMoTaTB());
             thietBiService.saveThietBi(thietBi);
-
+            model.addAttribute("showForm", false);
         } catch (Exception e) {
             System.out.println("Lỗi khi thêm thiết bị: " + e.getMessage());
         }
         return "redirect:/admin/thiet-bi";
+    }
+
+    private boolean existsByMaTB(String maTB) {
+        List<ThietBi> thietBiList = thietBiService.getAllThietBi();
+        for (ThietBi tb : thietBiList) {
+            if (tb.getMaTB().toString().equals(maTB)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addThietBiListToModel(Model model) {
+        List<ThietBi> thietBiList = thietBiService.getAllThietBi();
+        model.addAttribute("thietBiList", thietBiList);
     }
 }
