@@ -1,0 +1,70 @@
+<div th:fragment="topbar(userName, userAvatar)" th:remove="tag">
+    <!-- Topbar -->
+    <nav
+            class="navbar navbar-expand admin-topbar_mobile navbar-light bg-white topbar mb-4 static-top shadow d-flex justify-content-between"
+    >
+        <!-- Topbar Navbar -->
+        <ul class="navbar-nav admin-topbar_mobile-left">
+            <li class="nav-item active">
+                <a class="nav-link" href="/user">Thông tin cá nhân</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/user/trang-thai-vi-pham/">Trạng thái vi phạm</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/user/muon-thiet-bi/">Các thiết bị đang mượn</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/user/muon-thiet-bi/">Các thiết bị đang đặt chỗ</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav admin-topbar_mobile-right">
+            <li class="nav-item dropdown no-arrow">
+                <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="userDropdown"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                >
+                      <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                          [[${userName}]]
+                      </span>
+                    <img
+                            class="img-profile rounded-circle"
+                            th:src="${userAvatar}"
+                    />
+                </a>
+                <!-- Dropdown - User Information -->
+                <div
+                        class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                        aria-labelledby="userDropdown"
+                >
+                    <a
+                            class="dropdown-item"
+                            href="/user/thay-doi-mat-khau"
+                            data-toggle="modal"
+                            data-target="#logoutModal"
+                    >
+                        <i class="fas fa-sync-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Đổi mật khẩu
+                    </a>
+                    <a
+                            class="dropdown-item"
+                            href="/"
+                            data-toggle="modal"
+                            data-target="#logoutModal"
+                    >
+                        <i
+                                class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
+                        ></i>
+                        Logout
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <!-- End of Topbar -->
+</div>
