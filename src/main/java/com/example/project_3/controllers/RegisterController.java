@@ -53,6 +53,6 @@ public class RegisterController {
         registerService.register(thanhVien);
 
         // Logic to save the user to the database
-        return "redirect:/user";
+        return "redirect:/user/" + thanhVien.getMaTV();
     }
 }
