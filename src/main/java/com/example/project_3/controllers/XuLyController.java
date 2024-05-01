@@ -120,7 +120,7 @@ public class XuLyController {
         return "redirect:/admin/xu-ly";
     }
 
-    @PostMapping("/add")
+    @PostMapping({"", "/"})
     public String addXuLy(Model model, @Valid @ModelAttribute("xly") XuLyRequest xly, BindingResult result) {
         try {
             if (result.hasErrors()) {

@@ -47,16 +47,9 @@
     <div th:replace="~{fragments/admin_sidebar :: sidebar(active=2)}"></div>
 
     <!-- Content Wrapper -->
-    <div id="content-wrapper " class="col-10 d-flex flex-column flex-grow-1">
+    <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
         <!-- Main Content -->
         <div id="content">
-            <!-- Sidebar Toggle (Topbar) -->
-            <button
-                    id="sidebarToggleTop"
-                    class="btn btn-link d-md-none rounded-circle mr-3"
-            >
-                <i class="fa fa-bars"></i>
-            </button>
 
             <!-- Topbar -->
             <div th:replace="~{fragments/admin_topbar :: topbar(

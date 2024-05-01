@@ -19,13 +19,9 @@
     <!-- Sidebar -->
     <div th:replace="~{fragments/admin_sidebar :: sidebar(active=4)}"></div>
     <!-- Content Wrapper -->
-    <div id="content-wrapper " class="col-10 d-flex flex-column flex-grow-1">
+    <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
         <!-- Main Content -->
         <div id="content">
-            <!-- Sidebar Toggle (Topbar) -->
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                <i class="fa fa-bars"></i>
-            </button>
             <!-- Topbar -->
             <div th:replace="~{fragments/admin_topbar :: topbar(
                     userName='Nhóm 1',
@@ -80,7 +76,7 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/xu-ly/add" th:object="${xly}">
+                <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/xu-ly/" th:object="${xly}">
                     <div class="form-group">
                         <label for="thanhVien" class="block mb-2 text-sm font-medium text-white">Thành viên</label>
                         <select name="thanhVien" id="thanhVien" class="form-control"th:field="${xly.maTV}">

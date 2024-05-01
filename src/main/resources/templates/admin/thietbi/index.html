@@ -20,13 +20,9 @@
         <!-- Sidebar -->
         <div th:replace="~{fragments/admin_sidebar :: sidebar(active=3)}"></div>
         <!-- Content Wrapper -->
-        <div id="content-wrapper " class="col-10 d-flex flex-column flex-grow-1">
+        <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
         <!--         Main Content -->
             <div id="content">
-                <!-- Sidebar Toggle (Topbar) -->
-                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                    <i class="fa fa-bars"></i>
-                </button>
                 <!-- Topbar -->
                 <div th:replace="~{fragments/admin_topbar :: topbar(
                         userName='Nhóm 1',
@@ -75,7 +71,7 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/thiet-bi/add" th:object="${tb}">
+                    <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/thiet-bi/" th:object="${tb}">
                         <div class="form-group">
                             <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
                             <input type="text" name="maTB" id="maTB" class="form-control" placeholder="Nhập mã thiết bị" th:field="${tb.maTB}">
