@@ -115,6 +115,92 @@
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <script>
+    function showEdit(maTB) {
+        $.ajax({
+            type: "GET",
+            url: "/admin/xu-ly/edit",
+            data: { maTB: maTB },
+            success: function(response) {
+                document.getElementById("ma").value = response.maTB;
+                document.getElementById("ten").value = response.tenTB;
+                document.getElementById("moTa").value = response.moTaTB;
+                document.getElementById("ma").readOnly = true;
+                document.getElementById("editDiv").style.display = "block";
+            },
+            error: function(xhr) {
+                console.log("Lỗi khi lấy dữ liệu Xử Lý Vi Phạm: " + xhr.responseText);
+            }
+        });
+    }
+
+    function deleteThietBi(maTB) {
+        if (confirm('Bạn có chắc chắn muốn xóa Xử Lý Vi Phạm này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/admin/xu-ly/delete",
+                data: { maXL: maTB },
+                success: function(response) {
+                    alert("Xóa Xử Lý thành công");
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                    console.log("Lỗi khi xóa Xử Lý: " + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function deleteMultipleThietBi() {
+        var id = document.getElementById("maXLi").value;
+        if (confirm('Bạn có chắc chắn muốn xóa các Xử Lý này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/admin/xu-ly/deleteMultiple",
+                data: { maXL: id },
+                success: function(response) {
+                    alert("Xóa Xử LÝ thành công");
+                    document.getElementById("maXL").value = "";
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                    console.log("Lỗi khi xóa Xử Lý: " + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function openForm() {
+        var form = document.getElementById('addDiv');
+        form.style.display = 'block';
+    }
+
+    function closeForm() {
+        var form = document.getElementById('addDiv');
+        form.style.display = 'none';
+        document.getElementById("maTB").value = "";
+        document.getElementById("tenTB").value = "";
+        document.getElementById("moTaTB").value = "";
+    }
+
+    function closeFormEdit() {
+        var form = document.getElementById('editDiv');
+        form.style.display = 'none';
+        document.getElementById("maTB").value = "";
+        document.getElementById("tenTB").value = "";
+        document.getElementById("moTaTB").value = "";
+    }
+
+    function openFormDelete() {
+        var form = document.getElementById('deleteDiv');
+        form.style.display = 'block';
+    }
+
+    function closeFormDelete() {
+        var form = document.getElementById('deleteDiv');
+        form.style.display = 'none';
+        document.getElementById("maXLi").value = "";
+    }
+
     $(document).ready(function() {
         $('#xuLyTable').DataTable();
 
@@ -130,7 +216,7 @@
                     return;
                 }
 
-                $.post("/admin/thiet-bi/excel", {
+                $.post("/admin/xu-ly/excel", {
                     data: rows,
                 }, function(responseData) {
                 });
