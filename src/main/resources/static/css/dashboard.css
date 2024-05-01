@@ -28,3 +28,54 @@
     min-width: 200px;
     width: 100%;
 }
+#addDiv, #editDiv{
+    width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#collapseTwo {
+    z-index: 999 !important;
+}
+
+.sidebar .nav-item .nav-link {
+    display: flex;
+    width: 100%;
+    text-align: left;
+    padding: 1rem;
+    align-items: center;
+}
+
+.admin-topbar_mobile-left {
+    display: none;
+}
+
+.admin-topbar_mobile-left .nav-item .nav-link {
+    font-size: 0.8rem;
+    padding: 10px;
+    color: var(--primary) !important;
+}
+
+.admin-topbar_mobile {
+    justify-content: end !important;
+}
+
+@media screen and (max-width: 767px) {
+    .admin-sidebar {
+        display: none;
+    }
+
+    .admin-topbar_mobile {
+        padding: 4px;
+    }
+
+    .admin-topbar_mobile-left {
+        display: flex;
+    }
+
+    .admin-topbar_mobile {
+        justify-content: space-between !important;
+    }
+}
