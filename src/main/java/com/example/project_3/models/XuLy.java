@@ -19,6 +19,7 @@ import java.time.Instant;
 public class XuLy {
     @Id
     @Column(name = "MaXL", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maXL;
 
     @NotNull

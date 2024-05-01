@@ -4,67 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard | Quản lý xử lý vi phạm</title>
-
     <!-- Custom fonts for this template-->
-    <link
-            href="/vendor/fontawesome-free/css/all.min.css"
-            rel="stylesheet"
-            type="text/css"
-    />
-    <link
-            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-            rel="stylesheet"
-    />
-    <link
-            href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-            rel="stylesheet"
-    />
-    <link
-            href="/vendor/datatables/dataTables.bootstrap4.min.css"
-            rel="stylesheet"
-    />
-    <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous"
-            rel="stylesheet"
-    />
-
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet"/>
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" rel="stylesheet"/>
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet" />
     <link href="/css/dashboard.css" rel="stylesheet" />
 </head>
-
 <body id="page-top">
-
 <div id="wrapper" class="row">
     <!-- Sidebar -->
     <div th:replace="~{fragments/admin_sidebar :: sidebar(active=4)}"></div>
-
     <!-- Content Wrapper -->
     <div id="content-wrapper " class="col-10 d-flex flex-column flex-grow-1">
         <!-- Main Content -->
         <div id="content">
             <!-- Sidebar Toggle (Topbar) -->
-            <button
-                    id="sidebarToggleTop"
-                    class="btn btn-link d-md-none rounded-circle mr-3"
-            >
+            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                 <i class="fa fa-bars"></i>
             </button>
-
             <!-- Topbar -->
             <div th:replace="~{fragments/admin_topbar :: topbar(
                     userName='Nhóm 1',
                     userAvatar='/media/images/poodle.jpg'
                  )}">
             </div>
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <h1 class="text-center my-4">Quản lý xử lý vi phạm</h1>
                 <div class="d-flex justify-content-end align-items-center my-5">
-                    <p class="btn btn-primary btn-sm mr-2 m-0"> Thêm </p>
+                    <p class="btn btn-primary btn-sm mr-2 m-0" onclick="openForm()"> Thêm </p>
                     <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
-                    <p class="btn text-white btn-sm  m-0 bg-danger"> Xóa nhiều dòng </p>
                     <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
                 </div>
                 <table id="xuLyTable" class="table">
@@ -90,11 +63,8 @@
                         <td th:text="${xl.ngayXL}"></td>
                         <td th:text="${xl.trangThaiXL} ? 'Đã xử lý' : 'Đang xử lý'"></td>
                         <td style="white-space: nowrap">
-                            <a class="btn btn-primary btn-sm"
-                               th:href="@{/templates/admin/xuly/edit(maTB=${xl.maXL})}">Sửa</a>
-                            <a class="btn btn-primary btn-sm"
-                               th:href="@{/templates/admin/xuly/delete(maTB=${xl.maXL})}"
-                               onclick="return confirm('Bạn có chắc chắn muốn xóa xử lý này?')">Xóa</a>
+                            <a class="btn btn-primary btn-sm" th:onclick="'showEdit(\'' + ${xl.maXL} + '\')'">Sửa</a>
+                            <a class="btn btn-danger btn-sm" th:onclick="'deleteViPham(\'' + ${xl.maXL} + '\')'">Xóa</a>
                         </td>
                     </tr>
                     </tbody>
@@ -102,75 +72,246 @@
             </div>
             <!-- /.container-fluid -->
         </div>
+        <div id="addDiv" class="rounded-lg shadow bg-dark" th:style="${showForm} ? 'display: block;' : 'display: none;'">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-xl font-bold text-center mx-auto text-white">THÊM XỬ LÝ</h2>
+                    <button type="button" class="btn btn-sm btn-light" onclick="closeForm()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/xu-ly/add" th:object="${xly}">
+                    <div class="form-group">
+                        <label for="thanhVien" class="block mb-2 text-sm font-medium text-white">Thành viên</label>
+                        <select name="thanhVien" id="thanhVien" class="form-control"th:field="${xly.maTV}">
+                            <option value="" >Chọn thành viên</option>
+                            <option th:each="thanhVien : ${thanhVienList.content}" th:value="${thanhVien.maTV}" th:text="${thanhVien.maTV + ' - ' + thanhVien.hoTen}"></option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('maTV')}" class="text-danger" th:errors="${xly.maTV}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="ht" class="block mb-2 text-sm font-medium text-white">Hình thức</label>
+                        <select name="ht" id="ht" class="form-control" onchange="initTienBoiThuong(this)"th:field="${xly.hinhThucXL}">
+                            <option value="" >Chọn hình thức xử lý</option>
+                            <option th:each="ht : ${htList}" th:value="${ht}" th:text="${ht}"></option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('hinhThucXL')}" class="text-danger" th:errors="${xly.hinhThucXL}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="soTien" class="block mb-2 text-sm font-medium text-white">Tiền bồi thường</label>
+                        <input type="text" name="soTien" id="soTien" class="form-control" placeholder="Nhập tiền bồi thường" th:field="${xly.soTien}">
+                        <p th:if="${#fields.hasErrors('soTien')}" class="text-danger" th:errors="${xly.soTien}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="ngayXL" class="block mb-2 text-sm font-medium text-white">Thời gian</label>
+                        <input type="datetime-local" name="ngayXL" id="ngayXL" class="form-control" onchange="validateDateTime()" th:field="${xly.ngayXL}">
+                        <p th:if="${#fields.hasErrors('ngayXL')}" class="text-danger" th:errors="${xly.ngayXL}"></p>
+                    </div>
+                    <div class="form-group">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="trangThaiXL" name="trangThaiXL" class="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out" th:checked="${xly.trangThaiXL}" th:value="${xly.trangThaiXL}" th:field="${xly.trangThaiXL}">
+                            <label th:if="${xly.trangThaiXL}" for="trangThaiXL" class="ml-2 text-sm text-white">Đã xử lý</label>
+                            <label th:unless="${xly.trangThaiXL}" for="trangThaiXL" class="ml-2 text-sm text-white">Đang xử lý</label>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary btn-lg" onclick="resetFormAdd()">Làm mới</button>
+                        <button type="submit" class="btn btn-primary btn-lg ml-3">Thêm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="editDiv" class="rounded-lg shadow bg-dark" th:style="${showFormEdit} ? 'display: block;' : 'display: none;'">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-xl font-bold text-center mx-auto text-white">SỬA XỬ LÝ</h2>
+                    <button type="button" class="btn btn-sm btn-light" onclick="closeFormEdit()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="editThietBiForm" class="space-y-4" method="POST" action="/admin/xu-ly/edit" th:object="${xly}">
+                    <div class="form-group">
+                        <label for="maXL" class="block mb-2 text-sm font-medium text-white">Mã xử lý</label>
+                        <input type="text" name="maXL" id="maXL" class="form-control" readonly th:value="${xly.maXL}" th:field="${xly.maXL}">
+                    </div>
+                    <div class="form-group">
+                        <label for="thanhVien" class="block mb-2 text-sm font-medium text-white">Thành viên</label>
+                        <select name="thanhVien" id="tVien" class="form-control"th:field="${xly.maTV}">
+                            <option value="" >Chọn thành viên</option>
+                            <option th:each="thanhVien : ${thanhVienList.content}" th:value="${thanhVien.maTV}" th:text="${thanhVien.maTV + ' - ' + thanhVien.hoTen}"></option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('maTV')}" class="text-danger" th:errors="${xly.maTV}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="ht" class="block mb-2 text-sm font-medium text-white">Hình thức</label>
+                        <select name="ht" id="hthuc" class="form-control" onchange="initTienBoiThuong(this)"th:value="${xly.hinhThucXL}" th:field="${xly.hinhThucXL}">
+                            <option value="" >Chọn hình thức xử lý</option>
+                            <option th:each="ht : ${htList}" th:value="${ht}" th:text="${ht}"></option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('hinhThucXL')}" class="text-danger" th:errors="${xly.hinhThucXL}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="soTien" class="block mb-2 text-sm font-medium text-white">Tiền bồi thường</label>
+                        <input type="text" name="soTien" id="sTien" class="form-control" placeholder="Nhập tiền bồi thường" th:field="${xly.soTien}">
+                        <p th:if="${#fields.hasErrors('soTien')}" class="text-danger" th:errors="${xly.soTien}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="ngayXL" class="block mb-2 text-sm font-medium text-white">Thời gian</label>
+                        <input type="datetime-local" name="ngayXL" id="ngayXLy" class="form-control" onchange="validateDateTime()" th:value="${ngayXL}" />
+                        <p th:if="${#fields.hasErrors('ngayXL')}" class="text-danger" th:errors="${xly.ngayXL}"></p>
+                    </div>
+                    <div class="form-group">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="trangThaiXLy" name="trangThaiXL" class="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out" th:checked="${xly.trangThaiXL}" th:value="${xly.trangThaiXL}" th:field="${xly.trangThaiXL}">
+                            <label th:if="${xly.trangThaiXL}" for="trangThaiXLy" class="ml-2 text-sm text-white">Đã xử lý</label>
+                            <label th:unless="${xly.trangThaiXL}" for="trangThaiXLy" class="ml-2 text-sm text-white">Đang xử lý</label>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">SỬA</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
-    <!-- End of Content Wrapper -->
+    <!--     End of Content Wrapper-->
+
 </div>
 <!-- End of Page Wrapper -->
-
 <!-- Bootstrap core JavaScript-->
 <script src="/vendor/jquery/jquery.min.js"></script>
 <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 <!-- Core plugin JavaScript-->
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
 <!-- Datatables -->
 <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
 <!-- Core plugin JavaScript-->
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+</body>
+</html>
+
 
 <script>
-    function showEdit(maTB) {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = String(now.getMonth() + 1).padStart(2, '0');
+    var day = String(now.getDate()).padStart(2, '0');
+    var hours = String(now.getHours()).padStart(2, '0');
+    var minutes = String(now.getMinutes()).padStart(2, '0');
+    var formattedNow = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+    document.getElementById("ngayXL").value = formattedNow;
+    function validateDateTime() {
+        var thoiGianInput = document.getElementById("ngayXL");
+        var selectedDateTime = new Date(thoiGianInput.value);
+        var now = new Date();
+        if (selectedDateTime > now) {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = String(now.getMonth() + 1).padStart(2, '0');
+            var day = String(now.getDate()).padStart(2, '0');
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var formattedNow = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+            ngayXL.value = formattedNow;
+        }
+    }
+
+    window.onload = function() {
+        initTienBoiThuong();
+    };
+
+    function initTienBoiThuong(selectElement) {
+        var selectedOption, soTien;
+        var htSelect = document.getElementById("ht");
+        var hthucSelect = document.getElementById("hthuc");
+        if (htSelect && htSelect.value !== "") {
+            selectedOption = htSelect.value;
+            soTien = document.getElementById("soTien");
+        } else if (hthucSelect && hthucSelect.value !== "") {
+            selectedOption = hthucSelect.value;
+            soTien = document.getElementById("sTien");
+        }
+
+        switch (selectedOption) {
+            case "Chọn hình thức xử lý":
+            case "Khóa thẻ 1 tháng":
+            case "Khóa thẻ 2 tháng":
+            case "Khóa thẻ 3 tháng":
+                soTien.value = "0";
+                break;
+            case "Bồi thường mất tài sản":
+            case "Khóa thẻ 1 tháng và bồi thường":
+                var previousSoTien = soTien.value;
+                if (previousSoTien === null || previousSoTien === "0") {
+                    soTien.value = "";
+                }else {
+                    soTien.value = previousSoTien;
+                }
+                soTien.disabled = false;
+                break;
+        }
+    }
+
+    var trangThaiCheckbox = document.getElementById("trangThaiXL");
+    var trangThaiLabel = document.querySelector("label[for='trangThaiXL']");
+    trangThaiCheckbox.addEventListener("change", function() {
+        if (this.checked) {
+            trangThaiLabel.textContent = "Đã xử lý";
+        } else {
+            trangThaiLabel.textContent = "Đang xử lý";
+        }
+    });
+
+    var trangThaiCheckbox2 = document.getElementById("trangThaiXLy");
+    var trangThaiLabel2 = document.querySelector("label[for='trangThaiXLy']");
+    trangThaiCheckbox2.addEventListener("change", function() {
+        if (this.checked) {
+            trangThaiLabel2.textContent = "Đã xử lý";
+        } else {
+            trangThaiLabel2.textContent = "Đang xử lý";
+        }
+    });
+
+    function showEdit(maXL) {
         $.ajax({
             type: "GET",
             url: "/admin/xu-ly/edit",
-            data: { maTB: maTB },
+            data: { maXL: maXL },
             success: function(response) {
-                document.getElementById("ma").value = response.maTB;
-                document.getElementById("ten").value = response.tenTB;
-                document.getElementById("moTa").value = response.moTaTB;
-                document.getElementById("ma").readOnly = true;
+                document.getElementById("maXL").value = response.maXL;
+                document.getElementById("tVien").value = response.maTV;
+                document.getElementById("hthuc").value = response.hinhThucXL;
+                document.getElementById("sTien").value = response.soTien != "null" ? (response.soTien ? response.soTien : "0") : "0";
+                document.getElementById("ngayXLy").value = response.ngayXL;
+                if (response.trangThaiXL == true) {
+                    document.getElementById("trangThaiXLy").checked = true;
+                    document.querySelector("label[for='trangThaiXLy']").textContent = "Đã xử lý";
+                } else {
+                    document.getElementById("trangThaiXLy").checked = false;
+                    document.querySelector("label[for='trangThaiXLy']").textContent = "Đang xử lý";
+                }
                 document.getElementById("editDiv").style.display = "block";
             },
             error: function(xhr) {
-                console.log("Lỗi khi lấy dữ liệu Xử Lý Vi Phạm: " + xhr.responseText);
+                console.log("Lỗi khi lấy dữ liệu: " + xhr.responseText);
             }
         });
     }
 
-    function deleteThietBi(maTB) {
-        if (confirm('Bạn có chắc chắn muốn xóa Xử Lý Vi Phạm này?')) {
+    function deleteViPham(maXL) {
+        if (confirm('Bạn có chắc chắn muốn xóa vi phạm này?')) {
             $.ajax({
                 type: "GET",
                 url: "/admin/xu-ly/delete",
-                data: { maXL: maTB },
+                data: { maXL: maXL },
                 success: function(response) {
-                    alert("Xóa Xử Lý thành công");
+                    alert("Xóa vi phạm thành công");
                     window.location.reload();
                 },
                 error: function(xhr) {
-                    console.log("Lỗi khi xóa Xử Lý: " + xhr.responseText);
-                }
-            });
-        }
-    }
-
-    function deleteMultipleThietBi() {
-        var id = document.getElementById("maXLi").value;
-        if (confirm('Bạn có chắc chắn muốn xóa các Xử Lý này?')) {
-            $.ajax({
-                type: "GET",
-                url: "/admin/xu-ly/deleteMultiple",
-                data: { maXL: id },
-                success: function(response) {
-                    alert("Xóa Xử LÝ thành công");
-                    document.getElementById("maXL").value = "";
-                    window.location.reload();
-                },
-                error: function(xhr) {
-                    console.log("Lỗi khi xóa Xử Lý: " + xhr.responseText);
+                    console.log("Lỗi khi xóa vi phạm: " + xhr.responseText);
                 }
             });
         }
@@ -179,51 +320,65 @@
     function openForm() {
         var form = document.getElementById('addDiv');
         form.style.display = 'block';
+        document.getElementById("thanhVien").value = "";
+        document.getElementById("ht").value = "";
+        document.getElementById("soTien").value = "";
+        document.getElementById("trangThaiXL").checked = false;
     }
 
     function closeForm() {
         var form = document.getElementById('addDiv');
         form.style.display = 'none';
-        document.getElementById("maTB").value = "";
-        document.getElementById("tenTB").value = "";
-        document.getElementById("moTaTB").value = "";
+        document.getElementById("thanhVien").value = "";
+        document.getElementById("ht").value = "";
+        document.getElementById("soTien").value = "";
+        document.getElementById("trangThaiXL").checked = false;
+        document.getElementById("addDiv").style.display = "none";
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+        var form = document.getElementById("editThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
     }
 
     function closeFormEdit() {
         var form = document.getElementById('editDiv');
         form.style.display = 'none';
-        document.getElementById("maTB").value = "";
-        document.getElementById("tenTB").value = "";
-        document.getElementById("moTaTB").value = "";
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+        var form = document.getElementById("editThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
     }
 
-    function openFormDelete() {
-        var form = document.getElementById('deleteDiv');
-        form.style.display = 'block';
-    }
-
-    function closeFormDelete() {
-        var form = document.getElementById('deleteDiv');
-        form.style.display = 'none';
-        document.getElementById("maXLi").value = "";
+    function resetFormAdd() {
+        document.getElementById("thanhVien").value = "";
+        document.getElementById("ht").value = "";
+        document.getElementById("soTien").value = "";
+        document.getElementById("trangThaiXL").checked = false;
     }
 
     $(document).ready(function() {
         $('#xuLyTable').DataTable();
-
         $("#file-input").on("change", (e) => {
             const file = e.target.files[0];
-
             readXlsxFile(file).then((rows) => {
                 rows.shift()
-
                 const isInvalid = rows.find(row => row.length > 6 || isNaN(row[0]) || isNaN(row[1]) || (typeof row[2] !== 'string' && row[2].length <= 0) || isNaN(row[3]) || (typeof row[4] !== 'string' && row[4].length <= 0) || isNaN(row[5]))
-
                 if (isInvalid) {
                     return;
                 }
-
-                $.post("/admin/xu-ly/excel", {
+                $.post("/admin/thiet-bi/excel", {
                     data: rows,
                 }, function(responseData) {
                 });
@@ -231,6 +386,3 @@
         })
     });
 </script>
-</body>
-
-</html>
