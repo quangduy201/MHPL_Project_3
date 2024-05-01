@@ -59,7 +59,7 @@
                             <td th:text="${tbi.moTaTB}"></td>
                             <td style="white-space: nowrap">
                                 <a class="btn btn-primary btn-sm" th:onclick="'showEdit(\'' + ${tbi.maTB} + '\')'">Sửa</a>
-                                <a class="btn btn-primary btn-sm" th:onclick="'deleteThietBi(\'' + ${tbi.maTB} + '\')'">Xóa</a>
+                                <a class="btn btn-danger btn-sm" th:onclick="'deleteThietBi(\'' + ${tbi.maTB} + '\')'">Xóa</a>
                             </td>
                         </tr>
                         </tbody>
@@ -67,7 +67,7 @@
                 </div>
                 <!-- /.container-fluid -->
             </div>
-            <div id="addDiv" class="mx-auto rounded-lg shadow mt-5 bg-dark" th:style="${showForm} ? 'display: block;' : 'display: none;'">
+            <div id="addDiv" class="rounded-lg shadow bg-dark" th:style="${showForm} ? 'display: block;' : 'display: none;'">
                 <div class="p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="text-xl font-bold text-center mx-auto text-white">THÊM THIẾT BỊ</h2>
@@ -98,7 +98,7 @@
                     </form>
                 </div>
             </div>
-            <div id="editDiv" class="mx-auto rounded-lg shadow mt-5 bg-dark" th:style="${showFormEdit} ? 'display: block;' : 'display: none;'">
+            <div id="editDiv" class="rounded-lg shadow bg-dark" th:style="${showFormEdit} ? 'display: block;' : 'display: none;'">
                 <div class="p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="text-xl font-bold text-center mx-auto text-white">SỬA THIẾT BỊ</h2>
@@ -123,7 +123,7 @@
                             <p th:if="${#fields.hasErrors('moTaTB')}" class="text-danger" th:errors="${tb.moTaTB}"></p>
                         </div>
                         <div class="text-center">
-                            <button type="reset" class="btn btn-secondary btn-lg">Làm mới</button>
+                            <button type="reset" class="btn btn-secondary btn-lg" onclick="resetForm()">Làm mới</button>
                             <button type="submit" class="btn btn-primary btn-lg ml-3">SỬA</button>
                         </div>
                     </form>
@@ -132,7 +132,7 @@
             <div id="deleteDiv" class="mx-auto rounded-lg shadow mt-5 bg-dark" style="width: 500px;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);display: none;">
                 <div class="p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="text-xl font-bold text-center mx-auto text-white">XÓA NHIỀU THIẾT BỊ</h2>
+                        <h4 class="text-xl font-bold text-center mx-auto text-white">XÓA NHIỀU THIẾT BỊ</h4>
                         <button type="button" class="btn btn-sm btn-light" onclick="closeFormDelete()">
                             <i class="fas fa-times"></i>
                         </button>
@@ -241,9 +241,6 @@
     function closeFormEdit() {
         var form = document.getElementById('editDiv');
         form.style.display = 'none';
-        document.getElementById("maTB").value = "";
-        document.getElementById("tenTB").value = "";
-        document.getElementById("moTaTB").value = "";
     }
 
     function openFormDelete() {
@@ -255,6 +252,13 @@
         var form = document.getElementById('deleteDiv');
         form.style.display = 'none';
         document.getElementById("maTBi").value = "";
+    }
+
+    function resetForm() {
+        var currentValue = document.getElementById("ma").value;
+        setTimeout(function() {
+            document.getElementById("ma").value = currentValue;
+        }, 0);
     }
 
     $(document).ready(function() {
