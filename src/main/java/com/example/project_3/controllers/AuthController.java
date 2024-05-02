@@ -56,7 +56,6 @@ public class AuthController {
         return "register/index";
     }
 
-
     @PostMapping({"/register", "/register/"})
     public String registerSubmit(@Valid @ModelAttribute("tv") RegisterRequest tv, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
