@@ -24,7 +24,7 @@ public class UserController {
         }
     }
 
-    @GetMapping({"/muon-tra-thiet-bi", "/muon-tra-thiet-bi/"})
+    @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
     public String muonThietBi(Model model, HttpSession session) {
         // TODO SOMETHING ELSE
         return "/user/muonthietbi/index";

@@ -79,7 +79,7 @@ public class AuthController {
         authService.register(thanhVien);
 
         // Logic to save the user to the database
-        return "redirect:/user/" + thanhVien.getMaTV();
+        return "redirect:/login/";
     }
 
     @GetMapping({"/", ""})

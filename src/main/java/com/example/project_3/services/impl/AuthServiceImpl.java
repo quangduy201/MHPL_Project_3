@@ -13,13 +13,8 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private ThanhVienRepository thanhVienRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
     public ThanhVien register(ThanhVien tv) {
-        String encodedPassword = passwordEncoder.encode(tv.getPassword());
-        tv.setPassword(encodedPassword);
         return thanhVienRepository.save(tv);
     }
 
@@ -30,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
             return null;
         }
 
-        if (!passwordEncoder.matches(password, tv.getPassword())) {
+        if (!tv.getPassword().equals(password)) {
             return null;
         }
 
