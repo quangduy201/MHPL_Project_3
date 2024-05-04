@@ -54,25 +54,118 @@
         <div id="content">
             <!-- Topbar -->
             <div th:replace="~{fragments/user_topbar :: topbar(
-                    userName='Nhóm 1',
-                    userAvatar='/media/images/poodle.jpg'
+                    userName = ${session.user.hoTen},
+                    userAvatar = '/media/images/user_default.png'
                  )}">
             </div>
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <!-- Member Statistic -->
-                <div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="background-color: #2ecc71;">
-                        user
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-8">
+                        <div class="d-flex align-items-center justify-content-center mb-4">
+                            <h1 class="h2 mb-0 text-gray-800 flex-shrink-0 align-self-center">
+                                Thông tin cá nhân
+                            </h1>
+                        </div>
+                        <form class="row g-3" method="POST" th:object="${tv}" action="/user/edit">
+                            <!-- Cột bên trái -->
+                            <div class="col-md-6" >
+                                <div class="mb-3">
+                                    <label for="maTV" style="font-size: 14px; color: #495057;">Mã thành viên</label>
+                                    <input type="text" disabled class="form-control" name="maTV" id="maTV" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.maTV}' >
+                                    <input type="hidden" name="maTV" th:value="${session.user.maTV}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nganh" style="font-size: 14px; color: #495057;">Ngành</label>
+                                    <input type="text" class="form-control" name = "nganh" id="nganh" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.nganh}'>
+                                    <p th:if="${#fields.hasErrors('nganh')}" class="text-danger" th:errors="${tv.nganh}"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="sdt" style="font-size: 14px; color: #495057;">Số điện thoại</label>
+                                    <input type="text" class="form-control" name = "sdt" id="sdt" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.sdt}'>
+                                    <p th:if="${#fields.hasErrors('sdt')}" class="text-danger" th:errors="${tv.sdt}"></p>
+                                </div>
+                            </div>
+
+                            <!-- Cột bên phải -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="hoTen" style="font-size: 14px; color: #495057;">Họ và tên</label>
+                                    <input type="text" class="form-control" name = "hoTen" id="hoTen" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.hoTen}'>
+                                    <p th:if="${#fields.hasErrors('hoTen')}" class="text-danger" th:errors="${tv.hoTen}"></p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="khoa" style="font-size: 14px; color: #495057;">Khoa</label>
+                                    <input type="text" class="form-control" name = "khoa" id="khoa" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${session.user.khoa}'>
+                                    <p th:if="${#fields.hasErrors('khoa')}" class="text-danger" th:errors="${tv.khoa}"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" style="font-size: 14px; color: #495057;">Email</label>
+                                    <input type="email" class="form-control" name = "email" id="email" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.email}'>
+                                    <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="${tv.email}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-4">
+                                <div class="d-flex justify-content-end" style="white-space: nowrap;">
+                                    <button id="changePasswordButton" class="btn btn-primary rounded-md py-3 px-9 text-xl font-medium" style="margin-right: 10px;">Đổi mật khẩu</button>
+                                    <button type="submit" class="btn btn-primary rounded-md py-3 px-9 text-xl font-medium" style="background-color: #1725CA;">Chỉnh sửa</button>
+                                </div>
+                            </div>
+
+                        </form>
+
                     </div>
+
                 </div>
             </div>
+
             <!-- /.container-fluid -->
         </div>
     </div>
     <!-- End of Content Wrapper -->
 </div>
+<!-- Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đổi mật khẩu</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center"> <!-- Sử dụng lớp 'text-center' để căn giữa nội dung -->
+                <!-- Form đổi mật khẩu -->
+                <form id="changePasswordForm" action="/user/thaydoimatkhau" method="POST" th:object="${tv}">
+                    <div class="form-group">
+                        <input type="hidden" name="maTV" th:value="${session.user.maTV}">
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="Mật khẩu hiện tại" required>
+                        <p th:if="${#fields.hasErrors('password')}" class="text-danger" th:errors="${tv.matKhau}"></p>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Mật khẩu mới" required>
+                        <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="${tv.email}"></p>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>
+                        <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="${tv.email}"></p>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary">Thay đổi mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+
 <!-- End of Page Wrapper -->
 <script src="../vendor/jquery/jquery.min.js"></script>
 <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -87,6 +180,17 @@
 <!-- Page level custom scripts -->
 <script src="../js/demo/datatables-demo.js"></script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var changePasswordButton = document.getElementById("changePasswordButton");
+        var changePasswordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+
+        changePasswordButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            changePasswordModal.show();
+        });
+    });
+</script>
 
 <script src="../js/utils.js" type="module"></script>
 </body>
