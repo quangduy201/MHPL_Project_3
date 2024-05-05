@@ -32,4 +32,18 @@ public class ThanhVienRequest {
     @NotBlank(message = "Email không được để trống.")
     @Email(message = "Email không hợp lệ.")
     private String email;
+
+    @NotBlank(message = "Mật khẩu không được để trống.")
+    private String matKhau;
+
+    @NotBlank(message = "Xác nhận mật khẩu không được để trống.")
+    private String xacNhanMatKhauMoi;
+
+    public boolean isXacNhanMatKhauCuValid(String matKhauCu) {
+        return matKhau != null && matKhau.equals(matKhauCu);
+    }
+
+    public boolean isXacNhanMatKhauMoiValid() {
+        return matKhau != null && matKhau.equals(xacNhanMatKhauMoi);
+    }
 }

@@ -74,8 +74,14 @@
                                th:errorclass="text-red-500"
                                th:errors="${tv.xacNhanMatKhau}"></p>
                         </div>
-                        <div class="flex items-center justify-end">
-                            <a href="/" class="text-sm font-medium text-[#1725CA] hover:underline dark:text-[#1725CA]">Về trang chủ</a>
+                        <div class="flex justify-between items-center">
+                            <div class="flex justify-between">
+                                <p class="text-white text-sm mr-2">Đã có tài khoản?</p>
+                                <a href="/login" class="text-sm font-medium text-[#1725CA] hover:underline dark:text-[#1725CA]"> Đăng nhập</a>
+                            </div>
+                            <div>
+                                <a href="/" class="text-sm font-medium text-[#1725CA] hover:underline dark:text-[#1725CA]">Về trang chủ</a>
+                            </div>
                         </div>
                         <div class="flex justify-center items-center">
                             <button type="submit" class="text-white bg-[#1725CA] rounded-md py-3 px-9 text-xl font-medium">Đăng ký</button>
