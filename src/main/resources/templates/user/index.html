@@ -69,12 +69,12 @@
                                 Thông tin cá nhân
                             </h1>
                         </div>
-                        <form class="row g-3" method="POST" th:object="${tv}" action="/user/edit">
+                        <form class="row g-3" method="POST" th:object="${tv}" action="/user/">
                             <!-- Cột bên trái -->
                             <div class="col-md-6" >
                                 <div class="mb-3">
                                     <label for="maTV" style="font-size: 14px; color: #495057;">Mã thành viên</label>
-                                    <input type="text" disabled class="form-control" name="maTV" id="maTV" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.maTV}' >
+                                    <input type="text" disabled class="form-control" name="maTV" id="maTV" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${session.user.maTV}' >
                                     <input type="hidden" name="maTV" th:value="${session.user.maTV}">
                                 </div>
                                 <div class="mb-3">
@@ -99,7 +99,7 @@
 
                                 <div class="mb-3">
                                     <label for="khoa" style="font-size: 14px; color: #495057;">Khoa</label>
-                                    <input type="text" class="form-control" name = "khoa" id="khoa" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${session.user.khoa}'>
+                                    <input type="text" class="form-control" name = "khoa" id="khoa" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.khoa}'>
                                     <p th:if="${#fields.hasErrors('khoa')}" class="text-danger" th:errors="${tv.khoa}"></p>
                                 </div>
                                 <div class="mb-3">
@@ -110,7 +110,7 @@
                             </div>
                             <div class="col-md-12 mt-4">
                                 <div class="d-flex justify-content-end" style="white-space: nowrap;">
-                                    <button id="changePasswordButton" class="btn btn-primary rounded-md py-3 px-9 text-xl font-medium" style="margin-right: 10px;">Đổi mật khẩu</button>
+                                    <button type="button" id="changePasswordButton" class="btn btn-primary rounded-md py-3 px-9 text-xl font-medium" style="margin-right: 10px;" onclick="showForm()">Đổi mật khẩu</button>
                                     <button type="submit" class="btn btn-primary rounded-md py-3 px-9 text-xl font-medium" style="background-color: #1725CA;">Chỉnh sửa</button>
                                 </div>
                             </div>
@@ -127,41 +127,34 @@
     </div>
     <!-- End of Content Wrapper -->
 </div>
-<!-- Modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Đổi mật khẩu</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center"> <!-- Sử dụng lớp 'text-center' để căn giữa nội dung -->
-                <!-- Form đổi mật khẩu -->
-                <form id="changePasswordForm" action="/user/thaydoimatkhau" method="POST" th:object="${tv}">
-                    <div class="form-group">
-                        <input type="hidden" name="maTV" th:value="${session.user.maTV}">
-                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="Mật khẩu hiện tại" required>
-                        <p th:if="${#fields.hasErrors('password')}" class="text-danger" th:errors="${tv.matKhau}"></p>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Mật khẩu mới" required>
-                        <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="${tv.email}"></p>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>
-                        <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="${tv.email}"></p>
-                    </div>
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary">Thay đổi mật khẩu</button>
-                    </div>
-                </form>
-            </div>
+
+<div id="changePasswordForm" class="rounded-lg shadow bg-dark" th:style="${showFormChangePassword} ? 'display: block;' : 'display: none;'">
+    <div class="p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-xl font-bold text-center mx-auto text-white">ĐỔI MẬT KHẨU</h2>
+            <button type="button" class="btn btn-sm btn-light" onclick="closeForm()">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+        <form class="space-y-4" action="/user/thaydoimatkhau" method="POST" th:object="${tvChangePassword}">
+            <div class="form-group">
+                <input type="password" class="form-control" id="matKhauCu" name="matKhauCu" placeholder="Mật khẩu hiện tại" th:value="${tvChangePassword.matKhauCu}">
+                <p th:if="${#fields.hasErrors('matKhauCu')}" class="text-danger" th:errors="*{matKhauCu}"></p>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="matKhauMoi" name="matKhauMoi" placeholder="Mật khẩu mới" th:value="${tvChangePassword.matKhauMoi}">
+                <p th:if="${#fields.hasErrors('matKhauMoi')}" class="text-danger" th:errors="*{matKhauMoi}"></p>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="xacNhanMatKhauMoi" name="xacNhanMatKhauMoi" placeholder="Xác nhận mật khẩu mới" th:value="${tvChangePassword.xacNhanMatKhauMoi}">
+                <p th:if="${#fields.hasErrors('xacNhanMatKhauMoi')}" class="text-danger" th:errors="*{xacNhanMatKhauMoi}"></p>
+            </div>
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary">Thay đổi mật khẩu</button>
+            </div>
+        </form>
     </div>
 </div>
-
 
 </body>
 </html>
@@ -181,15 +174,13 @@
 <script src="../js/demo/datatables-demo.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var changePasswordButton = document.getElementById("changePasswordButton");
-        var changePasswordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+    function showForm() {
+        document.getElementById("changePasswordForm").style.display = "block";
+    }
 
-        changePasswordButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            changePasswordModal.show();
-        });
-    });
+    function closeForm() {
+        document.getElementById("changePasswordForm").style.display = "none";
+    }
 </script>
 
 <script src="../js/utils.js" type="module"></script>

@@ -114,8 +114,7 @@ public class ThietBiController {
     @PostMapping({"/", ""})
     public String addThietBi(@Valid @ModelAttribute("tb") ThietBiRequest tb,
                              BindingResult result,
-                             Model model,
-                             HttpServletRequest request) {
+                             Model model) {
         try {
             if (result.hasErrors()) {
                 addThietBiListToModel(model);
