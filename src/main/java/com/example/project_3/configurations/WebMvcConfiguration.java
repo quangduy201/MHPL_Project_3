@@ -35,8 +35,4 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         return allowedOrigins.split("\\s*,+\\s*");
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

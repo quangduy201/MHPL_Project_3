@@ -67,6 +67,13 @@ public class AuthController {
             return "register/index";
         }
 
+        if (!tv.isXacNhanMatKhauValid()) {
+            bindingResult.rejectValue("xacNhanMatKhau", "password.mismatch", "Trường này không khớp với trường mật khẩu");
+            bindingResult.rejectValue("matKhau", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu");
+            model.addAttribute("tv", tv);
+            return "register/index";
+        }
+
         ThanhVien thanhVien = new ThanhVien();
         thanhVien.setMaTV(Long.valueOf(tv.getMaTV()));
         thanhVien.setHoTen(tv.getHoTen());
