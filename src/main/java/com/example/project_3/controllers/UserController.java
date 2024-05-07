@@ -2,11 +2,13 @@ package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.models.ThietBi;
+import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.QuenMatKhauRequest;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.ThanhVienService;
 import com.example.project_3.services.ThietBiService;
+import com.example.project_3.services.XuLyService;
 import jakarta.servlet.http.HttpSession;
 
 import jakarta.validation.Valid;
@@ -29,11 +31,15 @@ public class UserController {
 
     @Autowired
     private ThanhVienService thanhvienService;
-    private final ThietBiService thietbiService;
+    @Autowired
+    private ThietBiService thietbiService;
+    @Autowired
+    private XuLyService xulyService;
 
     @Autowired
     public UserController(ThietBiService thietBiService) {
         this.thietbiService = thietBiService;
+        this.xulyService = xulyService;
     }
 
     @GetMapping({"/", ""})
@@ -53,35 +59,18 @@ public class UserController {
         }
     }
 
-//    @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
-//    public String muonThietBi(Model model, HttpSession session, @RequestParam("maTV") Long maTV) {
-//        try {
-//            List<ThietBi> borrowedDevices = thietbiService.getAllThietBiDangMuonById(maTV);
-//
-//            if (!borrowedDevices.isEmpty()) {
-//                model.addAttribute("borrowedDevices", borrowedDevices);
-//            } else {
-//                model.addAttribute("borrowedDevices", Collections.emptyList());
-//            }
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//            return "redirect:/user";
-//        }
-//
-//        return "/user/muonthietbi/index";
-//    }
     @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
     public String muonThietBi(Model model, HttpSession session) {
         ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
 
-            Long maTV = tvResponse.getMaTV();
-            Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
+        Long maTV = tvResponse.getMaTV();
+        Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
+        if (thietBiDangMuon.isEmpty()) {
+            model.addAttribute("thietBiDangMuon", null);
+            model.addAttribute("message", "Không có thiết bị nào được mượn.");
+        } else {
             model.addAttribute("thietBiDangMuon", thietBiDangMuon);
-            for (ThietBi thietBi : thietBiDangMuon.getContent()) {
-            System.out.println("Mã thiết bị: " + thietBi.getMaTB());
-            System.out.println("Tên thiết bị: " + thietBi.getTenTB());
-            // In thêm thông tin khác của thiết bị nếu cần
-            System.out.println("-----------------------------");}
+        }
         return "/user/muonthietbi/index";
     }
 
@@ -92,8 +81,16 @@ public class UserController {
     }
 
     @GetMapping({"/trang-thai-vi-pham", "/trang-thai-vi-pham/"})
-    public String trangThaiViPham(Model model) {
+    public String trangThaiViPham(Model model, HttpSession session) {
         // TODO SOMETHING ELSE
+        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+        Long maTV = tvResponse.getMaTV();
+        Page<XuLy> viPham = xulyService.getViPhamByMaTV(maTV);
+        if (viPham.isEmpty()) {
+            model.addAttribute("vipham", null);
+        } else {
+            model.addAttribute("vipham", viPham);
+        }
         return "/user/trangthaivipham/index";
     }
 

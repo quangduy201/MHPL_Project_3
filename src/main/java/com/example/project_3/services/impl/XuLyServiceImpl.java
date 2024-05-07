@@ -38,8 +38,8 @@ public class XuLyServiceImpl implements XuLyService {
     }
 
     @Override
-    public Page<XuLy> getXuLyByMaTV(Long maTV) {
-        return xuLyRepository.findXyLyByMaTVEquals(maTV,null);
+    public Page<XuLy> getViPhamByMaTV(Long maTV) {
+        return xuLyRepository.findViPhamByMaTVEquals(maTV,null);
     }
     
 }
