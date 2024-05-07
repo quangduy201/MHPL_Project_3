@@ -2,13 +2,14 @@ package com.example.project_3.controllers;
 
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.ThietBi;
 import com.example.project_3.payloads.requests.QuenMatKhauRequest;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.ThanhVienService;
+import com.example.project_3.services.ThietBiService;
 import jakarta.servlet.http.HttpSession;
-<<<<<<< Updated upstream
-=======
+
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
->>>>>>> Stashed changes
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
     @Autowired
     private ThanhVienService thanhvienService;
+    private ThietBiService thietbiService;
     @GetMapping({"/", ""})
     public String index(Model model, HttpSession session) {
         if (session.getAttribute("user") != null) {
