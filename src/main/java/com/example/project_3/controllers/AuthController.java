@@ -1,6 +1,5 @@
 package com.example.project_3.controllers;
 
-
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.payloads.requests.LoginRequest;
 import com.example.project_3.payloads.requests.RegisterRequest;
@@ -20,11 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 public class AuthController {
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @GetMapping({  "/login/", "/login"})
-    public String index(Model model) {
+    @Autowired
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @GetMapping({"/login", "/login/"})
+    public String loginForm(Model model) {
 
         model.addAttribute("tv", new LoginRequest());
 
@@ -51,14 +54,14 @@ public class AuthController {
     }
 
     @GetMapping({"/register", "/register/"})
-    public String getForm(Model model) {
+    public String registerForm(Model model) {
         model.addAttribute("tv", new RegisterRequest());
         return "register/index";
     }
 
 
     @PostMapping({"/register", "/register/"})
-    public String registerSubmit(@Valid @ModelAttribute("tv") RegisterRequest tv, BindingResult bindingResult, Model model) {
+    public String register(@Valid @ModelAttribute("tv") RegisterRequest tv, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             if (!tv.isXacNhanMatKhauValid()) {
                 bindingResult.rejectValue("xacNhanMatKhau", "password.mismatch", "Trường này không khớp với trường mật khẩu");
@@ -97,28 +100,29 @@ public class AuthController {
     }
 
     @GetMapping({"/admin/login", "/admin/login/"})
-    public String loginAdmin(Model model, HttpSession session) {
-        if (session.getAttribute("user") != null) {
-            // Nếu có session với attribute là "user", chuyển hướng người dùng đến trang index
-            // TODO SOMETHING ELSE
-            return "/admin/index";
-        } else {
-            // Nếu không có session "user", chuyển hướng người dùng đến trang đăng nhập
-            // TODO SOMETHING ELSE
-            return "redirect:/admin/login";
-        }
+    public String adminLoginForm(Model model) {
+
+        model.addAttribute("tv", new LoginRequest());
+
+        return "admin/login/index";
     }
 
     @PostMapping({"/admin/login", "/admin/login/"})
-    public String loginAdminPost(Model model, HttpSession session) {
-        if (session.getAttribute("user") != null) {
-            // Nếu có session với attribute là "user", chuyển hướng người dùng đến trang index
-            // TODO SOMETHING ELSE
-            return "/admin/index";
+    public String adminLogin(@Valid @ModelAttribute("tv") LoginRequest tv, BindingResult bindingResult, Model model,
+                        HttpSession session) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("tv", tv);
+            return "admin/login/index";
+        }
+
+        ThanhVienResponse thanhVienResponse = authService.adminLogin(tv.getEmail(), tv.getPassword());
+
+        if (thanhVienResponse == null) {
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Email hoặc mật khẩu không đúng.");
+            return "admin/login/index";
         } else {
-            // Nếu không có session "user", chuyển hướng người dùng đến trang đăng nhập
-            // TODO SOMETHING ELSE
-            return "redirect:/admin/login";
+            session.setAttribute("admin", thanhVienResponse);
+            return "redirect:/admin";
         }
     }
 
@@ -138,5 +142,21 @@ public class AuthController {
             // TODO SOMETHING ELSE
             return "redirect:/quen-mat-khau/index";
         }
+    }
+
+    @GetMapping({"/logout", "/logout/"})
+    public String logout(Model model, HttpSession session) {
+        if (session.getAttribute("user") != null) {
+            session.removeAttribute("user");
+        }
+        return "redirect:/user";
+    }
+
+    @GetMapping({"/admin/logout", "/admin/logout/"})
+    public String adminLogout(Model model, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            session.removeAttribute("admin");
+        }
+        return "redirect:/admin";
     }
 }
