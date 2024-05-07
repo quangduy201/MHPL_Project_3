@@ -56,7 +56,6 @@ public class AuthController {
         return "register/index";
     }
 
-
     @PostMapping({"/register", "/register/"})
     public String registerSubmit(@Valid @ModelAttribute("tv") RegisterRequest tv, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
@@ -64,6 +63,13 @@ public class AuthController {
                 bindingResult.rejectValue("xacNhanMatKhau", "password.mismatch", "Trường này không khớp với trường mật khẩu");
                 bindingResult.rejectValue("matKhau", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu");
             }
+            model.addAttribute("tv", tv);
+            return "register/index";
+        }
+
+        if (!tv.isXacNhanMatKhauValid()) {
+            bindingResult.rejectValue("xacNhanMatKhau", "password.mismatch", "Trường này không khớp với trường mật khẩu");
+            bindingResult.rejectValue("matKhau", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu");
             model.addAttribute("tv", tv);
             return "register/index";
         }
