@@ -117,12 +117,16 @@
                         <td th:text="${tv.email}"></td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-primary btn-sm"
+                               th:href="@{/admin/thanhvien/edit(maTV=${tv.maTV})}"
+                            >Sửa</a>
+                            <a class="btn btn-primary btn-sm"
+                               th:href="@{/admin/thanhvien/delete(maTV=${tv.maTV})}"
                                th:classappend="${tv.maTV == 0 ? 'disabled' : ''}"
-                               th:href="@{/templates/admin/thanhvien/edit(maTV=${tv.maTV})}"
+                               th:href="@{/admin/thanhvien/edit(maTV=${tv.maTV})}"
                             >Sửa</a>
                             <a class="btn btn-primary btn-sm"
                                th:classappend="${tv.maTV == 0 ? 'disabled' : ''}"
-                               th:href="@{/templates/admin/thanhvien/delete(maTV=${tv.maTV})}"
+                               th:href="@{/admin/thanhvien/delete(maTV=${tv.maTV})}"
                                onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?')"
                             >Xóa</a>
                         </td>
