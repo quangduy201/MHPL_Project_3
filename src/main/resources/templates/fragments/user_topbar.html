@@ -1,8 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Password Demo</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
 <div th:fragment="topbar(userName, userAvatar)" th:remove="tag">
     <!-- Topbar -->
-    <nav
-            class="navbar navbar-expand admin-topbar_mobile navbar-light bg-white topbar mb-4 static-top shadow d-flex justify-content-between"
-    >
+    <nav class="navbar navbar-expand admin-topbar_mobile navbar-light bg-white topbar mb-4 static-top shadow d-flex justify-content-between">
         <!-- Topbar Navbar -->
         <ul class="navbar-nav admin-topbar_mobile-left">
             <li class="nav-item active">
@@ -20,44 +30,20 @@
         </ul>
         <ul class="navbar-nav admin-topbar_mobile-right">
             <li class="nav-item dropdown no-arrow">
-                <a
-                        class="nav-link dropdown-toggle"
-                        href="#"
-                        id="userDropdown"
-                        role="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                >
-                      <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                          [[${userName}]]
-                      </span>
-                    <img
-                            class="img-profile rounded-circle"
-                            th:src="${userAvatar}"
-                    />
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                        [[${userName}]]
+                    </span>
+                    <img class="img-profile rounded-circle" th:src="${userAvatar}"/>
                 </a>
                 <!-- Dropdown - User Information -->
-                <div
-                        class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                        aria-labelledby="userDropdown"
-                >
-                    <a
-                            class="dropdown-item"
-                            href="/user/thay-doi-mat-khau"
-                            data-toggle="modal"
-                            data-target="#logoutModal"
-                    >
+                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                    <a id="changePasswordLink" class="dropdown-item" href="#" data-toggle="modal" data-target="#changePasswordModal">
                         <i class="fas fa-sync-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                         Đổi mật khẩu
                     </a>
-                    <a
-                            class="dropdown-item"
-                            href="/logout"
-                    >
-                        <i
-                                class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
-                        ></i>
+                    <a class="dropdown-item" href="/logout">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                         Logout
                     </a>
                 </div>
@@ -65,4 +51,16 @@
         </ul>
     </nav>
     <!-- End of Topbar -->
+
 </div>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Font Awesome -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+</body>
+</html>

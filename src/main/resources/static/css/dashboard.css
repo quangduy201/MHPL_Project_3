@@ -28,7 +28,7 @@
     min-width: 200px;
     width: 100%;
 }
-#addDiv, #editDiv{
+#addDiv, #editDiv, #changePasswordForm{
     width: 500px;
     position: absolute;
     top: 50%;
