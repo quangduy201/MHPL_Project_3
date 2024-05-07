@@ -12,5 +12,5 @@ public interface ThietBiService {
     ThietBi saveThietBi(ThietBi tb);
     void deleteThietBiById(Long tv);
     public Page<ThietBi> getThietBiDangMuonByMaTV(Long maTV);
-    List<ThietBi> getAllThietBiDangMuonById(Long maTV);
+    
 }

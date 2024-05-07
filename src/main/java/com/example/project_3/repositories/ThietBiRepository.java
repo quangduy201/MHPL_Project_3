@@ -11,9 +11,12 @@ import org.springframework.data.jpa.repository.Query;
 
 @Repository
 public interface ThietBiRepository extends JpaRepository<ThietBi, Long> {
-    @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTV = ?1 AND tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL")
+    @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTV.maTV = ?1 AND tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL")
     Page<ThietBi> findThietBiByMaTVEqualsAndTgMuonIsNotNullAndTgTraIsNull(Long maTV, Pageable pageable);
 
-    @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTV = ?1 AND tt.tgDatcho IS NOT NULL")
+    @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTV.maTV = ?1 AND tt.tgDatcho IS NOT NULL")
     Page<ThietBi> findThietBiByMaTVEqualsAndTgDatchoIsNotNull(Long maTV, Pageable pageable);
+    
+
+    
 }

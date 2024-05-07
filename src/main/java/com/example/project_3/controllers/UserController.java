@@ -1,6 +1,5 @@
 package com.example.project_3.controllers;
 
-
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.models.ThietBi;
 import com.example.project_3.payloads.requests.QuenMatKhauRequest;
@@ -27,16 +26,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
     @Autowired
     private ThanhVienService thanhvienService;
-    private ThietBiService thietbiService;
+    private final ThietBiService thietbiService;
+
+    @Autowired
+    public UserController(ThietBiService thietBiService) {
+        this.thietbiService = thietBiService;
+    }
+
     @GetMapping({"/", ""})
     public String index(Model model, HttpSession session) {
         if (session.getAttribute("user") != null) {
             // Nếu có session với attribute là "user", chuyển hướng người dùng đến trang index
             // TODO SOMETHING ELSE
             ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
-            model.addAttribute("tv",thanhvienService.getThanhVienById(tvResponse.getMaTV()));
+            model.addAttribute("tv", thanhvienService.getThanhVienById(tvResponse.getMaTV()));
             model.addAttribute("tvChangePassword", new QuenMatKhauRequest());
 
             return "user/index";
@@ -65,11 +71,19 @@ public class UserController {
 //        return "/user/muonthietbi/index";
 //    }
     @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
-    public String muonThietBi(Model model, HttpSession session, @RequestParam("maTV") Long maTV) {
-        Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
-        model.addAttribute("thietBiDangMuon", thietBiDangMuon);
-    return "/user/muonthietbi/index";
-}
+    public String muonThietBi(Model model, HttpSession session) {
+        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+
+            Long maTV = tvResponse.getMaTV();
+            Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
+            model.addAttribute("thietBiDangMuon", thietBiDangMuon);
+            for (ThietBi thietBi : thietBiDangMuon.getContent()) {
+            System.out.println("Mã thiết bị: " + thietBi.getMaTB());
+            System.out.println("Tên thiết bị: " + thietBi.getTenTB());
+            // In thêm thông tin khác của thiết bị nếu cần
+            System.out.println("-----------------------------");}
+        return "/user/muonthietbi/index";
+    }
 
     @GetMapping({"/dat-cho-thiet-bi", "/dat-cho-thiet-bi/"})
     public String datChoThietBi(Model model, HttpSession session) {
@@ -84,15 +98,15 @@ public class UserController {
     }
 
     @PostMapping({"/", ""})
-    public String editThanhVien(Model model,HttpSession httpSession,
-                                @RequestParam Long maTV,
-                                @Valid @ModelAttribute("tv") ThanhVienRequest tvRequest,
-                                BindingResult result) {
+    public String editThanhVien(Model model, HttpSession httpSession,
+            @RequestParam Long maTV,
+            @Valid @ModelAttribute("tv") ThanhVienRequest tvRequest,
+            BindingResult result) {
         try {
             ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
 
             if (result.hasErrors()) {
-                model.addAttribute("tv",tvRequest);
+                model.addAttribute("tv", tvRequest);
                 model.addAttribute("tvChangePassword", new QuenMatKhauRequest());
 
                 return "user/index";
@@ -128,11 +142,12 @@ public class UserController {
 
         return "user/index";
     }
+
     @PostMapping("/thaydoimatkhau")
     public String editMatKhau(@Valid @ModelAttribute("tvChangePassword") QuenMatKhauRequest tvChangePassword,
-                              BindingResult result,
-                              Model model,
-                              HttpSession session) {
+            BindingResult result,
+            Model model,
+            HttpSession session) {
         ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
         ThanhVien thanhVien = thanhvienService.getThanhVienById(tvResponse.getMaTV());
         model.addAttribute("tv", thanhVien);
@@ -144,7 +159,7 @@ public class UserController {
             isError = true;
         }
 
-        if(!tvChangePassword.isXacNhanMatKhauMoiValid()){
+        if (!tvChangePassword.isXacNhanMatKhauMoiValid()) {
             result.rejectValue("matKhauMoi", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu mới");
             result.rejectValue("xacNhanMatKhauMoi", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu mới");
             isError = true;

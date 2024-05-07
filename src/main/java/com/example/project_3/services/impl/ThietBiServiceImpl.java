@@ -50,23 +50,4 @@ public class ThietBiServiceImpl implements ThietBiService {
     public Page<ThietBi> getThietBiDangMuonByMaTV(Long maTV) {
         return thietBiRepository.findThietBiByMaTVEqualsAndTgMuonIsNotNullAndTgTraIsNull(maTV, null);
     }
-    @Override
-    public List<ThietBi> getAllThietBiDangMuonById(Long maTV) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<ThietBi> cq = cb.createQuery(ThietBi.class);
-        Root<ThongTinSD> root = cq.from(ThongTinSD.class);
-
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(cb.and(cb.isNotNull(root.get("tgMuon")), cb.isNull(root.get("tgTra"))));
-        predicates.add(cb.equal(root.get("maTV").get("maTV"), maTV));
-
-        cq.multiselect(root.get("maTB"), root.get("tenTB"), root.get("tgMuon"))
-                .distinct(true)
-                .where(predicates.toArray(new Predicate[0]))
-                .orderBy(cb.asc(root.get("tgMuon")));
-
-        List<ThietBi> borrowedDevicesList = entityManager.createQuery(cq).getResultList();
-        return borrowedDevicesList;
-        
-    }
 }
