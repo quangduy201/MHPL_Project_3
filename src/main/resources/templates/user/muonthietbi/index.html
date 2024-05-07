@@ -40,6 +40,7 @@
     <!-- Custom styles for this template-->
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet" />
     <link href="../../css/dashboard.css" rel="stylesheet" />
+    <link href="../../css/item-product.css" rel="stylesheet" />
 </head>
 
 <body id="page-top">
@@ -62,9 +63,239 @@
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <!-- Member Statistic -->
-                <div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="background-color: #2ecc71;">
-                        Các thiết bị đang mượn
+                <div class="ui-borrow-equipment">
+                    <div class="ui-top">
+                        <div class="mb-3 row">
+                            <div class="col-2">
+                                <select id="select-by" class="form-select" aria-label="">
+                                    <option value="all" >Tất cả</option>
+                                    <option value="maTV" >Tên</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <input type="text"
+                                       class="form-control"
+                                       id="txt-search"
+                                       placeholder="Nhập vào đây để tìm kiếm"
+                                       aria-label=""
+                                >
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-secondary" onclick="searchThanhVien()">Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-center">
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-container">
+                            <div class="product-top">
+                                <img src="" alt="" class="image-product"/>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="ui-data">
+                                    <div class="name-laptop">
+                                        <p>Con chó + Con mèo = Con vịt + Con mèo</p>
+                                    </div>
+                                </div>
+                                <div class="price">
+                                    <p>26.000.000VNĐ</p>
+                                </div>
+                                <div class="button-cart">
+                                    <div class="button">
+                                        <p>Mượn</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-bottom">
+<!--                        <div th:replace="~{fragments/pagination :: pagination(-->
+<!--                        urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},-->
+<!--                        totalPages = ${tvList.totalPages},-->
+<!--                        currentPage = ${tvList.number + 1},-->
+<!--                        pageSize = ${tvList.size},-->
+<!--                        totalItems = ${tvList.totalElements}-->
+<!--                     )}">-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -86,7 +317,6 @@
 
 <!-- Page level custom scripts -->
 <script src="../../js/demo/datatables-demo.js"></script>
-
 <!--Date Range Picker -->
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -95,5 +325,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
 <script src="../../js/utils.js" type="module"></script>
+<script>
+    function searchThanhVien() {
+        const selectBy = document.getElementById("select-by").value
+        const searchText = document.getElementById("txt-search").value
+        window.location.href = window.location.href.split('?')[0] + `?${selectBy}=${searchText}`
+    }
+    document.getElementById("txt-search").addEventListener("keydown", function (event) {
+        if (event.key === 'Enter') {
+            searchThanhVien();
+        }
+    })
+</script>
+<script>
+    window.onload = function() {
+        const images = document.getElementsByClassName('image-product');
+        for(let i = 0; i < images.length; i++) {
+            images[i].src = '../../../media/images/user_default.png';
+        }
+    };
+</script>
 </body>
 </html>

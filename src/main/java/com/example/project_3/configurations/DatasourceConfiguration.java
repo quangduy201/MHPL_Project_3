@@ -1,5 +1,4 @@
 package com.example.project_3.configurations;
-
 import com.example.project_3.utils.Resource;
 import com.example.project_3.utils.Settings;
 import jakarta.persistence.EntityManagerFactory;
