@@ -37,8 +37,8 @@ public class RegisterRequest {
 
     @NotBlank(message = "Mã thành viên không được để trống.")
     @OnlyNumber(message = "Mã thành viên chỉ chứa số.")
-    @Size(min = 7, message = "Mã thành viên phải chứa 7 kí tự.")
-    @Size(max = 7, message = "Mã thành viên phải chứa 7 kí tự.")
+    @Size(min = 10, message = "Mã thành viên phải chứa 10 kí tự.")
+    @Size(max = 10, message = "Mã thành viên phải chứa 10 kí tự.")
     private String maTV;
 
     @NotBlank(message = "Mật khẩu không được để trống.")
