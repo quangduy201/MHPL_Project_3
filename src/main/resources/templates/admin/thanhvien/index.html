@@ -85,7 +85,7 @@
                                id="txt-search"
                                placeholder="Nhập vào đây để tìm kiếm"
                                aria-label=""
-                               th:value="${params.isEmpty() ? '' : params.split('=')[1]}"
+                               th:value="${params.isEmpty() ? '' : (params.split('=').length == 1 ? '' : params.split('=')[1])}"
                         >
                     </div>
                     <div class="col">
@@ -117,9 +117,11 @@
                         <td th:text="${tv.email}"></td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-primary btn-sm"
+                               th:classappend="${tv.maTV == 0 ? 'disabled' : ''}"
                                th:href="@{/templates/admin/thanhvien/edit(maTV=${tv.maTV})}"
                             >Sửa</a>
                             <a class="btn btn-primary btn-sm"
+                               th:classappend="${tv.maTV == 0 ? 'disabled' : ''}"
                                th:href="@{/templates/admin/thanhvien/delete(maTV=${tv.maTV})}"
                                onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?')"
                             >Xóa</a>

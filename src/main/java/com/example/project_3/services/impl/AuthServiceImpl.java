@@ -42,6 +42,33 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public ThanhVienResponse adminLogin(String email, String password) {
+        ThanhVien tv = thanhVienRepository.findByEmail(email);
+        if (tv == null) {
+            return null;
+        }
+
+        if (tv.getMaTV() != 0L) {
+            return null;
+        }
+
+        if (!tv.getPassword().equals(password)) {
+            return null;
+        }
+
+        ThanhVienResponse tvResponse = new ThanhVienResponse(
+                tv.getMaTV(),
+                tv.getHoTen(),
+                tv.getKhoa(),
+                tv.getNganh(),
+                tv.getSdt(),
+                tv.getEmail()
+        );
+
+        return tvResponse;
+    }
+
+    @Override
     public void resetPassword(String email, String oldPassword, String newPassword) {
 
     }
