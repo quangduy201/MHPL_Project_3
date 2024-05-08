@@ -1,14 +1,24 @@
 package com.example.project_3.controllers;
 
-
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.ThietBi;
+import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.QuenMatKhauRequest;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.ThanhVienService;
+import com.example.project_3.services.ThietBiService;
+import com.example.project_3.services.XuLyService;
 import jakarta.servlet.http.HttpSession;
+
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,15 +28,27 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
     @Autowired
     private ThanhVienService thanhvienService;
+    @Autowired
+    private ThietBiService thietbiService;
+    @Autowired
+    private XuLyService xulyService;
+
+    @Autowired
+    public UserController(ThietBiService thietBiService) {
+        this.thietbiService = thietBiService;
+        this.xulyService = xulyService;
+    }
+
     @GetMapping({"/", ""})
     public String index(Model model, HttpSession session) {
         if (session.getAttribute("user") != null) {
             // Nếu có session với attribute là "user", chuyển hướng người dùng đến trang index
             // TODO SOMETHING ELSE
             ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
-            model.addAttribute("tv",thanhvienService.getThanhVienById(tvResponse.getMaTV()));
+            model.addAttribute("tv", thanhvienService.getThanhVienById(tvResponse.getMaTV()));
             model.addAttribute("tvChangePassword", new QuenMatKhauRequest());
 
             return "user/index";
@@ -39,32 +61,57 @@ public class UserController {
 
     @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
     public String muonThietBi(Model model, HttpSession session) {
-        // TODO SOMETHING ELSE
+        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+
+        Long maTV = tvResponse.getMaTV();
+        Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
+        if (thietBiDangMuon.isEmpty()) {
+            model.addAttribute("thietBiDangMuon", null);    
+        } else {
+            model.addAttribute("thietBiDangMuon", thietBiDangMuon);
+        }
         return "/user/muonthietbi/index";
     }
 
     @GetMapping({"/dat-cho-thiet-bi", "/dat-cho-thiet-bi/"})
     public String datChoThietBi(Model model, HttpSession session) {
         // TODO SOMETHING ELSE
+        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+        Long maTV = tvResponse.getMaTV();
+        Page<ThietBi> thietBiDatCho = thietbiService.getThietBiDangDatChoByMaTV(maTV);
+        if (thietBiDatCho.isEmpty()) {
+            model.addAttribute("thietBiDatCho", null);
+            
+        } else {
+            model.addAttribute("thietBiDatCho", thietBiDatCho);
+        }
         return "/user/datchothietbi/index";
     }
 
     @GetMapping({"/trang-thai-vi-pham", "/trang-thai-vi-pham/"})
-    public String trangThaiViPham(Model model) {
+    public String trangThaiViPham(Model model, HttpSession session) {
         // TODO SOMETHING ELSE
+        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+        Long maTV = tvResponse.getMaTV();
+        Page<XuLy> viPham = xulyService.getViPhamByMaTV(maTV);
+        if (viPham.isEmpty()) {
+            model.addAttribute("vipham", null);
+        } else {
+            model.addAttribute("vipham", viPham);
+        }
         return "/user/trangthaivipham/index";
     }
 
     @PostMapping({"/", ""})
-    public String editThanhVien(Model model,HttpSession httpSession,
-                                @RequestParam Long maTV,
-                                @Valid @ModelAttribute("tv") ThanhVienRequest tvRequest,
-                                BindingResult result) {
+    public String editThanhVien(Model model, HttpSession httpSession,
+            @RequestParam Long maTV,
+            @Valid @ModelAttribute("tv") ThanhVienRequest tvRequest,
+            BindingResult result) {
         try {
             ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
 
             if (result.hasErrors()) {
-                model.addAttribute("tv",tvRequest);
+                model.addAttribute("tv", tvRequest);
                 model.addAttribute("tvChangePassword", new QuenMatKhauRequest());
 
                 return "user/index";
@@ -100,11 +147,12 @@ public class UserController {
 
         return "user/index";
     }
+
     @PostMapping("/thaydoimatkhau")
     public String editMatKhau(@Valid @ModelAttribute("tvChangePassword") QuenMatKhauRequest tvChangePassword,
-                              BindingResult result,
-                              Model model,
-                              HttpSession session) {
+            BindingResult result,
+            Model model,
+            HttpSession session) {
         ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
         ThanhVien thanhVien = thanhvienService.getThanhVienById(tvResponse.getMaTV());
         model.addAttribute("tv", thanhVien);
@@ -116,7 +164,7 @@ public class UserController {
             isError = true;
         }
 
-        if(!tvChangePassword.isXacNhanMatKhauMoiValid()){
+        if (!tvChangePassword.isXacNhanMatKhauMoiValid()) {
             result.rejectValue("matKhauMoi", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu mới");
             result.rejectValue("xacNhanMatKhauMoi", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu mới");
             isError = true;

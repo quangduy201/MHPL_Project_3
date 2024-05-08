@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Service
 public class XuLyServiceImpl implements XuLyService {
@@ -35,4 +36,10 @@ public class XuLyServiceImpl implements XuLyService {
     public void deleteXuLyById(int tv) {
         xuLyRepository.deleteById(tv);
     }
+
+    @Override
+    public Page<XuLy> getViPhamByMaTV(Long maTV) {
+        return xuLyRepository.findViPhamByMaTVEquals(maTV,null);
+    }
+    
 }

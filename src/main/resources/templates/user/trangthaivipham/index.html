@@ -63,8 +63,28 @@
             <div class="container-fluid">
                 <!-- Member Statistic -->
                 <div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="background-color: #2ecc71;">
-                        trạng thái vi phạm
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                         <h3>Danh sách các trạng thái vi phạm </h3>
+                        </div>
+                        <table id="muontbi" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã xử lý</th>
+                                    <th>Hình thức xử lý</th>
+                                    <th>Số tiền</th>
+                                    <th>Ngày xử lý</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="vp : ${vipham}">
+                                    <td th:text="${vp.maXL}"></td>
+                                    <td th:text="${vp.hinhThucXL}"></td>
+                                    <td th:text="${vp.ngayXL}"></td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
