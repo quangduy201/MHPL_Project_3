@@ -101,10 +101,10 @@ public class AdminController {
         }
 
         if (isHired) {
-            return thongKeService.thongKeThietBiDaDuocMuon(startTime, endTime, Long.valueOf(maTB), isTable);
+            return thongKeService.thongKeThietBiDaDuocMuon(startTime, endTime, maTB, isTable);
         }
 
-        return thongKeService.thongKeThietBiDangDuocMuon(startTime, endTime, Long.valueOf(maTB), isTable);
+        return thongKeService.thongKeThietBiDangDuocMuon(startTime, endTime, maTB, isTable);
     }
 
     @PostMapping("/dashboard/breach-1")
