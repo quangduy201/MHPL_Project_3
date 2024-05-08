@@ -4,6 +4,7 @@ import com.example.project_3.models.ThietBi;
 import com.example.project_3.services.ThanhVienService;
 import com.example.project_3.services.ThietBiService;
 import com.example.project_3.services.ThongKeService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,16 +28,23 @@ public class AdminController {
     private ThietBiService thietBiService;
 
     @GetMapping({"", "/"})
-    public String index(Model model) {
-        List<String> khoaList = thanhVienService.getKhoaList();
-        List<String> nganhList = thanhVienService.getNganhList();
-        List<ThietBi> thietBis = thietBiService.getAllThietBi();
+    public String index(Model model, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            // Nếu có session với attribute là "admin", chuyển hướng người dùng đến trang index
+            List<String> khoaList = thanhVienService.getKhoaList();
+            List<String> nganhList = thanhVienService.getNganhList();
+            List<ThietBi> thietBis = thietBiService.getAllThietBi();
 
-        model.addAttribute("khoa", khoaList);
-        model.addAttribute("nganh", nganhList);
-        model.addAttribute("thietbi", thietBis);
+            model.addAttribute("khoa", khoaList);
+            model.addAttribute("nganh", nganhList);
+            model.addAttribute("thietbi", thietBis);
 
-        return "admin/index";
+            return "/admin/index";
+        } else {
+            // Nếu không có session "user", chuyển hướng người dùng đến trang đăng nhập
+            // TODO SOMETHING ELSE
+            return "redirect:/admin/login";
+        }
     }
 
     @PostMapping("/dashboard/member")
