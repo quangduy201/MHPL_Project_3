@@ -66,8 +66,7 @@ public class UserController {
         Long maTV = tvResponse.getMaTV();
         Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
         if (thietBiDangMuon.isEmpty()) {
-            model.addAttribute("thietBiDangMuon", null);
-            model.addAttribute("message", "Không có thiết bị nào được mượn.");
+            model.addAttribute("thietBiDangMuon", null);    
         } else {
             model.addAttribute("thietBiDangMuon", thietBiDangMuon);
         }
@@ -77,6 +76,15 @@ public class UserController {
     @GetMapping({"/dat-cho-thiet-bi", "/dat-cho-thiet-bi/"})
     public String datChoThietBi(Model model, HttpSession session) {
         // TODO SOMETHING ELSE
+        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+        Long maTV = tvResponse.getMaTV();
+        Page<ThietBi> thietBiDatCho = thietbiService.getThietBiDangDatChoByMaTV(maTV);
+        if (thietBiDatCho.isEmpty()) {
+            model.addAttribute("thietBiDatCho", null);
+            
+        } else {
+            model.addAttribute("thietBiDatCho", thietBiDatCho);
+        }
         return "/user/datchothietbi/index";
     }
 

@@ -68,25 +68,29 @@
                                     </div>
                                 </div>
                             </div>
-                          
+
                             <div class="ui-center">
-                                <div th:each="thietBi : ${thietBiDangMuon.content}" class="product-container">
-                                    <div  class="product-item">
-                                        <div class="product-top">
-                                           <img src="" alt="" class="image-product"/>
-                                        </div>
-                                        <div class="product-bottom">
-                                            <div class="ui-data">
-                                                <div class="id">
-                                                    <p th:text="${thietBi.maTB}"></p>
+                                <div th:if="${thietBiDangMuon != null and not thietBiDangMuon.empty}" class="product-container-wrapper">
+                                    <div th:each="thietBi : ${thietBiDangMuon.content}" class="product-container">
+                                        <div class="product-item">
+                                            <div class="product-top">
+                                                <img src="" alt="" class="image-product"/>
+                                            </div>
+                                            <div class="product-bottom">
+                                                <div class="ui-data">
+                                                    <div class="id">
+                                                        <p th:text="${thietBi.maTB}"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="name">
+                                                    <p th:text="${thietBi.tenTB}"></p>
                                                 </div>
                                             </div>
-                                            <div class="name">
-                                                <p th:text="${thietBi.tenTB}"></p>
-                                            </div>
-                                            
                                         </div>
                                     </div>
+                                </div>
+                                <div th:if="${thietBiDangMuon == null or thietBiDangMuon.empty}">
+                                    Thành viên không mượn thiết bị nào.
                                 </div>
                             </div>
                             <div class="ui-bottom">

@@ -1,22 +1,13 @@
 package com.example.project_3.services.impl;
 
-import com.example.project_3.models.ThanhVien;
+
 import com.example.project_3.models.ThietBi;
-import com.example.project_3.models.ThongTinSD;
-import com.example.project_3.repositories.ThanhVienRepository;
 import com.example.project_3.repositories.ThietBiRepository;
-import com.example.project_3.services.ThanhVienService;
 import com.example.project_3.services.ThietBiService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import org.springframework.data.domain.Page;
 
@@ -47,7 +38,13 @@ public class ThietBiServiceImpl implements ThietBiService {
     public void deleteThietBiById(Long tv) {
         thietBiRepository.deleteById(tv);
     }
+    @Override
     public Page<ThietBi> getThietBiDangMuonByMaTV(Long maTV) {
         return thietBiRepository.findThietBiByMaTVEqualsAndTgMuonIsNotNullAndTgTraIsNull(maTV, null);
+    }
+
+    @Override
+    public Page<ThietBi> getThietBiDangDatChoByMaTV(Long maTV) {
+        return thietBiRepository.findThietBiByMaTVEqualsAndTgDatchoIsNotNull(maTV, null);
     }
 }

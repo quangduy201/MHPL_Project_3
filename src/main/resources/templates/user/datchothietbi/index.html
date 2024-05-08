@@ -1,99 +1,160 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
 
-    <title>User | Các thiết bị đang mượn</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
 
-    <!-- Custom fonts for this template-->
-    <link
-            href="../../vendor/fontawesome-free/css/all.min.css"
-            rel="stylesheet"
-            type="text/css"
-    />
-    <link
+        <title>User | Các thiết bị đang đặt chỗ</title>
+
+        <!-- Custom fonts for this template-->
+        <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
+        <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-            rel="stylesheet"
-    />
-    <link
-            href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-            rel="stylesheet"
-    />
-    <link
-            href="../../vendor/datatables/dataTables.bootstrap4.min.css"
-            rel="stylesheet"
-    />
-    <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
-            rel="stylesheet"
-            integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg="
-            crossorigin="anonymous"
-    />
+            rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet" />
+        <link href="../../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+              rel="stylesheet" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 
-    <!-- Custom styles for this template-->
-    <link href="../../css/sb-admin-2.min.css" rel="stylesheet" />
-    <link href="../../css/dashboard.css" rel="stylesheet" />
-</head>
+        <!-- Custom styles for this template-->
+        <link href="../../css/sb-admin-2.min.css" rel="stylesheet" />
+        <link href="../../css/dashboard.css" rel="stylesheet" />
+        <link href="../../css/item-product.css" rel="stylesheet" />
+    </head>
 
-<body id="page-top">
+    <body id="page-top">
 
-<div id="wrapper" class="row">
-    <!-- Sidebar -->
-    <div th:replace="~{fragments/user_sidebar :: sidebar(active=4)}"></div>
+        <div id="wrapper" class="row">
+            <!-- Sidebar -->
+            <div th:replace="~{fragments/user_sidebar :: sidebar(active=4)}"></div>
 
-    <!-- Content Wrapper -->
-    <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
-        <!-- Main Content -->
-        <div id="content">
-            <!-- Topbar -->
-            <div th:replace="~{fragments/user_topbar :: topbar(
-                    userName='Nhóm 1',
-                    userAvatar='/media/images/poodle.jpg'
-                 )}">
-            </div>
-
-            <!-- Begin Page Content -->
-            <div class="container-fluid">
-                <!-- Member Statistic -->
-                <div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="background-color: #2ecc71;">
-                        Các thiết bị đang đặt chỗ
+            <!-- Content Wrapper -->
+            <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <div th:replace="~{fragments/user_topbar :: topbar(
+                         userName='Nhóm 1',
+                         userAvatar='/media/images/poodle.jpg'
+                         )}">
                     </div>
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+                        <!-- Member Statistic -->
+                        <div class="ui-borrow-equipment">
+                            <div class="ui-top">
+                                <div class="mb-3 row">
+                                    <div class="col-2">
+                                        <select id="select-by" class="form-select" aria-label="">
+                                            <option value="all" >Tất cả</option>
+                                            <option value="maXL" >Mã xử lý</option>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="txt-search"
+                                               placeholder="Nhập vào đây để tìm kiếm"
+                                               aria-label=""
+                                               >
+                                    </div>
+                                    <div class="col">
+                                        <button class="btn btn-secondary" onclick="searchThanhVien()">Tìm kiếm</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ui-center">
+                                <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}"class="product-container-wrapper">
+
+                                
+                                    <!-- Các mã HTML để hiển thị danh sách thietBiDatCho -->
+                                    <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}" class="product-container-wrapper">
+                                    <div th:each="thietBi : ${thietBiDatCho.content}" class="product-container">
+                                        <div class="product-item">
+                                            <div class="product-top">
+                                                <img src="" alt="" class="image-product"/>
+                                            </div>
+                                            <div class="product-bottom">
+                                                <div class="ui-data">
+                                                    <div class="id">
+                                                        <p th:text="${thietBi.maTB}"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="name">
+                                                    <p th:text="${thietBi.tenTB}"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div th:if="${thietBiDatCho == null or thietBiDatCho.empty}">
+                                    Thành viên chưa đặt chỗ thiết bị.
+                                </div>
+                                
+                                <div class="ui-bottom">
+                                    <!--                        <div th:replace="~{fragments/pagination :: pagination(
+                                                            urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
+                                                            totalPages = ${tvList.totalPages},
+                                                            currentPage = ${tvList.number + 1},
+                                                            pageSize = ${tvList.size},
+                                                            totalItems = ${tvList.totalElements}-->
+                                    <!--                     )}">-->
+                                    <!--                        </div>-->
+                                </div>
+                            </div>
+                            <!-- /.container-fluid -->
+                        </div>
+                    </div>
+                    <!-- End of Content Wrapper -->
                 </div>
-            </div>
-            <!-- /.container-fluid -->
-        </div>
-    </div>
-    <!-- End of Content Wrapper -->
-</div>
-<!-- End of Page Wrapper -->
-<script src="../../vendor/jquery/jquery.min.js"></script>
-<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+                <!-- End of Page Wrapper -->
+                <script src="../../vendor/jquery/jquery.min.js"></script>
+                <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-<!-- Core plugin JavaScript-->
-<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+                <!-- Core plugin JavaScript-->
+                <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
 
-<!-- Datatables -->
-<script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+                <!-- Datatables -->
+                <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
+                <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-<!-- Page level custom scripts -->
-<script src="../../js/demo/datatables-demo.js"></script>
+                <!-- Page level custom scripts -->
+                <script src="../../js/demo/datatables-demo.js"></script>
+                <!--Date Range Picker -->
+                <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-<!--Date Range Picker -->
-<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+                <!-- SELECT -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+                integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
-<!-- SELECT -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+                <script src="../../js/utils.js" type="module"></script>
+                <script>
+                    function searchThanhVien() {
+                    const selectBy = document.getElementById("select-by").value
+                    const searchText = document.getElementById("txt-search").value
+                    window.location.href = window.location.href.split('?')[0] + `?${selectBy}=${searchText}`
+                    }
+                    document.getElementById("txt-search").addEventListener("keydown", function (event) {
+                    if (event.key === 'Enter') {
+                    searchThanhVien();
+                    }
+                    })
+                </script>
+                <script>
+                    window.onload = function() {
+                    const images = document.getElementsByClassName('image-product');
+                    for(let i = 0; i < images.length; i++) {
+                    images[i].src = '../../../media/images/user_default.png';
+                    }
+                    };
+                </script>
+                </body>
 
-<script src="../../js/utils.js" type="module"></script>
-</body>
-</html>
+                </html>
