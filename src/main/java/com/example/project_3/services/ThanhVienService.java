@@ -11,6 +11,7 @@ public interface ThanhVienService {
     List<String> getKhoaList();
     List<String> getNganhList();
     ThanhVien getThanhVienById(Long maTV);
+    ThanhVien getThanhVienBySdt(String sdt);
     ThanhVien saveThanhVien(ThanhVien tv);
     void deleteThanhVienById(Long tv);
 }

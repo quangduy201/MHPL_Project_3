@@ -70,9 +70,7 @@
                             </div>
 
                             <div class="ui-center">
-                                <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}"class="product-container-wrapper">
-
-                                
+                                <div th:if="${thietBiDatCho != null and not thietBiDatCho}"class="product-container-wrapper">
                                     <!-- Các mã HTML để hiển thị danh sách thietBiDatCho -->
                                     <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}" class="product-container-wrapper">
                                     <div th:each="thietBi : ${thietBiDatCho.content}" class="product-container">
