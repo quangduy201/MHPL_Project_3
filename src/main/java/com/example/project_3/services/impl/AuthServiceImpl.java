@@ -20,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ThanhVienResponse login(String email, String password) {
-        ThanhVien tv = thanhVienRepository.findByEmail(email);
+        ThanhVien tv = thanhVienRepository.findByEmail(email).orElse(null);
         if (tv == null) {
             return null;
         }
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ThanhVienResponse adminLogin(String email, String password) {
-        ThanhVien tv = thanhVienRepository.findByEmail(email);
+        ThanhVien tv = thanhVienRepository.findByEmail(email).orElse(null);
         if (tv == null) {
             return null;
         }
