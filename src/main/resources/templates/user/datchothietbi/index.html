@@ -52,7 +52,7 @@
                                     <div class="col-2">
                                         <select id="select-by" class="form-select" aria-label="">
                                             <option value="all" >Tất cả</option>
-                                            <option value="maXL" >Mã xử lý</option>
+                                            <option value="maTB" >Mã thiết bị</option>
                                         </select>
                                     </div>
                                     <div class="col">
@@ -64,7 +64,7 @@
                                                >
                                     </div>
                                     <div class="col">
-                                        <button class="btn btn-secondary" onclick="searchThanhVien()">Tìm kiếm</button>
+                                        <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
                                     </div>
                                 </div>
                             </div>
@@ -136,14 +136,14 @@
 
                 <script src="../../js/utils.js" type="module"></script>
                 <script>
-                    function searchThanhVien() {
+                    function searchThietBi() {
                     const selectBy = document.getElementById("select-by").value
                     const searchText = document.getElementById("txt-search").value
                     window.location.href = window.location.href.split('?')[0] + `?${selectBy}=${searchText}`
                     }
                     document.getElementById("txt-search").addEventListener("keydown", function (event) {
                     if (event.key === 'Enter') {
-                    searchThanhVien();
+                    searchThietBi();
                     }
                     })
                 </script>

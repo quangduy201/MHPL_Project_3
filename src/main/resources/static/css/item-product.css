@@ -81,8 +81,7 @@
                     margin: 0;
                 }
             }
-        }
-        .id {
+            .id {
             height:25%;
             border-radius: 8px;
             margin-top: 10px;
@@ -93,6 +92,8 @@
                 user-select: none;
             }
         }
+        }
+        
         .button-cart {
             width: 100%;
             cursor: pointer;

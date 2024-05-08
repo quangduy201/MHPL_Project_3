@@ -52,7 +52,7 @@
                                     <div class="col-2">
                                         <select id="select-by" class="form-select" aria-label="">
                                             <option value="all" >Tất cả</option>
-                                            <option value="maTV" >Tên</option>
+                                            <option value="maTB" >Mã thiết bị</option>
                                         </select>
                                     </div>
                                     <div class="col">
@@ -64,7 +64,7 @@
                                                >
                                     </div>
                                     <div class="col">
-                                        <button class="btn btn-secondary" onclick="searchThanhVien()">Tìm kiếm</button>
+                                        <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
                                     </div>
                                 </div>
                             </div>
@@ -132,16 +132,28 @@
 
             <script src="../../js/utils.js" type="module"></script>
             <script>
-                function searchThanhVien() {
-                const selectBy = document.getElementById("select-by").value
-                const searchText = document.getElementById("txt-search").value
-                window.location.href = window.location.href.split('?')[0] + `?${selectBy}=${searchText}`
+                function searchByMaThietBi() {
+                // Lấy giá trị mã thiết bị từ ô input
+                const searchText = document.getElementById("txt-search").value;
+
+                // Lấy danh sách các container chứa thông tin sản phẩm
+                const productContainers = document.querySelectorAll(".product-container");
+
+                // Duyệt qua từng container để kiểm tra mã thiết bị
+                productContainers.forEach(container => {
+                // Lấy mã thiết bị từ container hiện tại
+                const maThietBi = container.querySelector(".id p").textContent;
+
+                // Kiểm tra nếu mã thiết bị chứa giá trị tìm kiếm
+                if (maThietBi.includes(searchText)) {
+                // Hiển thị container nếu tìm thấy kết quả
+                container.style.display = "block";
+                } else {
+                // Ẩn container nếu không tìm thấy kết quả
+                container.style.display = "none";
                 }
-                document.getElementById("txt-search").addEventListener("keydown", function (event) {
-                if (event.key === 'Enter') {
-                searchThanhVien();
+                });
                 }
-                })
             </script>
             <script>
                 window.onload = function() {
