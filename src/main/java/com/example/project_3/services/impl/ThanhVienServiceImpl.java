@@ -23,6 +23,11 @@ public class ThanhVienServiceImpl implements ThanhVienService {
     }
 
     @Override
+    public List<ThanhVien> getAllThanhVien() {
+        return thanhVienRepository.findAll();
+    }
+
+    @Override
     public Page<ThanhVien> getThanhVien(Map<String, String> requestParams) {
         Specification<ThanhVien> specification;
         if (requestParams.containsKey("all")) {

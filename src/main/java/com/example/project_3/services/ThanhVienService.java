@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ThanhVienService {
+    List<ThanhVien> getAllThanhVien();
     Page<ThanhVien> getThanhVien(Map<String, String> requestParams);
     List<String> getKhoaList();
     List<String> getNganhList();
