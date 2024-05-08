@@ -12,7 +12,7 @@
 
     <title>User | Trạng thái vi phạm</title>
 
-    <!-- Custom fonts for this template-->
+
     <link
             href="../../vendor/fontawesome-free/css/all.min.css"
             rel="stylesheet"
@@ -63,9 +63,31 @@
             <div class="container-fluid">
                 <!-- Member Statistic -->
                 <div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="background-color: #2ecc71;">
-                        trạng thái vi phạm
-                    </div>
+                    <!-- Assuming you want to display the violation information in a table -->
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Violation ID</th>
+                            <th>Member ID</th>
+                            <th>Violation Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Iterate over the violations -->
+                        <tr th:each="violation : ${violation}">
+                            <td th:text="${violation.maXL}">Violation ID</td>
+                            <td th:text="${violation.maTV.HoTen}">Violation Name</td>
+                            <td th:text="${violation.hinhThucXL}">Violation Type</td>
+                            <td th:text="${violation.soTien}">Amount</td>
+                            <td th:text="${violation.ngayXL}">Date</td>
+                            <td th:text="${violation.trangThaiXL}">Status</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
             <!-- /.container-fluid -->

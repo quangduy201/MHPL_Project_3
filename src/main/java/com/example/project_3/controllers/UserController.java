@@ -2,10 +2,13 @@ package com.example.project_3.controllers;
 
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.QuenMatKhauRequest;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.ThanhVienService;
+import com.example.project_3.services.XuLyService;
+import com.example.project_3.services.impl.XuLyServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +18,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
     @Autowired
     private ThanhVienService thanhvienService;
+    @Autowired
+    private XuLyService xuLyService;
     @GetMapping({"/", ""})
     public String index(Model model, HttpSession session) {
         if (session.getAttribute("user") != null) {
@@ -50,9 +57,18 @@ public class UserController {
     }
 
     @GetMapping({"/trang-thai-vi-pham", "/trang-thai-vi-pham/"})
-    public String trangThaiViPham(Model model) {
-        // TODO SOMETHING ELSE
-        return "/user/trangthaivipham/index";
+    public String trangThaiViPham(Model model,HttpSession session) {
+
+            List<XuLy> violations = xuLyService.getAllXuLy( ); // Assuming you have a service method to retrieve all violations
+
+
+            model.addAttribute("violation", violations);
+
+
+            return "/user/trangthaivipham/index";
+
+
+
     }
 
     @PostMapping({"/", ""})
