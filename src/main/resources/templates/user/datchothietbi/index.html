@@ -53,6 +53,7 @@
                                         <select id="select-by" class="form-select" aria-label="">
                                             <option value="all" >Tất cả</option>
                                             <option value="maTB" >Mã thiết bị</option>
+                                            <option value="tenTB" >Tên thiết bị</option>
                                         </select>
                                     </div>
                                     <div class="col">
@@ -64,13 +65,13 @@
                                                >
                                     </div>
                                     <div class="col">
-                                        <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
+                                        <button class="btn btn-secondary" onclick="searchByMaThietBi()">Tìm kiếm</button>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="ui-center">
-                                <div th:if="${thietBiDatCho != null and not thietBiDatCho}"class="product-container-wrapper">
+                                <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}"class="product-container-wrapper">
                                     <!-- Các mã HTML để hiển thị danh sách thietBiDatCho -->
                                     <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}" class="product-container-wrapper">
                                     <div th:each="thietBi : ${thietBiDatCho.content}" class="product-container">
@@ -134,16 +135,48 @@
 
                 <script src="../../js/utils.js" type="module"></script>
                 <script>
-                    function searchThietBi() {
-                    const selectBy = document.getElementById("select-by").value
-                    const searchText = document.getElementById("txt-search").value
-                    window.location.href = window.location.href.split('?')[0] + `?${selectBy}=${searchText}`
-                    }
-                    document.getElementById("txt-search").addEventListener("keydown", function (event) {
-                    if (event.key === 'Enter') {
-                    searchThietBi();
-                    }
-                    })
+                    // Lắng nghe sự kiện keypress trên ô input
+                const searchInput = document.getElementById("txt-search");
+                searchInput.addEventListener("keypress", function(event) {
+                if (event.keyCode === 13) {
+                    searchByMaThietBi(); 
+                }
+                });
+
+                // Lắng nghe sự kiện change trên select-by
+                const selectBy = document.getElementById("select-by");
+                selectBy.addEventListener("change", function(event) {
+                    searchByMaThietBi(); 
+                });
+
+                function searchByMaThietBi() {
+                    const searchText = document.getElementById("txt-search").value;
+                    const searchBy = document.getElementById("select-by").value;
+                    const productContainers = document.querySelectorAll(".product-container");
+                    productContainers.forEach(container => {
+                        const maThietBi = container.querySelector(".id p").textContent;
+                        const tenThietBi = container.querySelector(".name p").textContent;
+                        if (searchBy === "maTB") {
+                            if (maThietBi.includes(searchText)) {
+                                container.style.display = "block";
+                            } else {
+                                container.style.display = "none";
+                            }
+                        } else if (searchBy === "tenTB") {
+                            if (tenThietBi.includes(searchText)) {
+                            container.style.display = "block";
+                            } else {
+                                container.style.display = "none";
+                            }
+                        }else if (searchBy === "all") {
+                                if (maThietBi.includes(searchText) || tenThietBi.includes(searchText)) {
+                                container.style.display = "block";
+                            } else {
+                                container.style.display = "none";
+                        }
+                }
+                });
+                }
                 </script>
                 <script>
                     window.onload = function() {

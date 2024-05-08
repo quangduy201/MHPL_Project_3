@@ -53,6 +53,7 @@
                                         <select id="select-by" class="form-select" aria-label="">
                                             <option value="all" >Tất cả</option>
                                             <option value="maTB" >Mã thiết bị</option>
+                                            <option value="tenTB" >Tên thiết bị</option>
                                         </select>
                                     </div>
                                     <div class="col">
@@ -64,7 +65,7 @@
                                                >
                                     </div>
                                     <div class="col">
-                                        <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
+                                        <button class="btn btn-secondary" onclick="searchByMaThietBi()">Tìm kiếm</button>
                                     </div>
                                 </div>
                             </div>
@@ -132,25 +133,46 @@
 
             <script src="../../js/utils.js" type="module"></script>
             <script>
+
+                // Lắng nghe sự kiện keypress trên ô input
+                const searchInput = document.getElementById("txt-search");
+                searchInput.addEventListener("keypress", function(event) {
+                if (event.keyCode === 13) {
+                    searchByMaThietBi(); 
+                }
+                });
+
+                // Lắng nghe sự kiện change trên select-by
+                const selectBy = document.getElementById("select-by");
+                selectBy.addEventListener("change", function(event) {
+                    searchByMaThietBi(); 
+                });
+
                 function searchByMaThietBi() {
-                // Lấy giá trị mã thiết bị từ ô input
-                const searchText = document.getElementById("txt-search").value;
-
-                // Lấy danh sách các container chứa thông tin sản phẩm
-                const productContainers = document.querySelectorAll(".product-container");
-
-                // Duyệt qua từng container để kiểm tra mã thiết bị
-                productContainers.forEach(container => {
-                // Lấy mã thiết bị từ container hiện tại
-                const maThietBi = container.querySelector(".id p").textContent;
-
-                // Kiểm tra nếu mã thiết bị chứa giá trị tìm kiếm
-                if (maThietBi.includes(searchText)) {
-                // Hiển thị container nếu tìm thấy kết quả
-                container.style.display = "block";
-                } else {
-                // Ẩn container nếu không tìm thấy kết quả
-                container.style.display = "none";
+                    const searchText = document.getElementById("txt-search").value;
+                    const searchBy = document.getElementById("select-by").value;
+                    const productContainers = document.querySelectorAll(".product-container");
+                    productContainers.forEach(container => {
+                        const maThietBi = container.querySelector(".id p").textContent;
+                        const tenThietBi = container.querySelector(".name p").textContent;
+                        if (searchBy === "maTB") {
+                            if (maThietBi.includes(searchText)) {
+                                container.style.display = "block";
+                            } else {
+                                container.style.display = "none";
+                            }
+                        } else if (searchBy === "tenTB") {
+                            if (tenThietBi.includes(searchText)) {
+                            container.style.display = "block";
+                            } else {
+                                container.style.display = "none";
+                            }
+                        }else if (searchBy === "all") {
+                                if (maThietBi.includes(searchText) || tenThietBi.includes(searchText)) {
+                                container.style.display = "block";
+                            } else {
+                                container.style.display = "none";
+                        }
                 }
                 });
                 }
