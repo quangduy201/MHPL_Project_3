@@ -5,6 +5,7 @@ import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.XuLyRequest;
 import com.example.project_3.services.ThanhVienService;
 import com.example.project_3.services.XuLyService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,11 +35,15 @@ public class XuLyController {
     private ThanhVienService thanhVienService;
 
     @GetMapping({"", "/"})
-    public String showAllXuLy(Model model) {
-        addXuLyListToModel(model);
-        model.addAttribute("xly", new XuLyRequest());
-        model.addAttribute("showForm", false);
-        return "admin/xuly/index";
+    public String showAllXuLy(Model model, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            addXuLyListToModel(model);
+            model.addAttribute("xly", new XuLyRequest());
+            model.addAttribute("showForm", false);
+            return "admin/xuly/index";
+        }
+
+        return "redirect:/admin/login";
     }
 
     @GetMapping("/edit")
@@ -121,26 +126,30 @@ public class XuLyController {
     }
 
     @PostMapping({"", "/"})
-    public String addXuLy(Model model, @Valid @ModelAttribute("xly") XuLyRequest xly, BindingResult result) {
-        try {
-            if (result.hasErrors()) {
-                addXuLyListToModel(model);
-                model.addAttribute("showForm", true);
-                return "admin/xuly/index";
+    public String addXuLy(Model model, @Valid @ModelAttribute("xly") XuLyRequest xly, BindingResult result, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            try {
+                if (result.hasErrors()) {
+                    addXuLyListToModel(model);
+                    model.addAttribute("showForm", true);
+                    return "admin/xuly/index";
+                }
+                XuLy xuLy = new XuLy();
+                ThanhVien thanhVien = thanhVienService.getThanhVienById(Long.valueOf(xly.getMaTV()));
+                xuLy.setMaTV(thanhVien);
+                xuLy.setHinhThucXL(xly.getHinhThucXL());
+                xuLy.setSoTien(Integer.valueOf(xly.getSoTien()));
+                xuLy.setNgayXL(xly.getNgayXL().atZone(ZoneId.systemDefault()).toInstant());
+                xuLy.setTrangThaiXL(xly.getTrangThaiXL() != null ? (xly.getTrangThaiXL() ? 1 : 0) : 0);
+                xuLyService.saveXuLy(xuLy);
+                model.addAttribute("showForm", false);
+            } catch (Exception e) {
+                System.out.println("Lỗi khi thêm mới xu ly: " + e.getMessage());
             }
-            XuLy xuLy = new XuLy();
-            ThanhVien thanhVien = thanhVienService.getThanhVienById(Long.valueOf(xly.getMaTV()));
-            xuLy.setMaTV(thanhVien);
-            xuLy.setHinhThucXL(xly.getHinhThucXL());
-            xuLy.setSoTien(Integer.valueOf(xly.getSoTien()));
-            xuLy.setNgayXL(xly.getNgayXL().atZone(ZoneId.systemDefault()).toInstant());
-            xuLy.setTrangThaiXL(xly.getTrangThaiXL() != null ? (xly.getTrangThaiXL() ? 1 : 0) : 0);
-            xuLyService.saveXuLy(xuLy);
-            model.addAttribute("showForm", false);
-        } catch (Exception e) {
-            System.out.println("Lỗi khi thêm mới xu ly: " + e.getMessage());
+            return "redirect:/admin/xu-ly";
         }
-        return "redirect:/admin/xu-ly";
+
+        return "redirect:/admin/login";
     }
 
     private void addXuLyListToModel(Model model) {

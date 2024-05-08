@@ -40,6 +40,8 @@
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet" />
     <link href="/css/dashboard.css" rel="stylesheet" />
+
+    <script src="https://kit.fontawesome.com/10c30652a2.js" crossorigin="anonymous"></script>
 </head>
 
 <body id="page-top">
@@ -69,7 +71,7 @@
                                 Thông tin cá nhân
                             </h1>
                         </div>
-                        <form class="row g-3" method="POST" th:object="${tv}" action="/user/">
+                        <form class="row g-3" method="POST" th:object="${tv}" action="/user">
                             <!-- Cột bên trái -->
                             <div class="col-md-6" >
                                 <div class="mb-3">
@@ -79,12 +81,12 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="nganh" style="font-size: 14px; color: #495057;">Ngành</label>
-                                    <input type="text" class="form-control" name = "nganh" id="nganh" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.nganh}'>
+                                    <input type="text" class="form-control" name="nganh" id="nganh" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value='${session.user.nganh}'>
                                     <p th:if="${#fields.hasErrors('nganh')}" class="text-danger" th:errors="${tv.nganh}"></p>
                                 </div>
                                 <div class="mb-3">
                                     <label for="sdt" style="font-size: 14px; color: #495057;">Số điện thoại</label>
-                                    <input type="text" class="form-control" name = "sdt" id="sdt" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.sdt}'>
+                                    <input type="text" class="form-control" name="sdt" id="sdt" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value='${session.user.sdt}'>
                                     <p th:if="${#fields.hasErrors('sdt')}" class="text-danger" th:errors="${tv.sdt}"></p>
                                 </div>
                             </div>
@@ -93,18 +95,18 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="hoTen" style="font-size: 14px; color: #495057;">Họ và tên</label>
-                                    <input type="text" class="form-control" name = "hoTen" id="hoTen" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.hoTen}'>
+                                    <input type="text" class="form-control" name="hoTen" id="hoTen" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value='${session.user.hoTen}'>
                                     <p th:if="${#fields.hasErrors('hoTen')}" class="text-danger" th:errors="${tv.hoTen}"></p>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="khoa" style="font-size: 14px; color: #495057;">Khoa</label>
-                                    <input type="text" class="form-control" name = "khoa" id="khoa" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.khoa}'>
+                                    <input type="text" class="form-control" name="khoa" id="khoa" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value='${session.user.khoa}'>
                                     <p th:if="${#fields.hasErrors('khoa')}" class="text-danger" th:errors="${tv.khoa}"></p>
                                 </div>
                                 <div class="mb-3">
                                     <label for="email" style="font-size: 14px; color: #495057;">Email</label>
-                                    <input type="email" class="form-control" name = "email" id="email" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value = '${tv.email}'>
+                                    <input type="email" class="form-control" name="email" id="email" style="background-color: #f8f9fa; border: 1px solid #ced4da; color: #495057; font-size: 14px; border-radius: 8px; padding: 10px; width: 100%; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;" th:value='${session.user.email}'>
                                     <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="${tv.email}"></p>
                                 </div>
                             </div>
@@ -138,15 +140,39 @@
         </div>
         <form class="space-y-4" action="/user/thaydoimatkhau" method="POST" th:object="${tvChangePassword}">
             <div class="form-group">
-                <input type="password" class="form-control" id="matKhauCu" name="matKhauCu" placeholder="Mật khẩu hiện tại" th:value="${tvChangePassword.matKhauCu}">
+                <div class="input-group">
+                    <input type="password" class="form-control" id="matKhauCu" name="matKhauCu" placeholder="Mật khẩu hiện tại" th:value="${tvChangePassword.matKhauCu}">
+                    <div class="input-group-append">
+                        <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword('matKhauCu')">
+                            <i class="fas fa-eye" id="eye-icon-matKhauCu" style="display: none"></i>
+                            <i class="fas fa-eye-slash" id="eye-slash-icon-matKhauCu"></i>
+                        </span>
+                    </div>
+                </div>
                 <p th:if="${#fields.hasErrors('matKhauCu')}" class="text-danger" th:errors="*{matKhauCu}"></p>
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" id="matKhauMoi" name="matKhauMoi" placeholder="Mật khẩu mới" th:value="${tvChangePassword.matKhauMoi}">
+                <div class="input-group">
+                    <input type="password" class="form-control" id="matKhauMoi" name="matKhauMoi" placeholder="Mật khẩu mới" th:value="${tvChangePassword.matKhauMoi}">
+                    <div class="input-group-append">
+                        <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword('matKhauMoi')">
+                            <i class="fas fa-eye" id="eye-icon-matKhauMoi" style="display: none"></i>
+                            <i class="fas fa-eye-slash" id="eye-slash-icon-matKhauMoi"></i>
+                        </span>
+                    </div>
+                </div>
                 <p th:if="${#fields.hasErrors('matKhauMoi')}" class="text-danger" th:errors="*{matKhauMoi}"></p>
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" id="xacNhanMatKhauMoi" name="xacNhanMatKhauMoi" placeholder="Xác nhận mật khẩu mới" th:value="${tvChangePassword.xacNhanMatKhauMoi}">
+                <div class="input-group">
+                    <input type="password" class="form-control" id="xacNhanMatKhauMoi" name="xacNhanMatKhauMoi" placeholder="Xác nhận mật khẩu mới" th:value="${tvChangePassword.xacNhanMatKhauMoi}">
+                    <div class="input-group-append">
+                        <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword('xacNhanMatKhauMoi')">
+                            <i class="fas fa-eye" id="eye-icon-xacNhanMatKhauMoi" style="display: none"></i>
+                            <i class="fas fa-eye-slash" id="eye-slash-icon-xacNhanMatKhauMoi"></i>
+                        </span>
+                    </div>
+                </div>
                 <p th:if="${#fields.hasErrors('xacNhanMatKhauMoi')}" class="text-danger" th:errors="*{xacNhanMatKhauMoi}"></p>
             </div>
             <div class="form-group text-center">
@@ -184,5 +210,21 @@
 </script>
 
 <script src="../js/utils.js" type="module"></script>
+<script>
+    function togglePassword(id) {
+        const x = document.getElementById(id);
+        const eyeSlash = document.getElementById("eye-slash-icon-" + id);
+        const eye = document.getElementById("eye-icon-" + id);
+        if (x.type === "password") {
+            x.type = "text";
+            eye.style.display = "block";
+            eyeSlash.style.display = "none";
+        } else {
+            x.type = "password";
+            eye.style.display = "none";
+            eyeSlash.style.display = "block";
+        }
+    }
+</script>
 </body>
 </html>

@@ -63,31 +63,29 @@
             <div class="container-fluid">
                 <!-- Member Statistic -->
                 <div>
-                    <!-- Assuming you want to display the violation information in a table -->
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Violation ID</th>
-                            <th>Member ID</th>
-                            <th>Violation Type</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Iterate over the violations -->
-                        <tr th:each="violation : ${violation}">
-                            <td th:text="${violation.maXL}">Violation ID</td>
-                            <td th:text="${violation.maTV.HoTen}">Violation Name</td>
-                            <td th:text="${violation.hinhThucXL}">Violation Type</td>
-                            <td th:text="${violation.soTien}">Amount</td>
-                            <td th:text="${violation.ngayXL}">Date</td>
-                            <td th:text="${violation.trangThaiXL}">Status</td>
-                        </tr>
-                        </tbody>
-                    </table>
-
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                         <h3>Danh sách các trạng thái vi phạm </h3>
+                        </div>
+                        <table id="muontbi" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã xử lý</th>
+                                    <th>Hình thức xử lý</th>
+                                    <th>Số tiền</th>
+                                    <th>Ngày xử lý</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="vp : ${vipham}">
+                                    <td th:text="${vp.maXL}"></td>
+                                    <td th:text="${vp.hinhThucXL}"></td>
+                                    <td th:text="${vp.ngayXL}"></td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <!-- /.container-fluid -->

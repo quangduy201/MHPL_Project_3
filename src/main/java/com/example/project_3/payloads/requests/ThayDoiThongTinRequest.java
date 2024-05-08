@@ -1,19 +1,17 @@
 package com.example.project_3.payloads.requests;
 
-import com.example.project_3.validators.MatchPassword;
-import com.example.project_3.validators.OnlyNumber;
 import com.example.project_3.validators.VietnamesePhoneNumber;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class RegisterRequest {
+@NoArgsConstructor
+@Getter
+@Setter
+public class ThayDoiThongTinRequest {
     @NotBlank(message = "Tên thành viên không được để trống.")
     @Size(min = 4, message = "Họ tên phải chứa ít nhất 4 kí tự.")
     @Size(max = 100, message = "Họ tên không được dài quá 100 kí tự.")
@@ -34,22 +32,4 @@ public class RegisterRequest {
     @NotBlank(message = "Email không được để trống.")
     @Email(message = "Email không hợp lệ.")
     private String email;
-
-    @NotBlank(message = "Mã thành viên không được để trống.")
-    @OnlyNumber(message = "Mã thành viên chỉ chứa số.")
-    @Size(min = 10, message = "Mã thành viên phải chứa 10 kí tự.")
-    @Size(max = 10, message = "Mã thành viên phải chứa 10 kí tự.")
-    private String maTV;
-
-    @NotBlank(message = "Mật khẩu không được để trống.")
-    private String matKhau;
-
-    @NotBlank(message = "Xác nhận mật khẩu không được để trống.")
-    private String xacNhanMatKhau;
-
-    public boolean isXacNhanMatKhauValid() {
-        return matKhau != null && matKhau.equals(xacNhanMatKhau);
-    }
-
-    private String credentials;
 }

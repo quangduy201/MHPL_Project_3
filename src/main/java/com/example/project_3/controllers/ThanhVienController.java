@@ -1,20 +1,23 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.ThietBi;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.services.ThanhVienService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @Controller
-@RequestMapping("/admin/thanhvien")
+@RequestMapping("/admin/thanh-vien")
 public class ThanhVienController {
     private final ThanhVienService thanhvienService;
 
@@ -24,70 +27,85 @@ public class ThanhVienController {
     }
 
     @GetMapping({"", "/"})
-    public String showThanhVien(Model model, @RequestParam Map<String, String> requestParams) {
-        Page<ThanhVien> thanhVienList = thanhvienService.getThanhVien(requestParams);
-        requestParams.remove("page");
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String> entry : requestParams.entrySet())
-            builder.append(entry.getKey())
-                    .append('=')
-                    .append(entry.getValue())
-                    .append('&');
-        if (!builder.isEmpty())
-            builder.setLength(builder.length() - 1); // remove the last '&'
-        model.addAttribute("tvList", thanhVienList);
-        model.addAttribute("params", builder.toString());
+    public String showAllThanhVien(Model model) {
+        addThanhVienListToModel(model);
+        model.addAttribute("tv", new ThanhVienRequest());
+        model.addAttribute("showForm", false);
         return "/admin/thanhvien/index";
     }
 
     @GetMapping("/edit")
-    public String showEdit(Model model, @RequestParam Long maTV) {
+    public ResponseEntity<?> showEdit(@RequestParam String maTV) {
         try {
-            ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
-            model.addAttribute("thanhVien", thanhVien);
-
+            Long id = Long.parseLong(maTV);
+            ThanhVien tv = thanhvienService.getThanhVienById(id);
             ThanhVienRequest thanhVienRequest = ThanhVienRequest.builder()
-                    .hoTen(thanhVien.getHoTen())
-                    .khoa(thanhVien.getKhoa())
-                    .nganh(thanhVien.getNganh())
-                    .sdt(thanhVien.getSdt())
-                    .email(thanhVien.getEmail())
+                    .maTV(tv.getMaTV())
+                    .hoTen(tv.getHoTen())
+                    .khoa(tv.getKhoa())
+                    .nganh(tv.getNganh())
+                    .sdt(tv.getSdt())
+                    .email(tv.getEmail())
                     .build();
-            model.addAttribute("tvRequest", thanhVienRequest);
+            return ResponseEntity.ok(thanhVienRequest);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return "redirect:/admin/thanhvien";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred while fetching data.");
         }
-        return "/admin/thanhvien/edit";
     }
 
     @PostMapping("/edit")
     public String editThanhVien(Model model,
-                                @RequestParam Long maTV,
-                                @Valid @ModelAttribute("tvRequest") ThanhVienRequest tvRequest,
-                                BindingResult result) {
-        try {
-            ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
-            model.addAttribute("thanhVien", thanhVien);
+                                @RequestParam String maTV,
+                                @Valid @ModelAttribute("tv") ThanhVienRequest tv,
+                                BindingResult result, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            try {
+                if (result.hasErrors()) {
+                    addThanhVienListToModel(model);
+                    model.addAttribute("showFormEdit", true);
+                    return "/admin/thanhvien/index";
+                }
 
-            if (result.hasErrors()) {
-                return "/admin/thanhvien/edit";
+                Long id = Long.parseLong(maTV);
+                ThanhVien thanhVien = thanhvienService.getThanhVienById(id);
+                thanhVien.setHoTen(tv.getHoTen());
+                thanhVien.setKhoa(tv.getKhoa());
+                thanhVien.setNganh(tv.getNganh());
+                thanhVien.setSdt(tv.getSdt());
+                thanhVien.setEmail(tv.getEmail());
+                thanhvienService.saveThanhVien(thanhVien);
+                model.addAttribute("showFormEdit", false);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
+            return "redirect:/admin/thanh-vien";
+        } else {
+            return "redirect:/admin/login";
+        }
+    }
 
-            thanhVien.setHoTen(tvRequest.getHoTen());
-            thanhVien.setKhoa(tvRequest.getKhoa());
-            thanhVien.setNganh(tvRequest.getNganh());
-            thanhVien.setSdt(tvRequest.getSdt());
-            thanhVien.setEmail(tvRequest.getEmail());
-
-            thanhvienService.saveThanhVien(thanhVien);
+    @PostMapping("/excel")
+    public String excel(@RequestParam Object[][] rows) {
+        try {
+            for (Object[] row : rows) {
+                ThanhVien tv = ThanhVien.builder()
+                        .maTV(Long.parseLong(row[0].toString()))
+                        .hoTen(row[1].toString())
+                        .khoa(row[2].toString())
+                        .nganh(row[3].toString())
+                        .sdt(row[4].toString())
+                        .email(row[5].toString())
+                        .build();
+                thanhvienService.saveThanhVien(tv);
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return "redirect:/admin/thanhvien";
+        return "redirect:/admin/thanh-vien";
     }
 
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public String deleteThanhVien(@RequestParam String maTV) {
         try {
             Long id = Long.parseLong(maTV);
@@ -95,6 +113,50 @@ public class ThanhVienController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return "redirect:/admin/thanhvien";
+        return "redirect:/admin/thanh-vien";
+    }
+
+    @PostMapping({"/", ""})
+    public String addThanhVien(@Valid @ModelAttribute("tv") ThanhVienRequest tv,
+                               BindingResult result,
+                               Model model) {
+        try {
+            if (result.hasErrors()) {
+                addThanhVienListToModel(model);
+                model.addAttribute("showForm", true);
+                return "/admin/thanhvien/index";
+            }
+
+            if (existsByMaTV(tv.getMaTV().toString())) {
+                result.rejectValue("maTV", "error.tv", "Mã thành viên đã tồn tại");
+                addThanhVienListToModel(model);
+                model.addAttribute("showForm", true);
+                return "/admin/thanhvien/index";
+            }
+
+            ThanhVien thanhVien = ThanhVien.builder()
+                    .maTV(tv.getMaTV())
+                    .hoTen(tv.getHoTen())
+                    .khoa(tv.getKhoa())
+                    .nganh(tv.getNganh())
+                    .sdt(tv.getSdt())
+                    .email(tv.getEmail())
+                    .build();
+            thanhvienService.saveThanhVien(thanhVien);
+            model.addAttribute("showForm", false);
+        } catch (Exception e) {
+            System.out.println("Lỗi khi thêm thành viên: " + e.getMessage());
+        }
+        return "redirect:/admin/thanh-vien";
+    }
+
+    private boolean existsByMaTV(String maTV) {
+        ThanhVien thanhVien = thanhvienService.getThanhVienById(Long.parseLong(maTV));
+        return thanhVien != null;
+    }
+
+    private void addThanhVienListToModel(Model model) {
+        List<ThanhVien> thanhVienList = thanhvienService.getAllThanhVien();
+        model.addAttribute("thanhVienList", thanhVienList);
     }
 }
