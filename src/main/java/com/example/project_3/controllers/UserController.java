@@ -8,6 +8,7 @@ import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.payloads.requests.ThayDoiThongTinRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.ThanhVienService;
+import com.example.project_3.services.impl.XuLyServiceImpl;
 import com.example.project_3.services.ThietBiService;
 import com.example.project_3.services.XuLyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -35,15 +38,10 @@ public class UserController {
     @Autowired
     private ThanhVienService thanhvienService;
     @Autowired
+    private XuLyService xuLyService;
+  
+    @Autowired
     private ThietBiService thietbiService;
-    @Autowired
-    private XuLyService xulyService;
-
-    @Autowired
-    public UserController(ThietBiService thietBiService) {
-        this.thietbiService = thietBiService;
-        this.xulyService = xulyService;
-    }
 
     @GetMapping({"/", ""})
     public String index(Model model, HttpSession session) {
@@ -96,7 +94,7 @@ public class UserController {
         // TODO SOMETHING ELSE
         ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
         Long maTV = tvResponse.getMaTV();
-        Page<XuLy> viPham = xulyService.getViPhamByMaTV(maTV);
+        Page<XuLy> viPham = xuLyService.getViPhamByMaTV(maTV);
         if (viPham.isEmpty()) {
             model.addAttribute("vipham", null);
         } else {

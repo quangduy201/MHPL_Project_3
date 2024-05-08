@@ -47,5 +47,8 @@ public class ThanhVien {
     @Size(max = 10)
     @Column(name = "Password", length = 10)
     private String password;
+    
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
 
 }
