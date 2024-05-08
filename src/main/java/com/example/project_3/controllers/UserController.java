@@ -5,10 +5,13 @@ import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.QuenMatKhauRequest;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
+import com.example.project_3.payloads.requests.ThayDoiThongTinRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.ThanhVienService;
 import com.example.project_3.services.ThietBiService;
 import com.example.project_3.services.XuLyService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 
 import jakarta.validation.Valid;
@@ -103,49 +106,47 @@ public class UserController {
     }
 
     @PostMapping({"/", ""})
-    public String editThanhVien(Model model, HttpSession httpSession,
-            @RequestParam Long maTV,
-            @Valid @ModelAttribute("tv") ThanhVienRequest tvRequest,
-            BindingResult result) {
-        try {
-            ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
+    public String editThanhVien(@Valid @ModelAttribute("tv") ThayDoiThongTinRequest tvRequest,
+        BindingResult result,
+        Model model, HttpSession httpSession,
+        @RequestParam Long maTV) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
 
-            if (result.hasErrors()) {
-                model.addAttribute("tv", tvRequest);
-                model.addAttribute("tvChangePassword", new QuenMatKhauRequest());
-
-                return "user/index";
-            }
-
-            // Cập nhật thông tin của thành viên
-            thanhVien.setHoTen(tvRequest.getHoTen());
-            thanhVien.setKhoa(tvRequest.getKhoa());
-            thanhVien.setNganh(tvRequest.getNganh());
-            thanhVien.setSdt(tvRequest.getSdt());
-            thanhVien.setEmail(tvRequest.getEmail());
-
-            // Lưu thông tin đã cập nhật vào cơ sở dữ liệu
-            thanhvienService.saveThanhVien(thanhVien);
-
-            // Cập nhật session.user với thông tin mới
-            ThanhVienResponse thanhVienResponse = new ThanhVienResponse();
-            thanhVienResponse.setMaTV(maTV);
-            thanhVienResponse.setHoTen(tvRequest.getHoTen());
-            thanhVienResponse.setKhoa(tvRequest.getKhoa());
-            thanhVienResponse.setNganh(tvRequest.getNganh());
-            thanhVienResponse.setSdt(tvRequest.getSdt());
-            thanhVienResponse.setEmail(tvRequest.getEmail());
-            httpSession.setAttribute("user", thanhVienResponse);
-
+        if (result.hasErrors()) {
+            model.addAttribute("tv", tvRequest);
             model.addAttribute("tvChangePassword", new QuenMatKhauRequest());
 
-            return "redirect:/user";
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(objectMapper.writeValueAsString(tvRequest));
+
+            return "user/index";
         }
+
+        ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
+
+        // Cập nhật thông tin của thành viên
+        thanhVien.setHoTen(tvRequest.getHoTen());
+        thanhVien.setKhoa(tvRequest.getKhoa());
+        thanhVien.setNganh(tvRequest.getNganh());
+        thanhVien.setSdt(tvRequest.getSdt());
+        thanhVien.setEmail(tvRequest.getEmail());
+
+        // Lưu thông tin đã cập nhật vào cơ sở dữ liệu
+        thanhvienService.saveThanhVien(thanhVien);
+
+        // Cập nhật session.user với thông tin mới
+        ThanhVienResponse thanhVienResponse = new ThanhVienResponse();
+        thanhVienResponse.setMaTV(maTV);
+        thanhVienResponse.setHoTen(tvRequest.getHoTen());
+        thanhVienResponse.setKhoa(tvRequest.getKhoa());
+        thanhVienResponse.setNganh(tvRequest.getNganh());
+        thanhVienResponse.setSdt(tvRequest.getSdt());
+        thanhVienResponse.setEmail(tvRequest.getEmail());
+        httpSession.setAttribute("user", thanhVienResponse);
+
+        model.addAttribute("tv", tvRequest);
         model.addAttribute("tvChangePassword", new QuenMatKhauRequest());
 
-        return "user/index";
+        return "redirect:/user";
     }
 
     @PostMapping("/thaydoimatkhau")
