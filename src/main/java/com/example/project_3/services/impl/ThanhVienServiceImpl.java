@@ -70,6 +70,11 @@ public class ThanhVienServiceImpl implements ThanhVienService {
     }
 
     @Override
+    public ThanhVien getThanhVienBySdt(String sdt) {
+        return thanhVienRepository.findBySdt(sdt).orElse(null);
+    }
+
+    @Override
     public ThanhVien saveThanhVien(ThanhVien tv) {
         return thanhVienRepository.save(tv);
     }

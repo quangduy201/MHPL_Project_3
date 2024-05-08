@@ -3,6 +3,7 @@ package com.example.project_3.controllers;
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.services.ThanhVienService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,41 +25,49 @@ public class ThanhVienController {
     }
 
     @GetMapping({"", "/"})
-    public String showThanhVien(Model model, @RequestParam Map<String, String> requestParams) {
-        Page<ThanhVien> thanhVienList = thanhvienService.getThanhVien(requestParams);
-        requestParams.remove("page");
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String> entry : requestParams.entrySet())
-            builder.append(entry.getKey())
-                    .append('=')
-                    .append(entry.getValue())
-                    .append('&');
-        if (!builder.isEmpty())
-            builder.setLength(builder.length() - 1); // remove the last '&'
-        model.addAttribute("tvList", thanhVienList);
-        model.addAttribute("params", builder.toString());
-        return "/admin/thanhvien/index";
+    public String showThanhVien(Model model, @RequestParam Map<String, String> requestParams, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            Page<ThanhVien> thanhVienList = thanhvienService.getThanhVien(requestParams);
+            requestParams.remove("page");
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<String, String> entry : requestParams.entrySet())
+                builder.append(entry.getKey())
+                        .append('=')
+                        .append(entry.getValue())
+                        .append('&');
+            if (!builder.isEmpty())
+                builder.setLength(builder.length() - 1); // remove the last '&'
+            model.addAttribute("tvList", thanhVienList);
+            model.addAttribute("params", builder.toString());
+            return "/admin/thanhvien/index";
+        } else {
+            return "redirect:/admin/login";
+        }
     }
 
     @GetMapping("/edit")
-    public String showEdit(Model model, @RequestParam Long maTV) {
-        try {
-            ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
-            model.addAttribute("thanhVien", thanhVien);
+    public String showEdit(Model model, @RequestParam Long maTV, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            try {
+                ThanhVien thanhVien = thanhvienService.getThanhVienById(maTV);
+                model.addAttribute("thanhVien", thanhVien);
 
-            ThanhVienRequest thanhVienRequest = ThanhVienRequest.builder()
-                    .hoTen(thanhVien.getHoTen())
-                    .khoa(thanhVien.getKhoa())
-                    .nganh(thanhVien.getNganh())
-                    .sdt(thanhVien.getSdt())
-                    .email(thanhVien.getEmail())
-                    .build();
-            model.addAttribute("tvRequest", thanhVienRequest);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return "redirect:/admin/thanhvien";
+                ThanhVienRequest thanhVienRequest = ThanhVienRequest.builder()
+                        .hoTen(thanhVien.getHoTen())
+                        .khoa(thanhVien.getKhoa())
+                        .nganh(thanhVien.getNganh())
+                        .sdt(thanhVien.getSdt())
+                        .email(thanhVien.getEmail())
+                        .build();
+                model.addAttribute("tvRequest", thanhVienRequest);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return "redirect:/admin/thanhvien";
+            }
+            return "/admin/thanhvien/edit";
+        } else {
+            return "redirect:/admin/login";
         }
-        return "/admin/thanhvien/edit";
     }
 
     @PostMapping("/edit")

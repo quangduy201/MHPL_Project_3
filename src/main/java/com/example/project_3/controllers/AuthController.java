@@ -5,6 +5,7 @@ import com.example.project_3.payloads.requests.LoginRequest;
 import com.example.project_3.payloads.requests.RegisterRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.AuthService;
+import com.example.project_3.services.ThanhVienService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 public class AuthController {
-    private final AuthService authService;
+    @Autowired
+    private AuthService authService;
 
     @Autowired
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+    private ThanhVienService thanhVienService;
 
     @GetMapping({"/login", "/login/"})
     public String loginForm(Model model) {
@@ -67,6 +67,20 @@ public class AuthController {
                 bindingResult.rejectValue("xacNhanMatKhau", "password.mismatch", "Trường này không khớp với trường mật khẩu");
                 bindingResult.rejectValue("matKhau", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu");
             }
+            model.addAttribute("tv", tv);
+            return "register/index";
+        }
+
+        if (thanhVienService.getThanhVienById(Long.valueOf(tv.getMaTV())) != null) {
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Email đã tồn tại trong hệ thống");
+
+            model.addAttribute("tv", tv);
+            return "register/index";
+        }
+
+        if (thanhVienService.getThanhVienBySdt(tv.getSdt()) != null) {
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Số điện thoại đã tồn tại trong hệ thống");
+
             model.addAttribute("tv", tv);
             return "register/index";
         }

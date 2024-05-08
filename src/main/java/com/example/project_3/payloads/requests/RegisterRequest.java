@@ -50,4 +50,6 @@ public class RegisterRequest {
     public boolean isXacNhanMatKhauValid() {
         return matKhau != null && matKhau.equals(xacNhanMatKhau);
     }
+
+    private String credentials;
 }
