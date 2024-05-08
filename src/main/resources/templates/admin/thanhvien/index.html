@@ -117,7 +117,8 @@
                         <td th:text="${tv.email}"></td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-primary btn-sm"
-                               th:href="@{/admin/thanhvien/edit(maTV=${tv.maTV})}"
+                               th:href="@{/templates/admin/thanhvien/edit(maTV=${tv.maTV})}"
+                               onclick="showEdit(maTV=${tv.maTV})"
                             >Sửa</a>
                             <a class="btn btn-primary btn-sm"
                                th:href="@{/admin/thanhvien/delete(maTV=${tv.maTV})}"
@@ -164,6 +165,26 @@
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <script>
+    function showEdit(maTV) {
+        $.ajax({
+            type: "GET",
+            url: "/templates/admin/thanhvien/edit",
+            data: { maTV: maTV },
+            success: function(response) {
+                document.getElementById("maTV").value = response.maTV;
+                document.getElementById("hoTen").value = response.hoTen;
+                document.getElementById("khoa").value = response.khoa;
+                document.getElementById("nganh").value = response.nganh;
+                document.getElementById("sdt").value = response.sdt;
+                document.getElementById("email").value = response.email;
+                document.getElementById("editForm").style.display = "block";
+            },
+            error: function(xhr) {
+                console.log("Lỗi khi lấy dữ liệu thành viên: " + xhr.responseText);
+            }
+        });
+    }
+    
     function searchThanhVien() {
         const selectBy = document.getElementById("select-by").value
         const searchText = document.getElementById("txt-search").value
