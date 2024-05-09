@@ -348,17 +348,6 @@
         }
     }
 
-    function searchThanhVien() {
-        const selectBy = document.getElementById("select-by").value
-        const searchText = document.getElementById("txt-search").value
-        window.location.href = window.location.href.split('?')[0] + `?${selectBy}=${searchText}`
-    }
-    document.getElementById("txt-search").addEventListener("keydown", function (event) {
-        if (event.key === 'Enter') {
-            searchThanhVien();
-        }
-    })
-
     $(document).ready(function() {
         $('#thanhVienTable').DataTable();
 
