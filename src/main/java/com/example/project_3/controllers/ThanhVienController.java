@@ -64,7 +64,7 @@ public class ThanhVienController {
                                 BindingResult result, HttpSession session) {
         if (session.getAttribute("admin") != null) {
             try {
-                if (result.hasErrors()) {
+                if (result.getAllErrors().size() > 1) {
                     addThanhVienListToModel(model);
                     model.addAttribute("showFormEdit", true);
                     return "/admin/thanhvien/index";
@@ -125,7 +125,7 @@ public class ThanhVienController {
             Long namHoc = Long.parseLong(namNhapHoc);
             List<ThanhVien> thanhVienList = thanhvienService.getAllThanhVien();
             for (ThanhVien thanhVien : thanhVienList) {
-                if (String.valueOf(thanhVien.getMaTV()).substring(2, 4).equals(String.valueOf(namHoc))) {
+                if (thanhVien.getMaTV() != 0 && String.valueOf(thanhVien.getMaTV()).substring(2, 4).equals(String.valueOf(namHoc))) {
                     thanhvienService.deleteThanhVienById(thanhVien.getMaTV());
                 }
             }
@@ -140,7 +140,7 @@ public class ThanhVienController {
                                BindingResult result,
                                Model model) {
         try {
-            if (result.hasErrors()) {
+            if (result.getAllErrors().size() > 1) {
                 addThanhVienListToModel(model);
                 model.addAttribute("showForm", true);
                 return "/admin/thanhvien/index";
