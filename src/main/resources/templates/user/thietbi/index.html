@@ -83,7 +83,7 @@
                         <div th:each="tb : ${tbList}">
                             <div class="product-container">
                                 <div class="product-top">
-                                    <img src="../../../media/images/user_default.png" alt="" class="image-product"/>
+                                    <img th:attr="src=@{|/media/images/thietbi${tb.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
                                 </div>
                                 <div class="product-bottom">
                                     <div class="ui-data">
