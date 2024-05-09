@@ -56,7 +56,7 @@
                                 >
                             </div>
                             <div class="col">
-                                <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
+                                <button class="btn btn-secondary" onclick="searchByMaThietBi()">Tìm kiếm</button>
                             </div>
                         </div>
                     </div>
@@ -255,30 +255,28 @@ integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="ano
 
     function searchByMaThietBi() {
         const searchText = document.getElementById("txt-search").value;
-        const searchBy = document.getElementById("select-by").value;
         const productContainers = document.querySelectorAll(".product-container");
         productContainers.forEach(container => {
-            const maThietBi = container.querySelector(".id p").textContent;
-            const tenThietBi = container.querySelector(".name p").textContent;
-            if (searchBy === "maTB") {
-                if (maThietBi.includes(searchText)) {
-                    container.style.display = "block";
-                } else {
-                    container.style.display = "none";
-                }
-            } else if (searchBy === "tenTB") {
-                if (tenThietBi.includes(searchText)) {
+            const tenThietBi = container.querySelector(".name-laptop p").textContent;
+            // if (searchBy === "maTB") {
+            //     if (maThietBi.includes(searchText)) {
+            //         container.style.display = "block";
+            //     } else {
+            //         container.style.display = "none";
+            //     }
+            // } else if (searchBy === "tenTB") {
+            if (tenThietBi.includes(searchText)) {
                 container.style.display = "block";
-                } else {
-                    container.style.display = "none";
-                }
-            }else if (searchBy === "all") {
-                    if (maThietBi.includes(searchText) || tenThietBi.includes(searchText)) {
-                    container.style.display = "block";
-                } else {
-                    container.style.display = "none";
-                }
+            } else {
+                container.style.display = "none";
             }
+            // }else if (searchBy === "all") {
+            //         if (maThietBi.includes(searchText) || tenThietBi.includes(searchText)) {
+            //         container.style.display = "block";
+            //     } else {
+            //         container.style.display = "none";
+            //     }
+            // }
         });
     }
 </script>
