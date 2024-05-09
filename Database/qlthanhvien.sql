@@ -97,11 +97,38 @@ CREATE TABLE `thongtinsd` (
 -- Dumping data for table `thongtinsd`
 --
 
+CREATE TABLE `lichsuxoa` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `MaTT` int NOT NULL,
+    `delete_at` datetime NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+--
+-- Dumping data for table `lichsuxoa`
+--
+
+DELIMITER $$
+CREATE EVENT IF NOT EXISTS auto_delete_thongtinsd
+    ON SCHEDULE EVERY 1 MINUTE
+    DO
+    BEGIN
+        DELETE t FROM thongtinsd t JOIN lichsuxoa sd ON t.MaTT = sd.MaTT
+        WHERE sd.delete_at <= NOW();
+        DELETE FROM lichsuxoa WHERE delete_at <= NOW();
+    END$$
+DELIMITER ;
+
+SET GLOBAL event_scheduler = ON;
+
+
 LOCK TABLES `thongtinsd` WRITE;
 /*!40000 ALTER TABLE `thongtinsd` DISABLE KEYS */;
 INSERT INTO `thongtinsd` VALUES (1,1120150184,NULL,'2024-03-05 09:00:00',NULL,NULL,NULL),(2,1123330257,1000001,NULL,'2024-02-12 10:00:32','2024-02-12 14:00:00',NULL),(3,1121530087,NULL,'2024-03-05 09:00:00',NULL,NULL,NULL),(4,2147483647,NULL,'2024-03-10 09:00:00',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `thongtinsd` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
 
 --
 -- Table structure for table `xuly`

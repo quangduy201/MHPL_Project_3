@@ -66,8 +66,9 @@ public class UserController {
     }
 
     @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
-    public String muonThietBi(Model model, @RequestParam Map<String, String> requestParam) {
-        Page<ThietBi> thietBiList = thongTinSDService.showAllMuonThietBi(requestParam);
+    public String muonThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
+        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+        Page<ThongTinSD> thongTinSD = thongTinSDService.showAllMuonThietBi(requestParam,tvResponse.getMaTV());
         requestParam.remove("page");
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry: requestParam.entrySet())
@@ -77,7 +78,7 @@ public class UserController {
                     .append("&");
         if(!builder.isEmpty())
             builder.setLength(builder.length() -1);
-        model.addAttribute("mtbList", thietBiList);
+        model.addAttribute("mtbList", thongTinSD);
         model.addAttribute("params", builder.toString());
 //    public String muonThietBi(Model model, HttpSession session) {
 //        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
@@ -110,8 +111,9 @@ public class UserController {
     }
 
     @GetMapping({"/dat-cho-thiet-bi", "/dat-cho-thiet-bi/"})
-    public String datChoThietBi(Model model, @RequestParam Map<String, String> requestParam) {
-        Page<ThietBi> thietBiList = thongTinSDService.showAllDatThietBi(requestParam);
+    public String datChoThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
+        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+        Page<ThongTinSD> thongTinSD = thongTinSDService.showAllDatThietBi(requestParam, tvResponse.getMaTV());
         requestParam.remove("page");
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry: requestParam.entrySet())
@@ -121,7 +123,7 @@ public class UserController {
                     .append("&");
         if(!builder.isEmpty())
             builder.setLength(builder.length() -1);
-        model.addAttribute("dtbList", thietBiList);
+        model.addAttribute("dtbList", thongTinSD);
         model.addAttribute("params", builder.toString());
 //    public String datChoThietBi(Model model, HttpSession session) {
 //        // TODO SOMETHING ELSE

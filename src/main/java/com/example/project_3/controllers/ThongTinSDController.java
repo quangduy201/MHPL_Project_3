@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/thong-tin")
@@ -35,8 +36,9 @@ public class ThongTinSDController {
     public String getTime() {
         ZoneId vietnamZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         ZonedDateTime zdt = ZonedDateTime.now(vietnamZoneId);
-        Instant instant = zdt.toInstant();
-        return instant.toString();
+        ZonedDateTime zdtPlusSevenHours = zdt.plusHours(0);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss'Z'");
+        return zdtPlusSevenHours.format(formatter);
     }
     @GetMapping("/dat-cho")
     public ResponseEntity<?>  datCho(@RequestParam String maTV, @RequestParam String maTB) {

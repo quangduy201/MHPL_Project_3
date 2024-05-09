@@ -66,19 +66,19 @@
                         <div th:each="mtb : ${mtbList}">
                             <div class="product-container">
                                 <div class="product-top">
-                                    <img th:attr="src=@{|/media/images/thietbi${mtb.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
+                                    <img th:attr="src=@{|/media/images/thietbi${mtb.maTB.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
                                 </div>
                                 <div class="product-bottom">
                                     <div class="ui-data">
                                         <div class="name-laptop">
-                                            <p th:text="${mtb.tenTB}"></p>
+                                            <p th:text="${mtb.maTB.tenTB}"></p>
                                         </div>
-                                    </div>
+                                    </div>a
                                     <div class="describe">
-                                        <p th:text="${mtb.moTaTB}"></p>
+                                        <p th:text="${mtb.maTB.moTaTB}"></p>
                                     </div>
                                     <div class="button-cart">
-                                        <div class="button-return button" th:onclick="'giveBackThietBi(\'' + ${session.user.maTV} + '\', \'' + ${mtb.maTB} + '\')'">
+                                        <div class="button-return button" th:onclick="'giveBackThietBi(\'' + ${session.user.maTV} + '\', \'' + ${mtb.maTB.maTB} + '\')'">
                                             <p>Trả</p>
                                         </div>
                                     </div>
