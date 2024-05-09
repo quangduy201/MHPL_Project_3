@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 public interface ThietBiService {
     Page<ThietBi> getAllThietBi(Map<String, String> requestParams);
     List<ThietBi> getAllThietBi();
+    List<ThietBi> getAllThietBiByType(String type);
     ThietBi getThietBiById(Long maTV);
     ThietBi saveThietBi(ThietBi tb);
     void deleteThietBiById(Long tv);

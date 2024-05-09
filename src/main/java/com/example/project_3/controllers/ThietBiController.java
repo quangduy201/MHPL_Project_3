@@ -35,9 +35,12 @@ public class ThietBiController {
     }
 
     @GetMapping({"", "/"})
-    public String showAllThietBi(Model model) {
-        addThietBiListToModel(model);
+    public String showAllThietBi(Model model, @RequestParam(value = "type", defaultValue = "") String type) {
+        List<ThietBi> thietBiList = thietBiService.getAllThietBiByType(type);
+
         model.addAttribute("tb", new ThietBiRequest());
+        model.addAttribute("thietBiList", thietBiList);
+        model.addAttribute("type", type);
         model.addAttribute("showForm", false);
         return "/admin/thietbi/index";
     }
