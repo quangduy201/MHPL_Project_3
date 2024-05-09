@@ -326,7 +326,7 @@
 
         let nam = parseInt(namString);
         let namHienTai = new Date().getFullYear();
-        if (nam < namHienTai - 10 && nam > namHienTai) {
+        if (nam < namHienTai - 10 || nam > namHienTai) {
             alert("Năm không hợp lệ.");
             return;
         }
