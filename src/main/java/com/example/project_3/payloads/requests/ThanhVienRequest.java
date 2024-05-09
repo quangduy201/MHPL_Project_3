@@ -38,5 +38,7 @@ public class ThanhVienRequest {
     private String email;
 
     @NotBlank(message = "Mật khẩu không được để trống.")
+    @Size(min = 2, message = "Họ tên phải chứa ít nhất 2 kí tự.")
+    @Size(max = 9, message = "Họ tên phải chứa ít nhất 9 kí tự.")
     private String matKhau;
 }

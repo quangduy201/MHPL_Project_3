@@ -36,8 +36,8 @@
         <div id="content">
             <!-- Topbar -->
             <div th:replace="~{fragments/user_topbar :: topbar(
-                    userName='Nhóm 1',
-                    userAvatar='/media/images/poodle.jpg'
+                    userName = ${session.user.hoTen},
+                    userAvatar = '/media/images/poodle.jpg'
                  )}">
             </div>
 
@@ -66,19 +66,21 @@
                                 <div class="product-top">
                                     <img th:attr="src=@{|/media/images/thietbi${dtb.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
                                 </div>
-                                <div class="product-bottom">
+                                <div class="product-bottom mt-5">
                                     <div class="ui-data">
-                                        <div class="name-laptop">
-                                            <p th:text="${dtb.tenTB}"></p>
+                                        <div class="name-laptop text-primary font-weight-bold d-flex flex-column justify-content-center align-items-center">
+                                            <span th:text="${dtb.maTB}"></span>
+                                            <br/>
+                                            <span th:text="${dtb.tenTB}"></span>
                                         </div>
                                     </div>
                                     <div class="describe">
                                         <p th:text="${dtb.moTaTB}"></p>
                                     </div>
-                                    <div class="button-cart">
-                                        <div class="button-return button"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB} + '\')'">
-                                            <p>Hủy đặt chỗ</p>
-                                        </div>
+                                    <div class="button-cart d-flex justify-content-center align-items-center">
+                                        <p class="button-return button text-center bg-danger p-3 text-white"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB} + '\')'">
+                                            Hủy đặt chỗ
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -99,93 +101,6 @@
         </div>
     </div>
 </div>
-<!--        <div id="wrapper" class="row">-->
-<!--            &lt;!&ndash; Sidebar &ndash;&gt;-->
-<!--            <div th:replace="~{fragments/user_sidebar :: sidebar(active=4)}"></div>-->
-
-<!--            &lt;!&ndash; Content Wrapper &ndash;&gt;-->
-<!--            <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">-->
-<!--                &lt;!&ndash; Main Content &ndash;&gt;-->
-<!--                <div id="content">-->
-<!--                    &lt;!&ndash; Topbar &ndash;&gt;-->
-<!--                    <div th:replace="~{fragments/user_topbar :: topbar(-->
-<!--                         userName='Nhóm 1',-->
-<!--                         userAvatar='/media/images/poodle.jpg'-->
-<!--                         )}">-->
-<!--                    </div>-->
-
-<!--                    &lt;!&ndash; Begin Page Content &ndash;&gt;-->
-<!--                    <div class="container-fluid">-->
-<!--                        &lt;!&ndash; Member Statistic &ndash;&gt;-->
-<!--                        <div class="ui-borrow-equipment">-->
-<!--                            <div class="ui-top">-->
-<!--                                <div class="mb-3 row">-->
-<!--                                    <div class="col-2">-->
-<!--                                        <select id="select-by" class="form-select" aria-label="">-->
-<!--                                            <option value="all" >Tất cả</option>-->
-<!--                                            <option value="maTB" >Mã thiết bị</option>-->
-<!--                                            <option value="tenTB" >Tên thiết bị</option>-->
-<!--                                        </select>-->
-<!--                                    </div>-->
-<!--                                    <div class="col">-->
-<!--                                        <input type="text"-->
-<!--                                               class="form-control"-->
-<!--                                               id="txt-search"-->
-<!--                                               placeholder="Nhập vào đây để tìm kiếm"-->
-<!--                                               aria-label=""-->
-<!--                                               >-->
-<!--                                    </div>-->
-<!--                                    <div class="col">-->
-<!--                                        <button class="btn btn-secondary" onclick="searchByMaThietBi()">Tìm kiếm</button>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="ui-center">-->
-<!--                                <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}"class="product-container-wrapper">-->
-<!--                                    &lt;!&ndash; Các mã HTML để hiển thị danh sách thietBiDatCho &ndash;&gt;-->
-<!--                                    <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}" class="product-container-wrapper">-->
-<!--                                    <div th:each="thietBi : ${thietBiDatCho.content}" class="product-container">-->
-<!--                                        <div class="product-item">-->
-<!--                                            <div class="product-top">-->
-<!--                                                <img src="" alt="" class="image-product"/>-->
-<!--                                            </div>-->
-<!--                                            <div class="product-bottom">-->
-<!--                                                <div class="ui-data">-->
-<!--                                                    <div class="id">-->
-<!--                                                        <p th:text="${thietBi.maTB}"></p>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                                <div class="name">-->
-<!--                                                    <p th:text="${thietBi.tenTB}"></p>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div th:if="${thietBiDatCho == null or thietBiDatCho.empty}">-->
-<!--                                    Thành viên chưa đặt chỗ thiết bị.-->
-<!--                                </div>-->
-<!--                                -->
-<!--                                <div class="ui-bottom">-->
-<!--                                    &lt;!&ndash;                        <div th:replace="~{fragments/pagination :: pagination(-->
-<!--                                                            urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},-->
-<!--                                                            totalPages = ${tvList.totalPages},-->
-<!--                                                            currentPage = ${tvList.number + 1},-->
-<!--                                                            pageSize = ${tvList.size},-->
-<!--                                                            totalItems = ${tvList.totalElements}&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                     )}">&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                        </div>&ndash;&gt;-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            &lt;!&ndash; /.container-fluid &ndash;&gt;-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    &lt;!&ndash; End of Content Wrapper &ndash;&gt;-->
-<!--                </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
 <!-- End of Page Wrapper -->
 <script src="../../vendor/jquery/jquery.min.js"></script>
 <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -258,25 +173,11 @@ integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="ano
         const productContainers = document.querySelectorAll(".product-container");
         productContainers.forEach(container => {
             const tenThietBi = container.querySelector(".name-laptop p").textContent;
-            // if (searchBy === "maTB") {
-            //     if (maThietBi.includes(searchText)) {
-            //         container.style.display = "block";
-            //     } else {
-            //         container.style.display = "none";
-            //     }
-            // } else if (searchBy === "tenTB") {
             if (tenThietBi.includes(searchText)) {
                 container.style.display = "block";
             } else {
                 container.style.display = "none";
             }
-            // }else if (searchBy === "all") {
-            //         if (maThietBi.includes(searchText) || tenThietBi.includes(searchText)) {
-            //         container.style.display = "block";
-            //     } else {
-            //         container.style.display = "none";
-            //     }
-            // }
         });
     }
 </script>

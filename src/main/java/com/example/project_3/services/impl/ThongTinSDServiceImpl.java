@@ -11,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +28,10 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
 
 
     @Override
-    public String checkThietBiDaDatCho(Long maTB) {
-        List<ThietBi> thietBiDatCho = thongTinSDRepository.findThietBiByMaTBEqualsAndTgDatchoNotNull(maTB);
+    public String checkThietBiDaDatCho(Long maTB, LocalDateTime date) {
+        ZoneOffset zoneOffset = ZoneOffset.ofHours(0);
+        Instant instant = date.toInstant(zoneOffset);
+        List<ThietBi> thietBiDatCho = thongTinSDRepository.findThietBiByMaTBEqualsAndTgDatchoNotNull(maTB, instant);
         List<ThietBi> thietBiMuon = thongTinSDRepository.findThietBiByMaTBEqualsAndTgMuonNotNullAndTgTraNull(maTB);
         if(!thietBiDatCho.isEmpty()) {
             return "Thiết bị này đã được đặt chỗ";

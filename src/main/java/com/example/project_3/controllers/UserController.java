@@ -35,18 +35,17 @@ import java.util.Map;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    private final ThietBiService thietBiService;
-    private final ThanhVienService thanhvienService;
-    private final ThongTinSDService thongTinSDService;
-    private final XuLyService xuLyService;
+    @Autowired
+    private ThietBiService thietBiService;
 
     @Autowired
-    public UserController(ThietBiService thietBiService, ThanhVienService thanhvienService, ThongTinSDService thongTinSDService, XuLyService xuLyService) {
-        this.thietBiService = thietBiService;
-        this.thanhvienService = thanhvienService;
-        this.thongTinSDService = thongTinSDService;
-        this.xuLyService = xuLyService;
-    }
+    private ThanhVienService thanhvienService;
+
+    @Autowired
+    private ThongTinSDService thongTinSDService;
+
+    @Autowired
+    private XuLyService xuLyService;
 
     @GetMapping({"/", ""})
     public String index(Model model, HttpSession session) {
@@ -66,89 +65,87 @@ public class UserController {
     }
 
     @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
-    public String muonThietBi(Model model, @RequestParam Map<String, String> requestParam) {
-        Page<ThietBi> thietBiList = thongTinSDService.showAllMuonThietBi(requestParam);
-        requestParam.remove("page");
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String> entry: requestParam.entrySet())
-            builder.append(entry.getKey())
-                    .append("=")
-                    .append(entry.getValue())
-                    .append("&");
-        if(!builder.isEmpty())
-            builder.setLength(builder.length() -1);
-        model.addAttribute("mtbList", thietBiList);
-        model.addAttribute("params", builder.toString());
-//    public String muonThietBi(Model model, HttpSession session) {
-//        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
-//
-//        Long maTV = tvResponse.getMaTV();
-//        Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
-//        if (thietBiDangMuon.isEmpty()) {
-//            model.addAttribute("thietBiDangMuon", null);
-//        } else {
-//            model.addAttribute("thietBiDangMuon", thietBiDangMuon);
-//        }
-        return "/user/muonthietbi/index";
+    public String muonThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
+        if (session.getAttribute("user") != null) {
+            Page<ThietBi> thietBiList = thongTinSDService.showAllMuonThietBi(requestParam);
+            requestParam.remove("page");
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<String, String> entry: requestParam.entrySet())
+                builder.append(entry.getKey())
+                        .append("=")
+                        .append(entry.getValue())
+                        .append("&");
+            if(!builder.isEmpty())
+                builder.setLength(builder.length() -1);
+            model.addAttribute("mtbList", thietBiList);
+            model.addAttribute("params", builder.toString());
+            return "/user/muonthietbi/index";
+        } else {
+            return "redirect:/login";
+        }
     }
 
     @GetMapping({"/thiet-bi", "/thiet-bi/"})
-    public String showThietBi(Model model, @RequestParam Map<String, String> requestParam) {
-        Page<ThietBi> thietBiList = thietBiService.getAllThietBi(requestParam);
-        requestParam.remove("page");
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String> entry: requestParam.entrySet())
-            builder.append(entry.getKey())
-                    .append("=")
-                    .append(entry.getValue())
-                    .append("&");
-        if(!builder.isEmpty())
-            builder.setLength(builder.length() -1);
-        model.addAttribute("tbList", thietBiList);
-        model.addAttribute("params", builder.toString());
-        return "/user/thietbi/index";
+    public String showThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
+        if (session.getAttribute("user") != null) {
+            System.out.println(requestParam);
+            Page<ThietBi> thietBiList = thietBiService.getAllThietBi(requestParam);
+            requestParam.remove("page");
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<String, String> entry: requestParam.entrySet())
+                builder.append(entry.getKey())
+                        .append("=")
+                        .append(entry.getValue())
+                        .append("&");
+            if(!builder.isEmpty())
+                builder.setLength(builder.length() -1);
+            model.addAttribute("tbList", thietBiList);
+            model.addAttribute("params", builder.toString());
+
+            return "/user/thietbi/index";
+        } else {
+            return "redirect:/login";
+        }
     }
 
     @GetMapping({"/dat-cho-thiet-bi", "/dat-cho-thiet-bi/"})
-    public String datChoThietBi(Model model, @RequestParam Map<String, String> requestParam) {
-        Page<ThietBi> thietBiList = thongTinSDService.showAllDatThietBi(requestParam);
-        requestParam.remove("page");
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String> entry: requestParam.entrySet())
-            builder.append(entry.getKey())
-                    .append("=")
-                    .append(entry.getValue())
-                    .append("&");
-        if(!builder.isEmpty())
-            builder.setLength(builder.length() -1);
-        model.addAttribute("dtbList", thietBiList);
-        model.addAttribute("params", builder.toString());
-//    public String datChoThietBi(Model model, HttpSession session) {
-//        // TODO SOMETHING ELSE
-//        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
-//        Long maTV = tvResponse.getMaTV();
-//        Page<ThietBi> thietBiDatCho = thietbiService.getThietBiDangDatChoByMaTV(maTV);
-//        if (thietBiDatCho.isEmpty()) {
-//            model.addAttribute("thietBiDatCho", null);
-//
-//        } else {
-//            model.addAttribute("thietBiDatCho", thietBiDatCho);
-//        }
-        return "/user/datchothietbi/index";
+    public String datChoThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
+        if(session.getAttribute("user") != null) {
+            Page<ThietBi> thietBiList = thongTinSDService.showAllDatThietBi(requestParam);
+            requestParam.remove("page");
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<String, String> entry : requestParam.entrySet())
+                builder.append(entry.getKey())
+                        .append("=")
+                        .append(entry.getValue())
+                        .append("&");
+            if (!builder.isEmpty())
+                builder.setLength(builder.length() - 1);
+
+            model.addAttribute("dtbList", thietBiList);
+            model.addAttribute("params", builder.toString());
+            return "/user/datchothietbi/index";
+        } else {
+            return "redirect:/login";
+        }
     }
 
     @GetMapping({"/trang-thai-vi-pham", "/trang-thai-vi-pham/"})
     public String trangThaiViPham(Model model, HttpSession session) {
         // TODO SOMETHING ELSE
-        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
-        Long maTV = tvResponse.getMaTV();
-        Page<XuLy> viPham = xuLyService.getViPhamByMaTV(maTV);
-        if (viPham.isEmpty()) {
-            model.addAttribute("vipham", null);
+        if(session.getAttribute("user") != null) {
+            ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+            Long maTV = tvResponse.getMaTV();
+            Page<XuLy> viPham = xuLyService.getViPhamByMaTV(maTV);
+            if (viPham.isEmpty()) {
+                model.addAttribute("vipham", null);
+            } else {
+                model.addAttribute("vipham", viPham);
+            }
+            return "/user/trangthaivipham/index";
         } else {
-            model.addAttribute("vipham", viPham);
+            return "redirect:/login";
         }
-        return "/user/trangthaivipham/index";
     }
 
     @PostMapping({"/", ""})
@@ -231,5 +228,4 @@ public class UserController {
 
         return "redirect:/user";
     }
-
 }
