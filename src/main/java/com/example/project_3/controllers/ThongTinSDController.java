@@ -91,13 +91,30 @@ public class ThongTinSDController {
         try {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
-            ThongTinSD thongTinSD = thongTinSDService.getThietBiByID(idTV, idTB);
+            ThongTinSD thongTinSD = thongTinSDService.getThongTinSDMuonByID(idTV, idTB);
             if(thongTinSD != null) {
                 thongTinSD.setTgTra(Instant.parse(getTime()));
                 thongTinSDService.saveThongTinSD(thongTinSD);
                 return null;
             } else {
                 return ResponseEntity.badRequest().body("Không thể trả thiết bị");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/xoa")
+    public ResponseEntity<?>  xoa(@RequestParam String maTV, @RequestParam String maTB) {
+        try {
+            Long idTB = Long.parseLong(maTB);
+            Long idTV = Long.parseLong(maTV);
+            ThongTinSD thongTinSD = thongTinSDService.getThongTinSDDatChoByID(idTV, idTB);
+            if(thongTinSD != null) {
+                thongTinSDService.deleteThongTinSD(thongTinSD);
+                return null;
+            } else {
+                return ResponseEntity.badRequest().body("Không thể hủy đặt chỗ thiết bị");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());

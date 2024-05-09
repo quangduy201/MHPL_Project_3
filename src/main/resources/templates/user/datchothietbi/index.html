@@ -76,8 +76,8 @@
                                         <p th:text="${dtb.moTaTB}"></p>
                                     </div>
                                     <div class="button-cart">
-                                        <div class="button-return button">
-                                            <p>??</p>
+                                        <div class="button-return button"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB} + '\')'">
+                                            <p>Hủy đặt chỗ</p>
                                         </div>
                                     </div>
                                 </div>
@@ -229,6 +229,22 @@ integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="ano
             searchThietBi();
         }
     })
+    function cancelThietBi(maTV, maTB) {
+        if (confirm('Bạn có chắc chắn muốn trả thiết bị này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/thong-tin/xoa",
+                data: { maTV: maTV, maTB: maTB},
+                success: function(response) {
+                    alert("Hủy thiết bị thành công");
+                    window.location.reload(true);
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        }
+    }
 </script>
 <script>
 // Lắng nghe sự kiện change trên select-by
@@ -265,14 +281,6 @@ integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="ano
             }
         });
     }
-</script>
-<script>
-    window.onload = function() {
-        const images = document.getElementsByClassName('image-product');
-        for(let i = 0; i < images.length; i++) {
-            images[i].src = '../../../media/images/user_default.png';
-        }
-    };
 </script>
 </body>
 </html>

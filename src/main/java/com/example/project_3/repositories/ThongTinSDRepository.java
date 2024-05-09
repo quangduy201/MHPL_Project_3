@@ -27,6 +27,8 @@ public interface ThongTinSDRepository extends JpaRepository<ThongTinSD, Integer>
     @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV.maTV = ?1 AND tt.maTB.maTB = ?2 AND tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL ")
     List<ThongTinSD> findThongTinSDByMaTBEqualsAndTgMuonNotNullAndTgTraNull(Long maTV, Long maTB);
 
+    @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV.maTV = ?1 AND tt.maTB.maTB = ?2 AND tt.tgDatcho IS NOT NULL ")
+    List<ThongTinSD> findThongTinSDByMaTBEqualsAndTgDatchoNotNull(Long maTV, Long maTB);
 
     @Query("SELECT FUNCTION('DATE_FORMAT', t.tgVao, '%d-%m-%Y %H:%i:%s') " +
             "FROM ThongTinSD t WHERE t.tgVao BETWEEN ?1 AND ?2 " +

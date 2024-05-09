@@ -37,7 +37,7 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
     }
 
     @Override
-    public ThongTinSD getThietBiByID(Long maTV, Long maTB) {
+    public ThongTinSD getThongTinSDMuonByID(Long maTV, Long maTB) {
         List<ThongTinSD> thietBiMuon = thongTinSDRepository.findThongTinSDByMaTBEqualsAndTgMuonNotNullAndTgTraNull(maTV,maTB);
         if(thietBiMuon.isEmpty()) {
             return null;
@@ -46,8 +46,22 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
     }
 
     @Override
+    public ThongTinSD getThongTinSDDatChoByID(Long maTV, Long maTB) {
+        List<ThongTinSD> thietBiDatCho = thongTinSDRepository.findThongTinSDByMaTBEqualsAndTgDatchoNotNull(maTV,maTB);
+        if(thietBiDatCho.isEmpty()) {
+            return null;
+        }
+        return thietBiDatCho.get(0);
+    }
+
+    @Override
     public void muonThietBi(Long maTV, Long maTB) {
 
+    }
+
+    @Override
+    public void deleteThongTinSD(ThongTinSD thongTinSD) {
+        thongTinSDRepository.delete(thongTinSD);
     }
 
 
@@ -68,6 +82,7 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
             pageable = pageable.withPage(Integer.parseInt(page) - 1);
         return thongTinSDRepository.findThietBiByTgDatchoNotNull(pageable);
     }
+
 
     @Override
     public ThongTinSD saveThongTinSD(ThongTinSD tinSD) {

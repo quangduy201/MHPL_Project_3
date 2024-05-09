@@ -267,23 +267,15 @@ integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="ano
                 } else {
                     container.style.display = "none";
                 }
-            }else if (searchBy === "all") {
+            } else if (searchBy === "all") {
                     if (maThietBi.includes(searchText) || tenThietBi.includes(searchText)) {
                     container.style.display = "block";
                 } else {
                     container.style.display = "none";
+                }
             }
+        });
     }
-    });
-    }
-</script>
-<script>
-    window.onload = function() {
-    const images = document.getElementsByClassName('image-product');
-    for(let i = 0; i < images.length; i++) {
-    images[i].src = '../../../media/images/user_default.png';
-    }
-    };
 </script>
 </body>
 </html>

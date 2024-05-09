@@ -10,9 +10,11 @@ import java.util.Map;
 
 public interface ThongTinSDService {
     String checkThietBiDaDatCho(Long maTB);
-    ThongTinSD getThietBiByID(Long maTV, Long maTB);
+    ThongTinSD getThongTinSDMuonByID(Long maTV, Long maTB);
+    ThongTinSD getThongTinSDDatChoByID(Long maTV, Long maTB);
     Page<ThietBi> showAllMuonThietBi(Map<String, String> requestParams);
     Page<ThietBi> showAllDatThietBi(Map<String, String> requestParams);
     void muonThietBi(Long maTV, Long maTB);
+    void deleteThongTinSD(ThongTinSD thongTinSD);
     ThongTinSD saveThongTinSD(ThongTinSD tinSD);
 }
