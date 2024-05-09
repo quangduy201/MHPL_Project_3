@@ -2,19 +2,21 @@ package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.models.ThietBi;
+import com.example.project_3.models.ThongTinSD;
 import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.QuenMatKhauRequest;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.payloads.requests.ThayDoiThongTinRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.ThanhVienService;
+import com.example.project_3.services.ThietBiService;
+import com.example.project_3.services.ThongTinSDService;
 import com.example.project_3.services.impl.XuLyServiceImpl;
 import com.example.project_3.services.ThietBiService;
 import com.example.project_3.services.XuLyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
-
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,26 +24,29 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
+    private final ThietBiService thietBiService;
+    private final ThanhVienService thanhvienService;
+    private final ThongTinSDService thongTinSDService;
+    private final XuLyService xuLyService;
 
     @Autowired
-    private ThanhVienService thanhvienService;
-    @Autowired
-    private XuLyService xuLyService;
-  
-    @Autowired
-    private ThietBiService thietbiService;
+    public UserController(ThietBiService thietBiService, ThanhVienService thanhvienService, ThongTinSDService thongTinSDService, XuLyService xuLyService) {
+        this.thietBiService = thietBiService;
+        this.thanhvienService = thanhvienService;
+        this.thongTinSDService = thongTinSDService;
+        this.xuLyService = xuLyService;
+    }
 
     @GetMapping({"/", ""})
     public String index(Model model, HttpSession session) {
@@ -61,31 +66,74 @@ public class UserController {
     }
 
     @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
-    public String muonThietBi(Model model, HttpSession session) {
-        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
-
-        Long maTV = tvResponse.getMaTV();
-        Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
-        if (thietBiDangMuon.isEmpty()) {
-            model.addAttribute("thietBiDangMuon", null);    
-        } else {
-            model.addAttribute("thietBiDangMuon", thietBiDangMuon);
-        }
+    public String muonThietBi(Model model, @RequestParam Map<String, String> requestParam) {
+        Page<ThietBi> thietBiList = thongTinSDService.showAllMuonThietBi(requestParam);
+        requestParam.remove("page");
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry: requestParam.entrySet())
+            builder.append(entry.getKey())
+                    .append("=")
+                    .append(entry.getValue())
+                    .append("&");
+        if(!builder.isEmpty())
+            builder.setLength(builder.length() -1);
+        model.addAttribute("mtbList", thietBiList);
+        model.addAttribute("params", builder.toString());
+//    public String muonThietBi(Model model, HttpSession session) {
+//        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+//
+//        Long maTV = tvResponse.getMaTV();
+//        Page<ThietBi> thietBiDangMuon = thietbiService.getThietBiDangMuonByMaTV(maTV);
+//        if (thietBiDangMuon.isEmpty()) {
+//            model.addAttribute("thietBiDangMuon", null);
+//        } else {
+//            model.addAttribute("thietBiDangMuon", thietBiDangMuon);
+//        }
         return "/user/muonthietbi/index";
     }
 
+    @GetMapping({"/thiet-bi", "/thiet-bi/"})
+    public String showThietBi(Model model, @RequestParam Map<String, String> requestParam) {
+        Page<ThietBi> thietBiList = thietBiService.getAllThietBi(requestParam);
+        requestParam.remove("page");
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry: requestParam.entrySet())
+            builder.append(entry.getKey())
+                    .append("=")
+                    .append(entry.getValue())
+                    .append("&");
+        if(!builder.isEmpty())
+            builder.setLength(builder.length() -1);
+        model.addAttribute("tbList", thietBiList);
+        model.addAttribute("params", builder.toString());
+        return "/user/thietbi/index";
+    }
+
     @GetMapping({"/dat-cho-thiet-bi", "/dat-cho-thiet-bi/"})
-    public String datChoThietBi(Model model, HttpSession session) {
-        // TODO SOMETHING ELSE
-        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
-        Long maTV = tvResponse.getMaTV();
-        Page<ThietBi> thietBiDatCho = thietbiService.getThietBiDangDatChoByMaTV(maTV);
-        if (thietBiDatCho.isEmpty()) {
-            model.addAttribute("thietBiDatCho", null);
-            
-        } else {
-            model.addAttribute("thietBiDatCho", thietBiDatCho);
-        }
+    public String datChoThietBi(Model model, @RequestParam Map<String, String> requestParam) {
+        Page<ThietBi> thietBiList = thongTinSDService.showAllDatThietBi(requestParam);
+        requestParam.remove("page");
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry: requestParam.entrySet())
+            builder.append(entry.getKey())
+                    .append("=")
+                    .append(entry.getValue())
+                    .append("&");
+        if(!builder.isEmpty())
+            builder.setLength(builder.length() -1);
+        model.addAttribute("dtbList", thietBiList);
+        model.addAttribute("params", builder.toString());
+//    public String datChoThietBi(Model model, HttpSession session) {
+//        // TODO SOMETHING ELSE
+//        ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+//        Long maTV = tvResponse.getMaTV();
+//        Page<ThietBi> thietBiDatCho = thietbiService.getThietBiDangDatChoByMaTV(maTV);
+//        if (thietBiDatCho.isEmpty()) {
+//            model.addAttribute("thietBiDatCho", null);
+//
+//        } else {
+//            model.addAttribute("thietBiDatCho", thietBiDatCho);
+//        }
         return "/user/datchothietbi/index";
     }
 

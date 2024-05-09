@@ -1,11 +1,13 @@
 package com.example.project_3.controllers;
 
+import com.example.project_3.models.ThanhVien;
 import com.example.project_3.models.ThietBi;
 import com.example.project_3.payloads.requests.ThietBiRequest;
 import com.example.project_3.services.ThietBiService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +16,23 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/thiet-bi")
 public class ThietBiController {
+    private final ThietBiService thietBiService;
     @Autowired
-    private ThietBiService thietBiService;
+    public ThietBiController(ThietBiService thietBiService) {
+        this.thietBiService = thietBiService;
+    }
+
+    @GetMapping({"/all-thiet-bi","/all-thiet-bi/"})
+    public ResponseEntity<?> getAllThietBi() {
+        Page<ThietBi> thietBiList = thietBiService.getAllThietBi(Map.of());
+        return ResponseEntity.ok(thietBiList);
+    }
 
     @GetMapping({"", "/"})
     public String showAllThietBi(Model model) {
