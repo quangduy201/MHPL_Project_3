@@ -239,11 +239,18 @@ DELIMITER $$
 --
 -- Events
 --
-CREATE DEFINER=`root`@`localhost` EVENT `auto_delete_thongtinsd` ON SCHEDULE EVERY 1 MINUTE STARTS '2024-05-09 21:10:07' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
-    DELETE t FROM thongtinsd t JOIN lichsuxoa sd ON t.MaTT = sd.MaTT
-    WHERE sd.delete_at <= NOW();
-    DELETE FROM lichsuxoa WHERE delete_at <= NOW();
-END$$
+DELIMITER $$
+
+CREATE EVENT `auto_delete_thongtinsd`
+    ON SCHEDULE EVERY 1 MINUTE
+    DO
+    BEGIN
+        DELETE t FROM `thongtinsd` t JOIN `lichsuxoa` d ON t.MaTT = d.MaTT
+        WHERE d.delete_at <= NOW();
+        DELETE FROM `lichsuxoa` WHERE delete_at <= NOW();
+    END$$
+
+DELIMITER ;
 
 DELIMITER ;
 COMMIT;
