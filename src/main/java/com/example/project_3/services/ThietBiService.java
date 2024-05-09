@@ -2,10 +2,13 @@ package com.example.project_3.services;
 
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.models.ThietBi;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ThietBiService {
+    Page<ThietBi> getAllThietBi(Map<String, String> requestParams);
     List<ThietBi> getAllThietBi();
     ThietBi getThietBiById(Long maTV);
     ThietBi saveThietBi(ThietBi tb);

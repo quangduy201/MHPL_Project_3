@@ -40,13 +40,15 @@
     <!-- Custom styles for this template-->
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet" />
     <link href="../../css/dashboard.css" rel="stylesheet" />
+    <link href="../../css/item-product.css" rel="stylesheet" />
+
 </head>
 
 <body id="page-top">
 
 <div id="wrapper" class="row">
     <!-- Sidebar -->
-    <div th:replace="~{fragments/user_sidebar :: sidebar(active=4)}"></div>
+    <div th:replace="~{fragments/user_sidebar :: sidebar(active=5)}"></div>
 
     <!-- Content Wrapper -->
     <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
@@ -62,9 +64,55 @@
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <!-- Member Statistic -->
-                <div>
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4" style="background-color: #2ecc71;">
-                        Các thiết bị đang đặt chỗ
+                <div class="ui-borrow-equipment">
+                    <div class="ui-top">
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <input type="text"
+                                       class="form-control"
+                                       id="txt-search"
+                                       placeholder="Nhập vào đây để tìm kiếm"
+                                       aria-label=""
+                                >
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-center">
+                        <div th:each="dtb : ${dtbList}">
+                            <div class="product-container">
+                                <div class="product-top">
+                                    <img src="../../../media/images/user_default.png" alt="" class="image-product"/>
+                                </div>
+                                <div class="product-bottom">
+                                    <div class="ui-data">
+                                        <div class="name-laptop">
+                                            <p th:text="${dtb.tenTB}"></p>
+                                        </div>
+                                    </div>
+                                    <div class="describe">
+                                        <p th:text="${dtb.moTaTB}"></p>
+                                    </div>
+                                    <div class="button-cart">
+                                        <div class="button-return button">
+                                            <p>??</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-bottom">
+                        <div th:replace="~{fragments/pagination :: pagination(
+                        urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
+                        totalPages = ${dtbList.totalPages},
+                        currentPage = ${dtbList.number + 1},
+                        pageSize = ${dtbList.size},
+                        totalItems = ${dtbList.totalElements}
+                     )}">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,5 +143,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
 <script src="../../js/utils.js" type="module"></script>
+<script>
+    function searchThietBi() {
+        const searchText = document.getElementById("txt-search").value
+        window.location.href = window.location.href.split('?')[0] + `?tenTB=${searchText}`
+    }
+    document.getElementById("txt-search").addEventListener("keydown", function (event) {
+        if (event.key === 'Enter') {
+            searchThietBi();
+        }
+    })
+</script>
 </body>
 </html>

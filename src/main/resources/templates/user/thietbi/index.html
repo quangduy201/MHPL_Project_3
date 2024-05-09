@@ -10,7 +10,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
 
-    <title>User | Các thiết bị đang mượn</title>
+    <title>User | Các thiết bị</title>
 
     <!-- Custom fonts for this template-->
     <link
@@ -47,7 +47,7 @@
 
 <div id="wrapper" class="row">
     <!-- Sidebar -->
-    <div th:replace="~{fragments/user_sidebar :: sidebar(active=4)}"></div>
+    <div th:replace="~{fragments/user_sidebar :: sidebar(active=3)}"></div>
 
     <!-- Content Wrapper -->
     <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
@@ -80,7 +80,7 @@
                         </div>
                     </div>
                     <div class="ui-center">
-                        <div th:each="mtb : ${mtbList}">
+                        <div th:each="tb : ${tbList}">
                             <div class="product-container">
                                 <div class="product-top">
                                     <img src="../../../media/images/user_default.png" alt="" class="image-product"/>
@@ -88,15 +88,18 @@
                                 <div class="product-bottom">
                                     <div class="ui-data">
                                         <div class="name-laptop">
-                                            <p th:text="${mtb.tenTB}"></p>
+                                            <p th:text="${tb.tenTB}"></p>
                                         </div>
                                     </div>
                                     <div class="describe">
-                                        <p th:text="${mtb.moTaTB}"></p>
+                                        <p th:text="${tb.moTaTB}"></p>
                                     </div>
                                     <div class="button-cart">
-                                        <div class="button-return button" th:onclick="'giveBackThietBi(\'' + ${session.user.maTV} + '\', \'' + ${mtb.maTB} + '\')'">
-                                            <p>Trả</p>
+                                        <div class="button-reservation button" th:onclick="'reservationThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
+                                            <p>Đặt chỗ</p>
+                                    </div>
+                                        <div class="button-borrow button" th:onclick="'borrowThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
+                                            <p>Mượn chỗ</p>
                                         </div>
                                     </div>
                                 </div>
@@ -105,12 +108,11 @@
                     </div>
                     <div class="ui-bottom">
                         <div th:replace="~{fragments/pagination :: pagination(
-                        urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
-                        totalPages = ${mtbList.totalPages},
-                        currentPage = ${mtbList.number + 1},
-                        pageSize = ${mtbList.size},
-                        totalItems = ${mtbList.totalElements}
-                     )}">
+                        urlPrefix = ${params.isEmpty() ? '/user/thietbi?' : '/user/thietbi?' + params + '&'},
+                        totalPages = ${tbList.totalPages},
+                        currentPage = ${tbList.number + 1},
+                        pageSize = ${tbList.size},
+                        totalItems = ${tbList.totalElements})}">
                         </div>
                     </div>
                 </div>
@@ -133,6 +135,7 @@
 
 <!-- Page level custom scripts -->
 <script src="../../js/demo/datatables-demo.js"></script>
+
 <!--Date Range Picker -->
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -151,14 +154,31 @@
             searchThietBi();
         }
     })
-    function giveBackThietBi(maTV, maTB) {
-        if (confirm('Bạn có chắc chắn muốn trả thiết bị này?')) {
+    function reservationThietBi(maTV, maTB) {
+        if (confirm('Bạn có chắc chắn muốn đặt chỗ thiết bị này?')) {
             $.ajax({
                 type: "GET",
-                url: "/thong-tin/tra",
+                url: "/thong-tin/dat-cho",
                 data: { maTV: maTV, maTB: maTB},
                 success: function(response) {
-                    window.location.reload(true);
+                    alert(response);
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        }
+    }
+    function borrowThietBi(maTV, maTB) {
+        if (confirm('Bạn có chắc chắn muốn mượn thiết bị này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/thong-tin/muon",
+                data: { maTV: maTV, maTB: maTB},
+                success: function(response) {
+                    alert(response);
+                    window.location.reload();
                 },
                 error: function(xhr) {
                     alert(xhr.responseText);

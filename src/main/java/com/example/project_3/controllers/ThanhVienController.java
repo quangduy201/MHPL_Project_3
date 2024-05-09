@@ -1,6 +1,7 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.ThietBi;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.services.ThanhVienService;
 import jakarta.validation.Valid;
