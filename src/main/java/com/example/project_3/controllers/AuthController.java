@@ -1,28 +1,27 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.payloads.requests.LayLaiMatKhauRequest;
 import com.example.project_3.payloads.requests.LoginRequest;
 import com.example.project_3.payloads.requests.RegisterRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.AuthService;
-import com.example.project_3.services.CustomerServices;
+import com.example.project_3.services.CustomerService;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import com.example.project_3.services.ThanhVienService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.aspectj.apache.bcel.classfile.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,7 +42,7 @@ public class AuthController {
     @Autowired
     private JavaMailSender mailSender;
     @Autowired
-    private CustomerServices customerService;
+    private CustomerService customerService;
 
 
     @Autowired
@@ -188,23 +187,26 @@ public class AuthController {
         }
         return sb.toString();
     }
-    
-    public void sendEmail(String recipientEmail, String link)
-            throws MessagingException, UnsupportedEncodingException {
-    	
-    	Properties p = System.getProperties();
-        p.put("mail.smtp.host", "smtp.gmail.com");
-        p.put("mail.smtp.port", 587);
-        p.put("mail.smtp.auth", "true");
-        p.put("mail.smtp.starttls.enable", "true");
-	    Session s = Session.getDefaultInstance(p, new Authenticator() {
-	        @Override
-	        protected PasswordAuthentication getPasswordAuthentication() {
-	            return new PasswordAuthentication("hoavt313@gmail.com", "pxjy zoqe lije lurn");
-	        }
-	    });
-        MimeMessage mm = new MimeMessage(s);
-         
+
+    public void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException {
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("hoavt313@gmail.com", "pxjyzoqelijelurn");
+            }
+        };
+
+        Session session = Session.getInstance(props, auth);
+
+        MimeMessage message = new MimeMessage(session);
+
         String subject = "Here's the link to reset your password";
         String content = "<html>"
                 + "<body>"
@@ -218,10 +220,12 @@ public class AuthController {
                 + "</body>"
                 + "</html>";
 
-        mm.addRecipients(Message.RecipientType.TO, recipientEmail);
-        mm.setSubject(subject);
-        mm.setContent(content, "text/html");
-        Transport.send(mm);
+        message.setFrom(new InternetAddress("hoavt313@gmail.com"));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
+        message.setSubject(subject);
+        message.setContent(content, "text/html");
+
+        Transport.send(message);
     }
 
 
@@ -233,43 +237,43 @@ public class AuthController {
         String resetPasswordLink = null;
         try {
             customerService.updateResetPasswordToken(token, email);
-            resetPasswordLink =baseUrl + "/reset_password?token=" + token;
+            resetPasswordLink = baseUrl + "/lay-lai-mat-khau?token=" + token;
             sendEmail(email, resetPasswordLink);
-            model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
+            model.addAttribute("message", "Chúng tôi đã gửi một đường dẫn lấy lại mật khẩu vào email của bạn. Vui lòng kiểm tra.");
 
         } catch (Exception ex) {
         	ex.printStackTrace();
-            model.addAttribute("error", "Your email does not exist");
+            model.addAttribute("error", "Email của bạn không tồn tại trong hệ thống");
         } return "/quenmatkhau/index";
     }
-    @GetMapping("/reset_password")
+    @GetMapping({"/lay-lai-mat-khau", "/lay-lai-mat-khau/"})
     public String showResetPasswordForm(@Param(value = "token") String token, Model model) {
         ThanhVien customer = customerService.getByResetPasswordToken(token);
         model.addAttribute("token", token);
 
         if (customer == null) {
-            model.addAttribute("message", "Invalid Token");
+            model.addAttribute("message", "Mã token không đúng");
             return "message";
         }
 
         return "/quenmatkhau/reset_password_form";
     }
 
-    @PostMapping("/reset_password")
+    @PostMapping({"/lay-lai-mat-khau", "/lay-lai-mat-khau/"})
     public String processResetPassword(HttpServletRequest request, Model model) {
         String token = request.getParameter("token");
-        String password = request.getParameter("password");
+        String password = request.getParameter("matKhau");
 
         ThanhVien customer = customerService.getByResetPasswordToken(token);
-        model.addAttribute("title", "Reset your password");
+        model.addAttribute("title", "Lấy lại mật khẩu");
 
         if (customer == null) {
-            model.addAttribute("message", "Invalid Token");
+            model.addAttribute("message", "Mã token không đúng");
             return "message";
         } else {
             customerService.updatePassword(customer, password);
 
-            model.addAttribute("message", "You have successfully changed your password.");
+            model.addAttribute("message", "Bạn đã thay đổi mật khẩu thành công.");
         }
 
         return "/quenmatkhau/index";

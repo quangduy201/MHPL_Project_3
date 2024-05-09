@@ -5,6 +5,7 @@ import com.example.project_3.models.ThietBi;
 import com.example.project_3.repositories.ThietBiRepository;
 import com.example.project_3.services.ThietBiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
