@@ -64,19 +64,19 @@
                         <div th:each="dtb : ${dtbList}">
                             <div class="product-container">
                                 <div class="product-top">
-                                    <img th:attr="src=@{|/media/images/thietbi${dtb.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
+                                    <img th:attr="src=@{|/media/images/thietbi${dtb.maTB.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
                                 </div>
                                 <div class="product-bottom">
                                     <div class="ui-data">
                                         <div class="name-laptop">
-                                            <p th:text="${dtb.tenTB}"></p>
+                                            <p th:text="${dtb.maTB.tenTB}"></p>
                                         </div>
                                     </div>
                                     <div class="describe">
-                                        <p th:text="${dtb.moTaTB}"></p>
+                                        <p th:text="${dtb.maTB.moTaTB}"></p>
                                     </div>
                                     <div class="button-cart">
-                                        <div class="button-return button"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB} + '\')'">
+                                        <div class="button-return button"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB.maTB} + '\')'">
                                             <p>Hủy đặt chỗ</p>
                                         </div>
                                     </div>
