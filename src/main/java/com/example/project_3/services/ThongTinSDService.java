@@ -18,4 +18,5 @@ public interface ThongTinSDService {
     void muonThietBi(Long maTV, Long maTB);
     void deleteThongTinSD(ThongTinSD thongTinSD);
     ThongTinSD saveThongTinSD(ThongTinSD tinSD);
+    List<ThongTinSD> getAllThongTinSD();
 }

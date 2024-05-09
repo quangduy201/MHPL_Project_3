@@ -93,4 +93,9 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
     public ThongTinSD saveThongTinSD(ThongTinSD tinSD) {
         return thongTinSDRepository.save(tinSD);
     }
+
+    @Override
+    public List<ThongTinSD> getAllThongTinSD() {
+        return thongTinSDRepository.findAll();
+    }
 }
