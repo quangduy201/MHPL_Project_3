@@ -21,15 +21,23 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/thiet-bi")
 public class ThietBiController {
+    private final ThietBiService thietBiService;
+
     @Autowired
-    private ThietBiService thietBiService;
+    public ThietBiController(ThietBiService thietBiService) {
+        this.thietBiService = thietBiService;
+    }
 
     @GetMapping({"", "/"})
-    public String showAllThietBi(Model model) {
-        addThietBiListToModel(model);
-        model.addAttribute("tb", new ThietBiRequest());
-        model.addAttribute("showForm", false);
-        return "/admin/thietbi/index";
+    public String showAllThietBi(Model model, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            addThietBiListToModel(model);
+            model.addAttribute("tb", new ThietBiRequest());
+            model.addAttribute("showForm", false);
+            return "/admin/thietbi/index";
+        }
+
+        return "redirect:/admin/login";
     }
 
     @GetMapping("/edit")

@@ -1,7 +1,6 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
-import com.example.project_3.models.ThietBi;
 import com.example.project_3.payloads.requests.ThanhVienRequest;
 import com.example.project_3.services.ThanhVienService;
 import jakarta.servlet.http.HttpSession;
@@ -27,11 +26,15 @@ public class ThanhVienController {
     }
 
     @GetMapping({"", "/"})
-    public String showAllThanhVien(Model model) {
-        addThanhVienListToModel(model);
-        model.addAttribute("tv", new ThanhVienRequest());
-        model.addAttribute("showForm", false);
-        return "/admin/thanhvien/index";
+    public String showAllThanhVien(Model model, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            addThanhVienListToModel(model);
+            model.addAttribute("tv", new ThanhVienRequest());
+            model.addAttribute("showForm", false);
+            return "/admin/thanhvien/index";
+        }
+
+        return "redirect:/admin/login";
     }
 
     @GetMapping("/edit")
@@ -105,11 +108,27 @@ public class ThanhVienController {
         return "redirect:/admin/thanh-vien";
     }
 
-    @DeleteMapping("/delete")
+    @GetMapping("/delete")
     public String deleteThanhVien(@RequestParam String maTV) {
         try {
             Long id = Long.parseLong(maTV);
             thanhvienService.deleteThanhVienById(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "redirect:/admin/thanh-vien";
+    }
+
+    @GetMapping("/deleteMultiple")
+    public String deleteMultipleThanhVien(@RequestParam String namNhapHoc) {
+        try {
+            Long namHoc = Long.parseLong(namNhapHoc);
+            List<ThanhVien> thanhVienList = thanhvienService.getAllThanhVien();
+            for (ThanhVien thanhVien : thanhVienList) {
+                if (String.valueOf(thanhVien.getMaTV()).substring(2, 4).equals(String.valueOf(namHoc))) {
+                    thanhvienService.deleteThanhVienById(thanhVien.getMaTV());
+                }
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
