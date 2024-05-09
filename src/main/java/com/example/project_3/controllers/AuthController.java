@@ -1,10 +1,12 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.LoginRequest;
 import com.example.project_3.payloads.requests.RegisterRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.AuthService;
+import com.example.project_3.services.XuLyService;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -18,6 +20,7 @@ import com.example.project_3.services.ThanhVienService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
@@ -35,11 +38,17 @@ import java.util.Properties;
 @Controller
 @RequestMapping("/")
 public class AuthController {
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+    private final ThanhVienService thanhVienService;
+    private final XuLyService xuLyService;
 
     @Autowired
-    private ThanhVienService thanhVienService;
+    public AuthController(AuthService authService, ThanhVienService thanhVienService, XuLyService xuLyService) {
+        this.authService = authService;
+        this.thanhVienService = thanhVienService;
+        this.xuLyService = xuLyService;
+    }
+
 
     @GetMapping({"/login", "/login/"})
     public String loginForm(Model model) {
@@ -59,13 +68,19 @@ public class AuthController {
 
         ThanhVienResponse thanhVienResponse = authService.login(tv.getEmail(), tv.getPassword());
 
+
         if (thanhVienResponse == null) {
             bindingResult.rejectValue("credentials", "invalid.credentials", "Email hoặc mật khẩu không đúng.");
             return "login/index";
-        } else {
-            session.setAttribute("user", thanhVienResponse);
-            return "redirect:/user";
         }
+        Page<XuLy> xuLyPage = xuLyService.getViPhamByMaTV(thanhVienResponse.getMaTV());
+        if(xuLyPage.hasContent()) {
+            XuLy xuLy = xuLyPage.getContent().get(0);
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
+            return "login/index";
+        }
+        session.setAttribute("user", thanhVienResponse);
+        return "redirect:/user";
     }
 
     @GetMapping({"/register", "/register/"})

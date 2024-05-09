@@ -46,28 +46,18 @@ public class ThongTinSDController {
         try {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
-
-            // Define the DateTimeFormatter for the expected date format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-
             LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-
-            String tb = thongTinSDService.checkThietBiDaDatCho(idTB, dateTime);
-
-            ZoneOffset zoneOffset = ZoneOffset.ofHours(0);
-
+            String tb = thongTinSDService.checkThietBiDaDatCho(idTV, idTB, dateTime);
             if(tb != null) {
-                return ResponseEntity.badRequest().body(tb);
+                return ResponseEntity.ok(tb);
             } else {
                 ThanhVien thanhVien = thanhVienService.getThanhVienById(idTV);
                 ThietBi thietBi = thietBiService.getThietBiById(idTB);
-
-                Instant instant = dateTime.toInstant(zoneOffset);
-
                 ThongTinSD thongTinSD = ThongTinSD.builder()
                         .maTV(thanhVien)
                         .maTB(thietBi)
-                        .tgDatcho(instant)
+                        .tgDatcho(Instant.parse(getTime()))
                         .build();
                 thongTinSDService.saveThongTinSD(thongTinSD);
                 return ResponseEntity.ok("Đặt chỗ thành công");
@@ -85,35 +75,21 @@ public class ThongTinSDController {
         try {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
-
-            // Define the DateTimeFormatter for the expected date format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-
             LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-
-            String tb = thongTinSDService.checkThietBiDaDatCho(idTB, dateTime);
-
-            ZoneOffset zoneOffset = ZoneOffset.ofHours(0);
-
+            String tb = thongTinSDService.checkThietBiDaDatCho(idTV, idTB, dateTime);
             if (tb != null) {
-                return ResponseEntity.badRequest().body(tb);
+                return ResponseEntity.ok(tb);
             } else {
                 ThanhVien thanhVien = thanhVienService.getThanhVienById(idTV);
                 ThietBi thietBi = thietBiService.getThietBiById(idTB);
-
-                // If date is null, set the current time
-                Instant muonInstant = dateTime.toInstant(zoneOffset);
-
-                // Build ThongTinSD object
                 ThongTinSD thongTinSD = ThongTinSD.builder()
                         .maTV(thanhVien)
                         .maTB(thietBi)
-                        .tgMuon(muonInstant)
+                        .tgMuon(Instant.parse(getTime()))
                         .build();
 
-                // Save ThongTinSD object
                 thongTinSDService.saveThongTinSD(thongTinSD);
-
                 return ResponseEntity.ok("Mượn thành công");
             }
         } catch (Exception e) {

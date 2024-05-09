@@ -2,6 +2,7 @@ package com.example.project_3.repositories;
 
 import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.ThongTinSD;
+import com.example.project_3.models.XuLy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +21,9 @@ public interface ThongTinSDRepository extends JpaRepository<ThongTinSD, Integer>
 
     @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTB.maTB = ?1 AND tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL")
     List<ThietBi> findThietBiByMaTBEqualsAndTgMuonNotNullAndTgTraNull(Long maTB);
+
+    @Query("SELECT tt FROM XuLy tt WHERE tt.maTV.maTV = ?1 AND tt.trangThaiXL = 0")
+    List<XuLy> findXuLyByMaTVEqualsAndTrangThaiXuLyEquals(Long maTV);
 
     @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTB.maTB IS NOT NULL AND tt.tgDatcho IS NOT NULL")
     List<ThongTinSD> findTgDatchoNotNull();

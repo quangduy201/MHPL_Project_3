@@ -69,18 +69,21 @@
                                 <div class="product-bottom mt-5">
                                     <div class="ui-data">
                                         <div class="name-laptop text-primary font-weight-bold d-flex flex-column justify-content-center align-items-center">
-                                            <span th:text="${dtb.maTB}"></span>
+                                            <span th:text="${dtb.maTB.maTB}"></span>
                                             <br/>
-                                            <span th:text="${dtb.tenTB}"></span>
+                                            <span th:text="${dtb.maTB.tenTB}"></span>
                                         </div>
                                     </div>
                                     <div class="describe">
                                         <p th:text="${dtb.maTB.moTaTB}"></p>
                                     </div>
-                                    <div class="button-cart d-flex justify-content-center align-items-center">
-                                        <p class="button-return button text-center bg-danger p-3 text-white"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB} + '\')'">
-                                            Hủy đặt chỗ
-                                        </p>
+                                    <div class="time">
+                                        <p th:text="${#temporals.format(dtb.tgDatcho, 'dd/MM/yyyy - HH:mm:ss')}"></p>
+                                    </div>
+                                    <div class="button-cart">
+                                        <div class="button-reservation button bg-primary p-3 text-white border border-primary"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB.maTB} + '\')'">
+                                            <p>Hủy đặt chỗ</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

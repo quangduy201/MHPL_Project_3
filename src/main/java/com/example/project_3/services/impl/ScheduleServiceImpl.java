@@ -15,28 +15,28 @@ import com.example.project_3.repositories.ThongTinSDRepository;
 @Component
 public class ScheduleServiceImpl {
 
-    @Autowired
-    private ThongTinSDRepository thongTinSDRepository;
-
-    @Transactional
-    @Scheduled(fixedRate = 60000)
-    public void removeExpiredDatCho() {
-        // Lấy thời gian hiện tại
-        LocalDateTime now = LocalDateTime.now();
-        ZoneOffset zoneOffset = ZoneOffset.ofHours(0);
-
-        // Tính thời gian hết hạn (1 giờ trước thời điểm hiện tại)
-        LocalDateTime expiredDateTime = now.minusHours(1);
-
-        Instant expiredInstant = expiredDateTime.toInstant(zoneOffset);
-
-        List<ThongTinSD> list = thongTinSDRepository.findTgDatchoNotNull();
-
-        list.stream()
-            .filter(l -> expiredInstant.isBefore(l.getTgDatcho()))
-            .forEach(l -> {
-                System.out.println("Removing record with tgDatcho: " + l.getTgDatcho().toString());
-                thongTinSDRepository.delete(l);
-            });
-    }
+//    @Autowired
+//    private ThongTinSDRepository thongTinSDRepository;
+//
+//    @Transactional
+//    @Scheduled(fixedRate = 60000)
+//    public void removeExpiredDatCho() {
+////        // Lấy thời gian hiện tại
+////        LocalDateTime now = LocalDateTime.now();
+////        ZoneOffset zoneOffset = ZoneOffset.ofHours(0);
+////
+////        // Tính thời gian hết hạn (1 giờ trước thời điểm hiện tại)
+////        LocalDateTime expiredDateTime = now.minusHours(1);
+////
+////        Instant expiredInstant = expiredDateTime.toInstant(zoneOffset);
+////
+////        List<ThongTinSD> list = thongTinSDRepository.findTgDatchoNotNull();
+////
+////        list.stream()
+////            .filter(l -> expiredInstant.isBefore(l.getTgDatcho()))
+////            .forEach(l -> {
+////                System.out.println("Removing record with tgDatcho: " + l.getTgDatcho().toString());
+////                thongTinSDRepository.delete(l);
+////            });
+//    }
 }
