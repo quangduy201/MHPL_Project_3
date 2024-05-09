@@ -7,7 +7,6 @@ import com.example.project_3.services.ThanhVienService;
 import com.example.project_3.services.ThietBiService;
 import com.example.project_3.services.ThongTinSDService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.*;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Controller
@@ -33,8 +35,9 @@ public class ThongTinSDController {
     public String getTime() {
         ZoneId vietnamZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         ZonedDateTime zdt = ZonedDateTime.now(vietnamZoneId);
-        Instant instant = zdt.toInstant();
-        return instant.toString();
+        ZonedDateTime zdtPlusSevenHours = zdt.plusHours(0);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss'Z'");
+        return zdtPlusSevenHours.format(formatter);
     }
     @GetMapping("/dat-cho")
     public ResponseEntity<?> datCho(@RequestParam String maTV,

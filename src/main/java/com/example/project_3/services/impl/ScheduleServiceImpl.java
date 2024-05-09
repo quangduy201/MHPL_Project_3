@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
-import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.ThongTinSD;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

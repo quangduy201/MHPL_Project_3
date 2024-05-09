@@ -70,7 +70,8 @@ public class UserController {
     @GetMapping({"/muon-thiet-bi", "/muon-thiet-bi/"})
     public String muonThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
         if (session.getAttribute("user") != null) {
-            Page<ThietBi> thietBiList = thongTinSDService.showAllMuonThietBi(requestParam);
+            ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+            Page<ThongTinSD> thongTinSD = thongTinSDService.showAllMuonThietBi(requestParam,tvResponse.getMaTV());
             requestParam.remove("page");
             StringBuilder builder = new StringBuilder();
             for (Map.Entry<String, String> entry: requestParam.entrySet())
@@ -80,8 +81,9 @@ public class UserController {
                         .append("&");
             if(!builder.isEmpty())
                 builder.setLength(builder.length() -1);
-            model.addAttribute("mtbList", thietBiList);
+            model.addAttribute("mtbList", thongTinSD);
             model.addAttribute("params", builder.toString());
+
             return "/user/muonthietbi/index";
         } else {
             return "redirect:/login";
@@ -135,19 +137,20 @@ public class UserController {
     @GetMapping({"/dat-cho-thiet-bi", "/dat-cho-thiet-bi/"})
     public String datChoThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
         if(session.getAttribute("user") != null) {
-            Page<ThietBi> thietBiList = thongTinSDService.showAllDatThietBi(requestParam);
+            ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+            Page<ThongTinSD> thongTinSD = thongTinSDService.showAllDatThietBi(requestParam, tvResponse.getMaTV());
             requestParam.remove("page");
             StringBuilder builder = new StringBuilder();
-            for (Map.Entry<String, String> entry : requestParam.entrySet())
+            for (Map.Entry<String, String> entry: requestParam.entrySet())
                 builder.append(entry.getKey())
                         .append("=")
                         .append(entry.getValue())
                         .append("&");
-            if (!builder.isEmpty())
-                builder.setLength(builder.length() - 1);
-
-            model.addAttribute("dtbList", thietBiList);
+            if(!builder.isEmpty())
+                builder.setLength(builder.length() -1);
+            model.addAttribute("dtbList", thongTinSD);
             model.addAttribute("params", builder.toString());
+
             return "/user/datchothietbi/index";
         } else {
             return "redirect:/login";

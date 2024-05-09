@@ -64,7 +64,7 @@
                         <div th:each="dtb : ${dtbList}">
                             <div class="product-container">
                                 <div class="product-top">
-                                    <img th:attr="src=@{|/media/images/thietbi${dtb.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
+                                    <img th:attr="src=@{|/media/images/thietbi${dtb.maTB.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
                                 </div>
                                 <div class="product-bottom mt-5">
                                     <div class="ui-data">
@@ -75,7 +75,7 @@
                                         </div>
                                     </div>
                                     <div class="describe">
-                                        <p th:text="${dtb.moTaTB}"></p>
+                                        <p th:text="${dtb.maTB.moTaTB}"></p>
                                     </div>
                                     <div class="button-cart d-flex justify-content-center align-items-center">
                                         <p class="button-return button text-center bg-danger p-3 text-white"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB} + '\')'">

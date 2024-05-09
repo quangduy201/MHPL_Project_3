@@ -13,8 +13,8 @@ public interface ThongTinSDService {
     String checkThietBiDaDatCho(Long maTB, LocalDateTime date);
     ThongTinSD getThongTinSDMuonByID(Long maTV, Long maTB);
     ThongTinSD getThongTinSDDatChoByID(Long maTV, Long maTB);
-    Page<ThietBi> showAllMuonThietBi(Map<String, String> requestParams);
-    Page<ThietBi> showAllDatThietBi(Map<String, String> requestParams);
+    Page<ThongTinSD> showAllMuonThietBi(Map<String, String> requestParams, Long maTV);
+    Page<ThongTinSD> showAllDatThietBi(Map<String, String> requestParams, Long maTV);
     void muonThietBi(Long maTV, Long maTB);
     void deleteThongTinSD(ThongTinSD thongTinSD);
     ThongTinSD saveThongTinSD(ThongTinSD tinSD);

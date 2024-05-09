@@ -27,8 +27,11 @@ public interface ThongTinSDRepository extends JpaRepository<ThongTinSD, Integer>
     @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL")
     Page<ThietBi> findThietBiByTgMuonNotNullAndTgTraNull(Pageable pageable);
 
-    @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.tgDatcho IS NOT NULL ")
-    Page<ThietBi> findThietBiByTgDatchoNotNull(Pageable pageable);
+    @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV.maTV = ?1 AND tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL")
+    Page<ThongTinSD> findThietBiByMaTVEqualsANDTgMuonNotNullAndTgTraNull(Pageable pageable, Long maTV);
+
+    @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV.maTV = ?1 AND tt.tgDatcho IS NOT NULL ")
+    Page<ThongTinSD> findThietBiByMaTVEqualsTgDatchoNotNull(Pageable pageable, Long maTV);
 
     @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV.maTV = ?1 AND tt.maTB.maTB = ?2 AND tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL ")
     List<ThongTinSD> findThongTinSDByMaTBEqualsAndTgMuonNotNullAndTgTraNull(Long maTV, Long maTB);
