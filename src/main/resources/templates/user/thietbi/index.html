@@ -55,7 +55,7 @@
         <div id="content">
             <!-- Topbar -->
             <div th:replace="~{fragments/user_topbar :: topbar(
-                    userName='Nhóm 1',
+                    userName=${session.user.hoTen},
                     userAvatar='/media/images/poodle.jpg'
                  )}">
             </div>
@@ -64,19 +64,18 @@
             <div class="container-fluid">
                 <!-- Member Statistic -->
                 <div class="ui-borrow-equipment">
-                    <div class="ui-top">
-                        <div class="mb-3 row">
-                            <div class="col">
-                                <input type="text"
-                                       class="form-control"
-                                       id="txt-search"
-                                       placeholder="Nhập vào đây để tìm kiếm"
-                                       aria-label=""
-                                >
-                            </div>
-                            <div class="col">
-                                <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
-                            </div>
+                    <div class="ui-top d-flex justify-content-between">
+                        <div class="d-flex flex-grow-1 search">
+                            <input type="text"
+                                   class="mr-2"
+                                   id="txt-search"
+                                   placeholder="Nhập vào đây để tìm kiếm"
+                                   aria-label=""
+                            >
+                            <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
+                        </div>
+                        <div class="d-flex justify-content-between flex-shrink-0">
+                            <input type="datetime-local" name="date" id="date" class="form-control" onchange="searchThietBi()" th:value="${date}">
                         </div>
                     </div>
                     <div class="ui-center">
@@ -85,22 +84,22 @@
                                 <div class="product-top">
                                     <img th:attr="src=@{|/media/images/thietbi${tb.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
                                 </div>
-                                <div class="product-bottom">
+                                <div class="product-bottom mt-5">
                                     <div class="ui-data">
-                                        <div class="name-laptop">
-                                            <p th:text="${tb.tenTB}"></p>
+                                        <div class="name-laptop text-primary font-weight-bold d-flex flex-column justify-content-center align-items-center">
+                                            <span th:text="${tb.maTB}"></span>
+                                            <br/>
+                                            <span th:text="${tb.tenTB}"></span>
                                         </div>
                                     </div>
-                                    <div class="describe">
-                                        <p th:text="${tb.moTaTB}"></p>
-                                    </div>
+                                    <p class="describe" th:text="${tb.moTaTB}"></p>
                                     <div class="button-cart">
-                                        <div class="button-reservation button" th:onclick="'reservationThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
-                                            <p>Đặt chỗ</p>
-                                    </div>
-                                        <div class="button-borrow button" th:onclick="'borrowThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
-                                            <p>Mượn chỗ</p>
-                                        </div>
+                                        <p class="button-reservation button bg-primary p-3 text-white border border-primary" th:onclick="'reservationThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
+                                            Đặt chỗ
+                                        </p>
+                                        <p class="button-borrow button border border-primary p-3 text-primary" th:onclick="'borrowThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
+                                            Mượn chỗ
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -121,6 +120,7 @@
         </div>
     </div>
     <!-- End of Content Wrapper -->
+
 </div>
 <!-- End of Page Wrapper -->
 <script src="../../vendor/jquery/jquery.min.js"></script>
@@ -146,20 +146,42 @@
 <script src="../../js/utils.js" type="module"></script>
 <script>
     function searchThietBi() {
-        const searchText = document.getElementById("txt-search").value
-        window.location.href = window.location.href.split('?')[0] + `?tenTB=${searchText}`
+        const searchText = document.getElementById("txt-search").value;
+        const currentDate = new Date(); // Lấy thời gian hiện tại
+        const dateInput = document.getElementById("date");
+        const selectedDate = new Date(dateInput.value); // Lấy thời gian đã chọn từ input
+
+        // Nếu thời gian đã chọn là trong quá khứ, cập nhật lại giá trị là thời gian hiện tại
+        if (selectedDate < currentDate) {
+            dateInput.value = formatDate(currentDate);
+        }
+
+        // Cập nhật URL với các tham số tìm kiếm
+        const newUrl = window.location.href.split('?')[0] + `?tenTB=${searchText}&date=${dateInput.value}`;
+        window.location.href = newUrl;
     }
+
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
     document.getElementById("txt-search").addEventListener("keydown", function (event) {
         if (event.key === 'Enter') {
             searchThietBi();
         }
     })
     function reservationThietBi(maTV, maTB) {
+        var date = $("#date").val(); // Lấy giá trị của input#date
         if (confirm('Bạn có chắc chắn muốn đặt chỗ thiết bị này?')) {
             $.ajax({
                 type: "GET",
                 url: "/thong-tin/dat-cho",
-                data: { maTV: maTV, maTB: maTB},
+                data: { maTV: maTV, maTB: maTB, date: date }, // Truyền giá trị date vào data
                 success: function(response) {
                     alert(response);
                     window.location.reload();
@@ -171,11 +193,12 @@
         }
     }
     function borrowThietBi(maTV, maTB) {
+        var date = $("#date").val(); // Lấy giá trị của input#date
         if (confirm('Bạn có chắc chắn muốn mượn thiết bị này?')) {
             $.ajax({
                 type: "GET",
                 url: "/thong-tin/muon",
-                data: { maTV: maTV, maTB: maTB},
+                data: { maTV: maTV, maTB: maTB, date: date},
                 success: function(response) {
                     alert(response);
                     window.location.reload();
@@ -186,6 +209,8 @@
             });
         }
     }
+
+</script>
 </script>
 </body>
 </html>

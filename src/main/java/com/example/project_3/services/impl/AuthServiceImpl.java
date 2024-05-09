@@ -2,6 +2,7 @@ package com.example.project_3.services.impl;
 
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
+import com.example.project_3.repositories.ForgotPassReponsitory;
 import com.example.project_3.repositories.ThanhVienRepository;
 import com.example.project_3.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private ThanhVienRepository thanhVienRepository;
+
+    @Autowired
+    private ForgotPassReponsitory forgotPassReponsitory;
 
     @Override
     public ThanhVien register(ThanhVien tv) {
@@ -69,7 +73,26 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void resetPassword(String email, String oldPassword, String newPassword) {
+    public void updateResetPasswordToken(String token, String email) throws Exception {
+        ThanhVien customer = forgotPassReponsitory.findByEmail(email);
+        if (customer != null) {
+            customer.setResetPasswordToken(token);
+            forgotPassReponsitory.save(customer);
+        } else {
+            throw new Exception("Could not find any customer with the email " + email);
+        }
+    }
 
+    @Override
+    public ThanhVien getByResetPasswordToken(String token) {
+        return forgotPassReponsitory.findByResetPasswordToken(token);
+    }
+
+    @Override
+    public void updatePassword(ThanhVien tv, String newPassword) {
+        tv.setPassword(newPassword);
+
+        tv.setResetPasswordToken(null);
+        forgotPassReponsitory.save(tv);
     }
 }

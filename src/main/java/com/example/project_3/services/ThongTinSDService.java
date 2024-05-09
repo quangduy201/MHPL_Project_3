@@ -5,11 +5,12 @@ import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.ThongTinSD;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface ThongTinSDService {
-    String checkThietBiDaDatCho(Long maTB);
+    String checkThietBiDaDatCho(Long maTB, LocalDateTime date);
     ThongTinSD getThongTinSDMuonByID(Long maTV, Long maTB);
     ThongTinSD getThongTinSDDatChoByID(Long maTV, Long maTB);
     Page<ThongTinSD> showAllMuonThietBi(Map<String, String> requestParams, Long maTV);
