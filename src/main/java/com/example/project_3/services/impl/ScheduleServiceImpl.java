@@ -34,11 +34,10 @@ public class ScheduleServiceImpl {
         List<ThongTinSD> list = thongTinSDRepository.findTgDatchoNotNull();
 
         list.stream()
-                .filter(l -> l.getTgDatcho().isBefore(expiredInstant))
-                .forEach(l -> {
-                    System.out.println(expiredDateTime.toString());
-                    System.out.println("Removing record with tgDatcho: " + l.getTgDatcho().toString());
-//                    thongTinSDRepository.delete(l);
-                });
+            .filter(l -> expiredInstant.isBefore(l.getTgDatcho()))
+            .forEach(l -> {
+                System.out.println("Removing record with tgDatcho: " + l.getTgDatcho().toString());
+                thongTinSDRepository.delete(l);
+            });
     }
 }

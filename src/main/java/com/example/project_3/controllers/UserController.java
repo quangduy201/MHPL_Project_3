@@ -18,6 +18,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -88,25 +91,46 @@ public class UserController {
     @GetMapping({"/thiet-bi", "/thiet-bi/"})
     public String showThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
         if (session.getAttribute("user") != null) {
-            System.out.println(requestParam);
+            String dateParam = requestParam.get("date");
+
             Page<ThietBi> thietBiList = thietBiService.getAllThietBi(requestParam);
+
+            LocalDateTime dateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+            // Parse the date parameter if it's not null or empty
+            if (dateParam != null && !dateParam.isEmpty()) {
+                dateTime = LocalDateTime.parse(dateParam, formatter);
+
+                if (dateTime.isBefore(LocalDateTime.now())) {
+                    dateTime = LocalDateTime.now();
+                }
+            }
+
             requestParam.remove("page");
             StringBuilder builder = new StringBuilder();
-            for (Map.Entry<String, String> entry: requestParam.entrySet())
+            for (Map.Entry<String, String> entry: requestParam.entrySet()) {
                 builder.append(entry.getKey())
                         .append("=")
                         .append(entry.getValue())
                         .append("&");
-            if(!builder.isEmpty())
-                builder.setLength(builder.length() -1);
+            }
+            if (!builder.isEmpty()) {
+                builder.setLength(builder.length() - 1);
+            }
             model.addAttribute("tbList", thietBiList);
             model.addAttribute("params", builder.toString());
 
-            return "/user/thietbi/index";
+            String formattedDateTime = dateTime.format(formatter);
+
+            model.addAttribute("date", formattedDateTime);
+
+            return "user/thietbi/index";
         } else {
             return "redirect:/login";
         }
     }
+
 
     @GetMapping({"/dat-cho-thiet-bi", "/dat-cho-thiet-bi/"})
     public String datChoThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {

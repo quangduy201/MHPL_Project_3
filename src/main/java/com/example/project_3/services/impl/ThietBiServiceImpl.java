@@ -6,6 +6,7 @@ import com.example.project_3.repositories.ThietBiRepository;
 import com.example.project_3.repositories.ThongTinSDRepository;
 import com.example.project_3.services.ThietBiService;
 import com.example.project_3.specifications.BaseSpecification;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,16 @@ public class ThietBiServiceImpl implements ThietBiService {
     public Page<ThietBi> getAllThietBi(Map<String, String> requestParams) {
         Specification<ThietBi> specification;
 
+        LocalDateTime date;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        if (requestParams.containsKey("date")) {
+            date = LocalDateTime.parse(requestParams.get("date"), formatter);
+            requestParams.remove("date");
+        } else {
+            date = LocalDateTime.now();
+        }
+
         if (requestParams == null || requestParams.isEmpty()) {
             specification = Specification.where(null);
         } else if (requestParams.containsKey("all")) {
@@ -43,47 +54,54 @@ public class ThietBiServiceImpl implements ThietBiService {
                     "motaTB", value
             );
             specification = BaseSpecification.buildLikeSpecification(params, false);
-        } else {
-            // maTB LIKE '%...%'
-            // [AND tenTB LIKE '%...%' ]
-            // [AND motaTB LIKE '%...%' ]
-            specification = BaseSpecification.buildLikeSpecification(requestParams, true);
         }
 
-        LocalDateTime date;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        assert requestParams != null;
-        if (requestParams.containsKey("date")) {
-            System.out.println(requestParams.get("date"));
-            date = LocalDateTime.parse(requestParams.get("date"), formatter);
-        } else {
-            date = LocalDateTime.now();
-        }
+
+
 
         ZoneOffset zoneOffset = ZoneOffset.ofHours(0);
-        Instant instant = date.toInstant(zoneOffset);
+        LocalDateTime expiredDateTime = date.minusHours(1);
+        Instant instant2 = date.toInstant(zoneOffset);
+        Instant instant1 = expiredDateTime.toInstant(zoneOffset);
 
-        List<ThietBi> thietBiByNoBookingOrNotBorrowed = new ArrayList<>();
-        List<ThietBi> thietBiByDate = thongTinSDRepository.findThietBiByDate(instant);
+        List<ThietBi> thietBiByBookingOrBorrowed = new ArrayList<>();
+        List<ThietBi> thietBiByDate = thongTinSDRepository.findThietBiByDate(instant1, instant2);
 
-        thietBiByNoBookingOrNotBorrowed.addAll(thietBiByDate);
+        thietBiByBookingOrBorrowed.addAll(thietBiByDate);
 
         // Tạo một danh sách các ID của các thiết bị
-        List<Long> thietBiIds = thietBiByNoBookingOrNotBorrowed.stream()
+        List<Long> thietBiIds = thietBiByBookingOrBorrowed.stream()
                 .map(ThietBi::getMaTB)
                 .collect(Collectors.toList());
+
 
         // Tạo một Specification mới để lọc các thiết bị có ID không nằm trong danh sách trên
         Specification<ThietBi> noBookingOrNotBorrowedSpec = (root, query, criteriaBuilder) -> criteriaBuilder.not(root.get("id").in(thietBiIds));
 
-        // Kết hợp Specification mới với Specification cũ
-        specification = specification.and(noBookingOrNotBorrowedSpec);
+        Specification<ThietBi> additionalSpec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Thêm các điều kiện lọc từ requestParams vào danh sách các predicates
+            for (Map.Entry<String, String> entry : requestParams.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                if (key.equals("tenTB")) { // Thay someField bằng tên trường tương ứng trong ThietBi
+                    predicates.add(criteriaBuilder.like(root.get(key), "%" + value + "%"));
+                }
+                // Thêm các trường và điều kiện lọc khác tương tự ở đây
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Specification<ThietBi> combinedSpec = noBookingOrNotBorrowedSpec.and(additionalSpec);
 
         String page = requestParams.get("page");
         Pageable pageable = Pageable.ofSize(10).withPage(0);
         if (page != null && page.trim().matches("^\\d+$"))
             pageable = pageable.withPage(Integer.parseInt(page) - 1);
-        return thietBiRepository.findAll(specification, pageable);
+        return thietBiRepository.findAll(combinedSpec, pageable);
     }
 
     @Override
