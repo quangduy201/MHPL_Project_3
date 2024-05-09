@@ -23,6 +23,11 @@ public class ThanhVienServiceImpl implements ThanhVienService {
     }
 
     @Override
+    public List<ThanhVien> getAllThanhVien() {
+        return thanhVienRepository.findAll();
+    }
+
+    @Override
     public Page<ThanhVien> getThanhVien(Map<String, String> requestParams) {
         Specification<ThanhVien> specification;
         if (requestParams.containsKey("all")) {
@@ -67,6 +72,11 @@ public class ThanhVienServiceImpl implements ThanhVienService {
     @Override
     public ThanhVien getThanhVienById(Long maTV) {
         return thanhVienRepository.findById(maTV).orElse(null);
+    }
+
+    @Override
+    public ThanhVien getThanhVienBySdt(String sdt) {
+        return thanhVienRepository.findBySdt(sdt).orElse(null);
     }
 
     @Override

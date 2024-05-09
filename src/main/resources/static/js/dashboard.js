@@ -320,6 +320,9 @@ $(document).ready(function() {
         var ctx = document.getElementById("breach1AreaChart");
         var labels = newData.map(i => i[0]);
         var nums = newData.map(i => i[1]);
+        var total = newData.reduce((c, a) => a[2] + c, 0)
+
+        $("#total").html(`Tổng tiền: ${total} VNĐ`)
 
         var currentDate = moment();
         var formattedDate = currentDate.format('DD-MM-YYYY');
@@ -376,8 +379,6 @@ $(document).ready(function() {
 
     $.post('/admin/dashboard/breach-1', {
         dateRange: startDate + ' - ' + endDate,
-        khoa: $('#khoa').val(),
-        nganh: $('#nganh').val()
     }, function(responseData) {
         updateChart(responseData[0]);
         updateTable(responseData[1]);
@@ -389,8 +390,6 @@ $(document).ready(function() {
 
         $.post('/admin/dashboard/breach-1', {
             dateRange: startDate + ' - ' + endDate,
-            khoa: $('#khoa').val(),
-            nganh: $('#nganh').val()
         }, function(responseData) {
             updateChart(responseData[0]);
             updateTable(responseData[1]);
@@ -461,8 +460,6 @@ $(document).ready(function() {
 
     $.post('/admin/dashboard/breach-2', {
         dateRange: startDate + ' - ' + endDate,
-        khoa: $('#khoa').val(),
-        nganh: $('#nganh').val()
     }, function(responseData) {
         updateChart(responseData[0]);
         updateTable(responseData[1]);
@@ -474,8 +471,6 @@ $(document).ready(function() {
 
         $.post('/admin/dashboard/breach-2', {
             dateRange: startDate + ' - ' + endDate,
-            khoa: $('#khoa').val(),
-            nganh: $('#nganh').val()
         }, function(responseData) {
             updateChart(responseData[0]);
             updateTable(responseData[1]);

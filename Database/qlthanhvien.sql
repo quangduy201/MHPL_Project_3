@@ -30,6 +30,7 @@ CREATE TABLE `thanhvien` (
   `SDT` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `Email` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
   `Password` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `reset_password_token` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`MaTV`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -40,7 +41,7 @@ CREATE TABLE `thanhvien` (
 
 LOCK TABLES `thanhvien` WRITE;
 /*!40000 ALTER TABLE `thanhvien` DISABLE KEYS */;
-INSERT INTO `thanhvien` VALUES (1120150184,'Trần Thị Nữ','GDTH','GDTH','1111111111','',NULL),(1121530087,'Trần Thiếu Nam','CNTT','QLGD','1111111112','',NULL),(1123330257,'Ngô Tuyết Nhi','QTKD','QTKD','1111111113','',NULL),(2147483647,'Nguyễn Văn Nam','CNTT','HTTT','123456789','',NULL);
+INSERT INTO `thanhvien` VALUES (1120150184,'Trần Thị Nữ','GDTH','GDTH','1111111111','',NULL,NULL),(1121530087,'Trần Thiếu Nam','CNTT','QLGD','1111111112','',NULL,NULL),(1123330257,'Ngô Tuyết Nhi','QTKD','QTKD','1111111113','',NULL,NULL),(2147483647,'Nguyễn Văn Nam','CNTT','HTTT','123456789','',NULL,NULL);
 /*!40000 ALTER TABLE `thanhvien` ENABLE KEYS */;
 UNLOCK TABLES;
 

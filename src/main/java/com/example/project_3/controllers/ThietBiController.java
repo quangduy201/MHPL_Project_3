@@ -5,6 +5,7 @@ import com.example.project_3.models.ThietBi;
 import com.example.project_3.payloads.requests.ThietBiRequest;
 import com.example.project_3.services.ThietBiService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,23 +63,27 @@ public class ThietBiController {
     public String editThietBi(Model model,
                                 @RequestParam String maTB,
                                 @Valid @ModelAttribute("tb") ThietBiRequest tb,
-                                BindingResult result) {
-        try {
-            if (result.hasErrors()) {
-                addThietBiListToModel(model);
-                model.addAttribute("showFormEdit", true);
-                return "/admin/thietbi/index";
+                                BindingResult result, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            try {
+                if (result.hasErrors()) {
+                    addThietBiListToModel(model);
+                    model.addAttribute("showFormEdit", true);
+                    return "/admin/thietbi/index";
+                }
+                Long id = Long.parseLong(maTB);
+                ThietBi thietbi = thietBiService.getThietBiById(id);
+                thietbi.setTenTB(tb.getTenTB());
+                thietbi.setMoTaTB(tb.getMoTaTB());
+                thietBiService.saveThietBi(thietbi);
+                model.addAttribute("showFormEdit", false);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-            Long id = Long.parseLong(maTB);
-            ThietBi thietbi = thietBiService.getThietBiById(id);
-            thietbi.setTenTB(tb.getTenTB());
-            thietbi.setMoTaTB(tb.getMoTaTB());
-            thietBiService.saveThietBi(thietbi);
-            model.addAttribute("showFormEdit", false);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            return "redirect:/admin/thiet-bi";
+        } else {
+            return "redirect:/admin/login";
         }
-        return "redirect:/admin/thiet-bi";
     }
 
     @PostMapping("/excel")

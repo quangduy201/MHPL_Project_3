@@ -6,6 +6,7 @@ import com.example.project_3.payloads.responses.ThanhVienResponse;
 public interface AuthService {
     ThanhVien register(ThanhVien tv);
     ThanhVienResponse login(String email, String password);
+    ThanhVienResponse adminLogin(String email, String password);
 
     void resetPassword(String email, String oldPassword, String newPassword);
 }

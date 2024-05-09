@@ -13,29 +13,12 @@
     <title>Dashboard | Quản lý thành viên</title>
 
     <!-- Custom fonts for this template-->
-    <link
-            type="text/css"
-            rel="stylesheet"
-            href="/vendor/fontawesome-free/css/all.min.css"
-    />
-    <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-    />
-    <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-    />
-    <link
-            rel="stylesheet"
-            href="/vendor/datatables/dataTables.bootstrap4.min.css"
-    />
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
-            integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg="
-            crossorigin="anonymous"
-    />
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet"/>
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/lib/prism.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" rel="stylesheet"/>
 
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet" />
@@ -62,39 +45,12 @@
             <div class="container-fluid">
                 <h1 class="text-center my-4">Quản lý thành viên</h1>
                 <div class="d-flex justify-content-end align-items-center my-5">
-                    <p class="btn btn-primary btn-sm mr-2 m-0"> Thêm </p>
+                    <p class="btn btn-primary btn-sm mr-2 m-0" onclick="openFormAdd()"> Thêm </p>
                     <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
-                    <p class="btn text-white btn-sm  m-0 bg-danger"> Xóa nhiều dòng </p>
+                    <p class="btn text-white btn-sm  m-0 bg-danger" onclick="openFormDelete()"> Xóa nhiều dòng </p>
                     <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
                 </div>
-                <div class="mb-3 row">
-                    <div class="col-2">
-                        <select id="select-by" class="form-select" aria-label="" th:with="key = ${params.isEmpty() ? 'all' : params.split('=')[0]}">
-                            <option value="all" th:selected="${key == 'all'}">Tất cả</option>
-                            <option value="maTV" th:selected="${key == 'maTV'}">Mã TV</option>
-                            <option value="hoTen" th:selected="${key == 'hoTen'}">Họ tên</option>
-                            <option value="khoa" th:selected="${key == 'khoa'}">Khoa</option>
-                            <option value="nganh" th:selected="${key == 'nganh'}">Ngành</option>
-                            <option value="sdt" th:selected="${key == 'sdt'}">SĐT</option>
-                            <option value="email" th:selected="${key == 'email'}">Email</option>
-                        </select>
-                    </div>
-                    <div class="col">
-                        <input type="text"
-                               class="form-control"
-                               id="txt-search"
-                               placeholder="Nhập vào đây để tìm kiếm"
-                               aria-label=""
-                               th:value="${params.isEmpty() ? '' : params.split('=')[1]}"
-                        >
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-secondary" onclick="searchThanhVien()">Tìm kiếm</button>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-primary">Thêm thành viên</button>
-                    </div>
-                </div>
+                <!-- Table -->
                 <table id="thanhVienTable" class="table">
                     <thead>
                     <tr>
@@ -108,7 +64,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="tv : ${tvList}">
+                    <tr th:each="tv : ${thanhVienList}">
                         <td th:text="${tv.maTV}"></td>
                         <td th:text="${tv.hoTen}"></td>
                         <td th:text="${tv.khoa}"></td>
@@ -117,25 +73,130 @@
                         <td th:text="${tv.email}"></td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-primary btn-sm"
-                               th:href="@{/admin/thanhvien/edit(maTV=${tv.maTV})}"
+                               th:classappend="${tv.maTV == 0 ? 'disabled' : ''}"
+                               th:onclick="'openFormEdit(\'' + ${tv.maTV} + '\')'"
                             >Sửa</a>
-                            <a class="btn btn-primary btn-sm"
-                               th:href="@{/admin/thanhvien/delete(maTV=${tv.maTV})}"
-                               onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên này?')"
+                            <a class="btn btn-danger btn-sm"
+                               th:classappend="${tv.maTV == 0 ? 'disabled' : ''}"
+                               th:onclick="'deleteThanhVien(\'' + ${tv.maTV} + '\')'"
                             >Xóa</a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
+            </div>
+            <!-- /.container-fluid -->
+        </div>
 
-                <div th:replace="~{fragments/pagination :: pagination(
-                        urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
-                        totalPages = ${tvList.totalPages},
-                        currentPage = ${tvList.number + 1},
-                        pageSize = ${tvList.size},
-                        totalItems = ${tvList.totalElements}
-                     )}">
+        <div id="addDiv" class="rounded-lg shadow bg-dark" th:style="${showForm} ? 'display: block;' : 'display: none;'">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-xl font-bold text-center mx-auto text-white">THÊM THÀNH VIÊN</h2>
+                    <button type="button" class="btn btn-sm btn-light" onclick="closeFormAdd()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
+                <form class="space-y-4" id="addThanhVienForm" method="POST" action="/admin/thanhvien/" th:object="${tv}">
+                    <div class="form-group">
+                        <label for="maTV-add" class="block mb-2 text-sm font-medium text-white">Mã thành viên</label>
+                        <input type="text" name="maTV" id="maTV-add" class="form-control" placeholder="Nhập mã thành viên" th:field="${tv.maTV}">
+                        <p th:if="${#fields.hasErrors('maTV')}" class="text-danger" th:errors="${tv.maTV}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="hoTen-add" class="block mb-2 text-sm font-medium text-white">Tên thành viên</label>
+                        <input type="text" name="hoTen" id="hoTen-add" class="form-control" placeholder="Nhập tên thành viên" th:field="${tv.hoTen}">
+                        <p th:if="${#fields.hasErrors('hoTen')}" class="text-danger" th:errors="${tv.hoTen}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="khoa-add" class="block mb-2 text-sm font-medium text-white">Khoa</label>
+                        <input type="text" name="khoa" id="khoa-add" class="form-control" placeholder="Nhập tên khoa" th:field="${tv.khoa}">
+                        <p th:if="${#fields.hasErrors('khoa')}" class="text-danger" th:errors="${tv.khoa}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="nganh-add" class="block mb-2 text-sm font-medium text-white">Ngành</label>
+                        <input type="text" name="nganh" id="nganh-add" class="form-control" placeholder="Nhập tên ngành" th:field="${tv.nganh}">
+                        <p th:if="${#fields.hasErrors('nganh')}" class="text-danger" th:errors="${tv.nganh}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="sdt-add" class="block mb-2 text-sm font-medium text-white">SĐT</label>
+                        <input type="text" name="sdt" id="sdt-add" class="form-control" placeholder="Nhập SĐT" th:field="${tv.sdt}">
+                        <p th:if="${#fields.hasErrors('sdt')}" class="text-danger" th:errors="${tv.sdt}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-add" class="block mb-2 text-sm font-medium text-white">Email</label>
+                        <input type="text" name="email" id="email-add" class="form-control" placeholder="Nhập email" th:field="${tv.email}">
+                        <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="${tv.email}"></p>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary btn-lg" onclick="resetFormAdd()">Làm mới</button>
+                        <button type="submit" class="btn btn-primary btn-lg ml-3">Thêm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="editDiv" class="rounded-lg shadow bg-dark" th:style="${showFormEdit} ? 'display: block;' : 'display: none;'">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-xl font-bold text-center mx-auto text-white">SỬA THÀNH VIÊN</h2>
+                    <button type="button" class="btn btn-sm btn-light" onclick="closeFormEdit()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form class="space-y-4" id="editThanhVienForm" method="POST" action="/admin/thanhvien/edit" th:object="${tv}">
+                    <div class="form-group">
+                        <label for="maTV-edit" class="block mb-2 text-sm font-medium text-white">Mã thành viên</label>
+                        <input type="text" name="maTV" id="maTV-edit" class="form-control" placeholder="Nhập mã thành viên" th:field="${tv.maTV}">
+                        <p th:if="${#fields.hasErrors('maTV')}" class="text-danger" th:errors="${tv.maTV}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="hoTen-edit" class="block mb-2 text-sm font-medium text-white">Tên thành viên</label>
+                        <input type="text" name="hoTen" id="hoTen-edit" class="form-control" placeholder="Nhập tên thành viên" th:field="${tv.hoTen}">
+                        <p th:if="${#fields.hasErrors('hoTen')}" class="text-danger" th:errors="${tv.hoTen}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="khoa-edit" class="block mb-2 text-sm font-medium text-white">Khoa</label>
+                        <input type="text" name="khoa" id="khoa-edit" class="form-control" placeholder="Nhập tên khoa" th:field="${tv.khoa}">
+                        <p th:if="${#fields.hasErrors('khoa')}" class="text-danger" th:errors="${tv.khoa}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="nganh-edit" class="block mb-2 text-sm font-medium text-white">Ngành</label>
+                        <input type="text" name="nganh" id="nganh-edit" class="form-control" placeholder="Nhập tên ngành" th:field="${tv.nganh}">
+                        <p th:if="${#fields.hasErrors('nganh')}" class="text-danger" th:errors="${tv.nganh}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="sdt-edit" class="block mb-2 text-sm font-medium text-white">SĐT</label>
+                        <input type="text" name="sdt" id="sdt-edit" class="form-control" placeholder="Nhập SĐT" th:field="${tv.sdt}">
+                        <p th:if="${#fields.hasErrors('sdt')}" class="text-danger" th:errors="${tv.sdt}"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-edit" class="block mb-2 text-sm font-medium text-white">Email</label>
+                        <input type="text" name="email" id="email-edit" class="form-control" placeholder="Nhập email" th:field="${tv.email}">
+                        <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="${tv.email}"></p>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary btn-lg" onclick="resetFormEdit()">Làm mới</button>
+                        <button type="submit" class="btn btn-primary btn-lg ml-3">Sửa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="deleteDiv" class="mx-auto rounded-lg shadow mt-5 bg-dark" style="width: 500px;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);display: none;">
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="text-xl font-bold text-center mx-auto text-white">XÓA THÀNH VIÊN THEO NĂM NHẬP HỌC</h4>
+                    <button type="button" class="btn btn-sm btn-light" onclick="closeFormDelete()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form class="space-y-4">
+                    <div class="form-group">
+                        <label for="maTV-delete" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
+                        <input type="text" name="maTV" id="maTV-delete" class="form-control" placeholder="Năm nhập học. VD: 2024" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary btn-lg" onclick="deleteMultipleThietBi()">XÓA</button>
+                    </div>
+                </form>
             </div>
         </div>
         <!-- End of Content Wrapper -->
@@ -157,7 +218,99 @@
 <!-- Core plugin JavaScript-->
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
+<!-- Read Excel -->
+<script src="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/read-excel-file.min.js"></script>
+
 <script>
+    function openFormAdd() {
+        document.getElementById('addDiv').style.display = 'block';
+    }
+
+    function closeFormAdd() {
+        document.getElementById('addDiv').style.display = 'none';
+        resetFormAdd();
+    }
+
+    function resetFormAdd() {
+        document.getElementById('maTV-add').value = "";
+        document.getElementById('hoTen-add').value = "";
+        document.getElementById('khoa-add').value = "";
+        document.getElementById('nganh-add').value = "";
+        document.getElementById('sdt-add').value = "";
+        document.getElementById('email-add').value = "";
+        let errorMessages = document
+            .getElementById('addThanhVienForm')
+            .getElementsByClassName('text-danger');
+        for (let i = 0; i < errorMessages.length; ++i) {
+            errorMessages[i].innerHTML = "";
+        }
+    }
+
+    function openFormEdit(maTV) {
+        $.ajax({
+            type: "GET",
+            url: "/admin/thanh-vien/edit",
+            data: { maTV: maTV },
+            success: function(response) {
+                document.getElementById('maTV-edit').value = response.maTV;
+                document.getElementById('hoTen-edit').value = response.hoTen;
+                document.getElementById('khoa-edit').value = response.khoa;
+                document.getElementById('nganh-edit').value = response.nganh;
+                document.getElementById('sdt-edit').value = response.sdt;
+                document.getElementById('email-edit').value = response.email;
+                document.getElementById('editDiv').style.display = 'block';
+            },
+            error: function(xhr) {
+                console.log("Lỗi khi lấy dữ liệu thành viên: " + xhr.responseText);
+            }
+        });
+    }
+
+    function closeFormEdit() {
+        document.getElementById('editDiv').style.display = 'none';
+        resetFormEdit();
+    }
+
+    function resetFormEdit() {
+        document.getElementById('maTV-edit').value = "";
+        document.getElementById('hoTen-edit').value = "";
+        document.getElementById('khoa-edit').value = "";
+        document.getElementById('nganh-edit').value = "";
+        document.getElementById('sdt-edit').value = "";
+        document.getElementById('email-edit').value = "";
+        let errorMessages = document
+            .getElementById('editThanhVienForm')
+            .getElementsByClassName('text-danger');
+        for (let i = 0; i < errorMessages.length; ++i) {
+            errorMessages[i].innerHTML = "";
+        }
+    }
+
+    function openFormDelete() {
+        document.getElementById('deleteDiv').style.display = 'block';
+    }
+
+    function closeFormDelete() {
+        document.getElementById('deleteDiv').style.display = 'none';
+    }
+
+    function deleteThanhVien(maTV) {
+        if (confirm('Bạn có chắc chắn muốn xóa thành viên này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/admin/thanh-vien/delete",
+                data: { maTV: maTV },
+                success: res => {
+                    alert("Xóa thành viên thành công.");
+                    window.location.reload();
+                },
+                error: xhr => {
+                    console.log("Lỗi khi xóa thành viên: " + xhr.responseText);
+                }
+            });
+        }
+    }
+
     function searchThanhVien() {
         const selectBy = document.getElementById("select-by").value
         const searchText = document.getElementById("txt-search").value
@@ -168,6 +321,25 @@
             searchThanhVien();
         }
     })
+
+    $(document).ready(function() {
+        $('#thanhVienTable').DataTable();
+
+        $('#file-input').on("change", (e) => {
+            const file = e.target.files[0];
+            readXlsxFile(file).then((rows) => {
+                rows.shift()
+                const isInvalid = rows.find(row => row.length > 3 || isNaN(row[0]) || (typeof row[1] !== 'string' && row[1].length <= 0) || (typeof row[2] !== 'string' && row[2].length <= 0))
+                if (isInvalid) {
+                    return;
+                }
+                $.post("/admin/thanh-vien/excel", {
+                    data: rows,
+                }, function(responseData) {
+                });
+            })
+        })
+    });
 </script>
 </body>
 </html>
