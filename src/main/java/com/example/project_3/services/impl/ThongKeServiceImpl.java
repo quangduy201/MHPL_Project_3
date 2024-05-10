@@ -101,8 +101,6 @@ public class ThongKeServiceImpl implements ThongKeService {
     public List<Object[]> thongKeThietBiDaDuocMuon(LocalDateTime startTime, LocalDateTime endTime, String maTB, boolean isTable) {
         List<ThongTinSD> thongTinSDList = thongTinSDRepository.findAllThongTinSDOnlyThietBiDaMuon();
 
-        thongTinSDList = thongTinSDList.stream().filter(tt -> Objects.equals(maTB, "tatca") || tt.getMaTB().getMaTB().toString().equals(maTB)).toList();
-
         OffsetDateTime offsetStartTime = startTime.atOffset(ZoneOffset.ofHours(7));
         OffsetDateTime offsetEndTime = endTime.atOffset(ZoneOffset.ofHours(7));
 
@@ -111,9 +109,8 @@ public class ThongKeServiceImpl implements ThongKeService {
         Instant endInstant = offsetEndTime.toLocalDate().atTime(23, 59, 59)
                 .atOffset(ZoneOffset.ofHours(7)).toInstant();
 
-
         List<ThongTinSD> newThongTinSDList = thongTinSDList.stream()
-                .filter(tt -> tt.getTgMuon().compareTo(startInstant) >= 0 && tt.getTgMuon().compareTo(endInstant) <= 0)
+                .filter(tt -> tt.getTgMuon().compareTo(startInstant) >= 0 && tt.getTgMuon().compareTo(endInstant) <= 0 && (Objects.equals(maTB, "tatca") || tt.getMaTB().getMaTB().toString().equals(maTB)))
                 .sorted(Comparator.comparing(tt -> tt.getTgMuon().atZone(ZoneId.of("UTC+7")).toLocalDate()))
                 .toList();
 
@@ -154,8 +151,6 @@ public class ThongKeServiceImpl implements ThongKeService {
     public List<Object[]> thongKeThietBiDangDuocMuon(LocalDateTime startTime, LocalDateTime endTime, String maTB, boolean isTable) {
         List<ThongTinSD> thongTinSDList = thongTinSDRepository.findAllThongTinSDOnlyThietBiDangMuon();
 
-        thongTinSDList = thongTinSDList.stream().filter(tt -> Objects.equals(maTB, "tatca") || tt.getMaTB().getMaTB().toString().equals(maTB)).toList();
-
         OffsetDateTime offsetStartTime = startTime.atOffset(ZoneOffset.ofHours(7));
         OffsetDateTime offsetEndTime = endTime.atOffset(ZoneOffset.ofHours(7));
 
@@ -165,7 +160,7 @@ public class ThongKeServiceImpl implements ThongKeService {
                 .atOffset(ZoneOffset.ofHours(7)).toInstant();
 
         List<ThongTinSD> newThongTinSDList = thongTinSDList.stream()
-                .filter(tt -> tt.getTgMuon().compareTo(startInstant) >= 0 && tt.getTgMuon().compareTo(endInstant) <= 0)
+                .filter(tt -> tt.getTgMuon().compareTo(startInstant) >= 0 && tt.getTgMuon().compareTo(endInstant) <= 0 && (Objects.equals(maTB, "tatca") || tt.getMaTB().getMaTB().toString().equals(maTB)))
                 .sorted(Comparator.comparing(tt -> tt.getTgMuon().atZone(ZoneId.of("UTC+7")).toLocalDate()))
                 .toList();
 
@@ -228,6 +223,10 @@ public class ThongKeServiceImpl implements ThongKeService {
                 .map(thongTinSD -> thongTinSD.getNgayXL().atZone(ZoneId.of("UTC+7")).toLocalDate())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
+        long totalCount = newXuLyList.stream()
+                .mapToLong(item -> Optional.ofNullable(item.getSoTien()).orElse(0))
+                .sum();
+
         List<Map.Entry<LocalDate, Long>> sortedEntries = new ArrayList<>(countByDate.entrySet());
 
         // Sắp xếp danh sách theo ngày tăng dần
@@ -235,7 +234,7 @@ public class ThongKeServiceImpl implements ThongKeService {
 
         // In ra số lần xuất hiện của mỗi ngày, đã sắp xếp theo ngày tăng dần
         for (Map.Entry<LocalDate, Long> entry : sortedEntries) {
-            list.add(new Object[] {entry.getKey(), entry.getValue()});
+            list.add(new Object[] {entry.getKey(), entry.getValue(), totalCount});
         }
 
         return list;

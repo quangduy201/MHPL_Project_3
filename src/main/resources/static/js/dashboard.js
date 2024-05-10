@@ -291,8 +291,7 @@ $(document).ready(function() {
 
     $.post('/admin/dashboard/equipment-2', {
         dateRange: startDate + ' - ' + endDate,
-        khoa: $('#khoa').val(),
-        nganh: $('#nganh').val()
+        maTB: $('#equipment-select-state-2').val()
     }, function(responseData) {
         updateChart(responseData[0]);
         updateTable(responseData[1]);
@@ -304,8 +303,7 @@ $(document).ready(function() {
 
         $.post('/admin/dashboard/equipment-2', {
             dateRange: startDate + ' - ' + endDate,
-            khoa: $('#khoa').val(),
-            nganh: $('#nganh').val()
+            maTB: $('#equipment-select-state-2').val()
         }, function(responseData) {
             updateChart(responseData[0]);
             updateTable(responseData[1]);
