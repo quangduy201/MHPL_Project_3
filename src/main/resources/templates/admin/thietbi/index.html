@@ -196,12 +196,12 @@
     function deleteThietBi(maTB) {
         if (confirm('Bạn có chắc chắn muốn xóa thiết bị này?')) {
             $.ajax({
-                type: "DELETE",
+                type: "GET",
                 url: "/admin/thiet-bi/delete",
                 data: { maTB: maTB },
                 success: function(response) {
                     alert("Xóa thiết bị thành công");
-                    window.location.reload();
+                    window.location.reload(true);
                 },
                 error: function(xhr) {
                     console.log("Lỗi khi xóa thiết bị: " + xhr.responseText);
@@ -231,13 +231,13 @@
         var id = document.getElementById("maTBi").value;
         if (confirm('Bạn có chắc chắn muốn xóa các thiết bị này?')) {
             $.ajax({
-                type: "DELETE",
+                type: "GET",
                 url: "/admin/thiet-bi/deleteMultiple",
                 data: { maTB: id },
                 success: function(response) {
                     alert("Xóa thiết bị thành công");
                     document.getElementById("maTB").value = "";
-                    window.location.reload();
+                    window.location.reload(true);
                 },
                 error: function(xhr) {
                     console.log("Lỗi khi xóa thiết bị: " + xhr.responseText);

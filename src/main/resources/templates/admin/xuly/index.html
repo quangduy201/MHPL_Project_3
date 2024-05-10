@@ -81,10 +81,13 @@
                         <label for="thanhVien" class="block mb-2 text-sm font-medium text-white">Thành viên</label>
                         <select name="thanhVien" id="thanhVien" class="form-control"th:field="${xly.maTV}">
                             <option value="" >Chọn thành viên</option>
-                            <option th:each="thanhVien : ${thanhVienList.content}" th:value="${thanhVien.maTV}" th:text="${thanhVien.maTV + ' - ' + thanhVien.hoTen}"></option>
+                            <option th:each="thanhVien : ${thanhVienList.content}" th:if="${thanhVien.maTV != 0}" th:value="${thanhVien.maTV}" th:text="${thanhVien.maTV + ' - ' + thanhVien.hoTen}">
+                            </option>
+
                         </select>
                         <p th:if="${#fields.hasErrors('maTV')}" class="text-danger" th:errors="${xly.maTV}"></p>
                     </div>
+
                     <div class="form-group">
                         <label for="ht" class="block mb-2 text-sm font-medium text-white">Hình thức</label>
                         <select name="ht" id="ht" class="form-control" onchange="initTienBoiThuong(this)"th:field="${xly.hinhThucXL}">
