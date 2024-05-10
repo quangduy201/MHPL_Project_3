@@ -68,7 +68,6 @@ public class AuthController {
 
         ThanhVienResponse thanhVienResponse = authService.login(tv.getEmail(), tv.getPassword());
 
-
         if (thanhVienResponse == null) {
             bindingResult.rejectValue("credentials", "invalid.credentials", "Email hoặc mật khẩu không đúng.");
             return "login/index";
