@@ -163,6 +163,7 @@ public class ThongTinSDController {
             if (thongTinSD != null && thongTinSD.getTgMuon() == null) {
                 Instant muonInstant = Instant.now();
                 thongTinSD.setTgMuon(muonInstant);
+                thongTinSD.setTgDatcho(null);
                 thongTinSDService.saveThongTinSD(thongTinSD);
                 return ResponseEntity.ok("Mượn thành công");
             } else {
@@ -202,7 +203,7 @@ public class ThongTinSDController {
         try {
             Integer idTT = Integer.parseInt(maTT);
             ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
-            if (thongTinSD != null && thongTinSD.getTgMuon() == null) {
+            if (thongTinSD != null && thongTinSD.getTgDatcho() == null) {
                 thongTinSDService.deleteThongTinSD(thongTinSD);
                 return ResponseEntity.ok("Hủy đặt chỗ thành công");
             } else {
