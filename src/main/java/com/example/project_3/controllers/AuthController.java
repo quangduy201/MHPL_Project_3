@@ -40,8 +40,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @Autowired
-    private JavaMailSender mailSender;
-    @Autowired
     private CustomerService customerService;
 
 
