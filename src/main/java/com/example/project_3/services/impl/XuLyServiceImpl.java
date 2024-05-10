@@ -43,8 +43,13 @@ public class XuLyServiceImpl implements XuLyService {
     }
 
     @Override
-    public List<XuLy> getViPhamKhoaTaiKhoanByMaTV(Long maTV) {
-        return xuLyRepository.findViPhamKhoaTaiKhoanByMaTV(maTV);
+    public List<XuLy> getViPhamKhoaTaiKhoanByMaTVAnd(Long maTV) {
+        return xuLyRepository.findViPhamKhoaTaiKhoanByMaTVAnd(maTV);
+    }
+
+    @Override
+    public List<XuLy> getViPhamKhoaTaiKhoanByMaTVOr(Long maTV) {
+        return xuLyRepository.findViPhamKhoaTaiKhoanByMaTVOr(maTV);
     }
 
 }

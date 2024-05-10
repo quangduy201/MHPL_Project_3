@@ -11,5 +11,6 @@ public interface XuLyService {
     XuLy saveXuLy(XuLy tb);
     void deleteXuLyById(int tv);
     Page<XuLy> getViPhamByMaTV(Long maTV);
-    List<XuLy> getViPhamKhoaTaiKhoanByMaTV(Long maTV);
+    List<XuLy> getViPhamKhoaTaiKhoanByMaTVAnd(Long maTV);
+    List<XuLy> getViPhamKhoaTaiKhoanByMaTVOr(Long maTV);
 }

@@ -67,7 +67,7 @@
                         <div th:each="mtb : ${mtbList}">
                             <div class="product-container">
                                 <div class="product-top">
-                                    <img th:attr="src=@{|/media/images/thietbi${mtb.maTB.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
+                                    <img th:attr="src=@{|/media/images/thietbi${mtb.maTB.maTB.toString().charAt(0)}.jpg|}" alt="" class="image-product"/>
                                 </div>
                                 <div class="product-bottom mt-5">
                                     <div class="ui-data">
@@ -76,14 +76,17 @@
                                             <br/>
                                             <span th:text="${mtb.maTB.tenTB}"></span>
                                         </div>
-                                    </div>a
+                                    </div>
                                     <div class="describe">
                                         <p th:text="${mtb.maTB.moTaTB}"></p>
                                     </div>
-                                    <div class="button-cart d-flex justify-content-center align-items-center">
-                                        <p class="button-return button px-5 py-3 text-white bg-info" th:onclick="'giveBackThietBi(\'' + ${session.user.maTV} + '\', \'' + ${mtb.maTB.maTB} + '\')'">
-                                            Trả
-                                        </p>
+                                    <div class="time">
+                                        <p th:text="${#temporals.format(mtb.tgMuon, 'dd/MM/yyyy - HH:mm:ss')}"></p>
+                                    </div>
+                                    <div class="button-cart">
+                                        <div class="button-reservation button bg-primary p-3 text-white border border-primary" th:onclick="'giveBackThietBi(\'' + ${session.user.maTV} + '\', \'' + ${mtb.maTB.maTB} + '\')'">
+                                            <p>Trả</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -142,6 +145,7 @@ integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="ano
                 url: "/thong-tin/tra",
                 data: { maTV: maTV, maTB: maTB},
                 success: function(response) {
+                    alert("Trả thiết bị thành công");
                     window.location.reload(true);
                 },
                 error: function(xhr) {

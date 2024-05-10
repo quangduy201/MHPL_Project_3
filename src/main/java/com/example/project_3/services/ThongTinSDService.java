@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface ThongTinSDService {
-    String checkThietBiDaDatCho(Long maTB, LocalDateTime date);
+    String checkThietBiDaDatCho(Long maTV, Long maTB, LocalDateTime date);
     ThongTinSD getThongTinSDMuonByID(Long maTV, Long maTB);
     ThongTinSD getThongTinSDDatChoByID(Long maTV, Long maTB);
     Page<ThongTinSD> showAllMuonThietBi(Map<String, String> requestParams, Long maTV);

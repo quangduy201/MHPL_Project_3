@@ -131,7 +131,7 @@ public class UserController {
 
             ThanhVienResponse thanhVienResponse = (ThanhVienResponse) session.getAttribute("user");
 
-            List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTV(thanhVienResponse.getMaTV());
+            List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTVOr(thanhVienResponse.getMaTV());
 
             model.addAttribute("xlList", xuLyList);
 
