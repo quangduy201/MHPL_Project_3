@@ -57,7 +57,7 @@
                                 <td th:text="${t.tgTra}"></td>
                                 <td th:text="${t.tgDatcho}"></td>
                                 <td style="white-space: nowrap">
-                                    <a class="btn btn-primary btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='tra(\'' + ${t.maTT} + '\')'">Mượn</a>
+                                    <a class="btn btn-primary btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='muon(\'' + ${t.maTT} + '\')'">Mượn</a>
                                     <a class="btn btn-secondary btn-sm" th:if="${t.maTB != null and t.tgMuon != null and t.tgTra == null and t.tgDatcho == null}" th:attr="onclick='tra(\'' + ${t.maTT} + '\')'">Trả</a>
                                     <a class="btn btn-info btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='huy(\'' + ${t.maTT} + '\')'">Hủy đặt chỗ</a>
                                 </td>
@@ -90,169 +90,6 @@
 <script src="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/read-excel-file.min.js"></script>
 
 <script>
-    function showEdit(maTB) {
-        $.ajax({
-            type: "GET",
-            url: "/admin/thiet-bi/edit",
-            data: { maTB: maTB },
-            success: function(response) {
-                document.getElementById("ma").value = response.maTB;
-                document.getElementById("ten").value = response.tenTB;
-                document.getElementById("moTa").value = response.moTaTB;
-                document.getElementById("ma").readOnly = true;
-                document.getElementById("editDiv").style.display = "block";
-            },
-            error: function(xhr) {
-                console.log("Lỗi khi lấy dữ liệu thiết bị: " + xhr.responseText);
-            }
-        });
-    }
-
-    function deleteThietBi(maTB) {
-        if (confirm('Bạn có chắc chắn muốn xóa thiết bị này?')) {
-            $.ajax({
-                type: "GET",
-                url: "/admin/thiet-bi/delete",
-                data: { maTB: maTB },
-                success: function(response) {
-                    alert("Xóa thiết bị thành công");
-                    window.location.reload();
-                },
-                error: function(xhr) {
-                    console.log("Lỗi khi xóa thiết bị: " + xhr.responseText);
-                }
-            });
-        }
-    }
-
-    function deleteMultipleThietBi() {
-        var id = document.getElementById("maTBi").value;
-
-        if (id.trim() === "") {
-            alert("Vui lòng nhập mã thiết bị");
-            return;
-        }
-
-        if (isNaN(id)) {
-            alert("Vui lòng chỉ nhập số");
-            return;
-        }
-
-        if (id.length !== 1 || isNaN(parseInt(id))) {
-            alert("Vui lòng chỉ nhập một kí tự số");
-            return;
-        }
-
-        var id = document.getElementById("maTBi").value;
-        if (confirm('Bạn có chắc chắn muốn xóa các thiết bị này?')) {
-            $.ajax({
-                type: "GET",
-                url: "/admin/thiet-bi/deleteMultiple",
-                data: { maTB: id },
-                success: function(response) {
-                    alert("Xóa thiết bị thành công");
-                    document.getElementById("maTB").value = "";
-                    window.location.reload();
-                },
-                error: function(xhr) {
-                    console.log("Lỗi khi xóa thiết bị: " + xhr.responseText);
-                }
-            });
-        }
-    }
-
-    function openForm() {
-        var form = document.getElementById('addDiv');
-        form.style.display = 'block';
-    }
-
-    function closeForm() {
-        var form = document.getElementById('addDiv');
-        form.style.display = 'none';
-        document.getElementById("ma").value = "";
-        document.getElementById("ten").value = "";
-        document.getElementById("moTa").value = "";
-        document.getElementById("maTB").value = "";
-        document.getElementById("tenTB").value = "";
-        document.getElementById("moTaTB").value = "";
-        var form = document.getElementById("addThietBiForm");
-        var errorMessages = form.getElementsByClassName("text-danger");
-        for (var i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].innerHTML = "";
-        }
-        var form = document.getElementById("editThietBiForm");
-        var errorMessages = form.getElementsByClassName("text-danger");
-        for (var i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].innerHTML = "";
-        }
-    }
-
-    function closeFormEdit() {
-        var form = document.getElementById('editDiv');
-        form.style.display = 'none';
-        document.getElementById("ma").value = "";
-        document.getElementById("ten").value = "";
-        document.getElementById("moTa").value = "";
-        document.getElementById("maTB").value = "";
-        document.getElementById("tenTB").value = "";
-        document.getElementById("moTaTB").value = "";
-        var form = document.getElementById("addThietBiForm");
-        var errorMessages = form.getElementsByClassName("text-danger");
-        for (var i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].innerHTML = "";
-        }
-        var form = document.getElementById("editThietBiForm");
-        var errorMessages = form.getElementsByClassName("text-danger");
-        for (var i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].innerHTML = "";
-        }
-    }
-
-    function openFormDelete() {
-        var form = document.getElementById('deleteDiv');
-        form.style.display = 'block';
-    }
-
-    function closeFormDelete() {
-        var form = document.getElementById('deleteDiv');
-        form.style.display = 'none';
-        document.getElementById("maTBi").value = "";
-    }
-
-    function resetForm() {
-        document.getElementById("ten").value = "";
-        document.getElementById("moTa").value = "";
-        var form = document.getElementById("addThietBiForm");
-        var errorMessages = form.getElementsByClassName("text-danger");
-        for (var i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].innerHTML = "";
-        }
-        var form = document.getElementById("editThietBiForm");
-        var errorMessages = form.getElementsByClassName("text-danger");
-        for (var i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].innerHTML = "";
-        }
-        var currentValue = document.getElementById("ma").value;
-        setTimeout(function() {
-            document.getElementById("ma").value = currentValue;
-        }, 0);
-    }
-
-    function resetFormAdd() {
-        document.getElementById("maTB").value = "";
-        document.getElementById("tenTB").value = "";
-        document.getElementById("moTaTB").value = "";
-        var form = document.getElementById("addThietBiForm");
-        var errorMessages = form.getElementsByClassName("text-danger");
-        for (var i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].innerHTML = "";
-        }
-        var form = document.getElementById("editThietBiForm");
-        var errorMessages = form.getElementsByClassName("text-danger");
-        for (var i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].innerHTML = "";
-        }
-    }
 
     $(document).ready(function() {
         $('#thietbiTable').DataTable();
@@ -282,7 +119,7 @@
     function muon(maTT) {
         $.ajax({
             type: 'GET',
-            url: '/thong-tin/muon/' + maTT,
+            url: '/thong-tin/admin/muon?maTT=' + maTT,
             success: function(response) {
                 // Hiển thị thông báo khi mượn thành công
                 alert("Mượn thành công!");
@@ -299,7 +136,7 @@
     function tra(maTT) {
         $.ajax({
             type: 'GET',
-            url: '/tra/' + maTT,
+            url: '/thong-tin/admin/tra?maTT=' + maTT,
             success: function(response) {
                 // Hiển thị thông báo khi trả thành công
                 alert("Trả thành công!");
@@ -316,7 +153,7 @@
     function huy(maTT) {
         $.ajax({
             type: 'GET',
-            url: '/huy/' + maTT,
+            url: '/thong-tin/admin/huy?maTT=' + maTT,
             success: function(response) {
                 // Hiển thị thông báo khi hủy thành công
                 alert("Hủy thành công!");
