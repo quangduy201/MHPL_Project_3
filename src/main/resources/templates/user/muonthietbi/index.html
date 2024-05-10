@@ -67,7 +67,7 @@
                         <div th:each="mtb : ${mtbList}">
                             <div class="product-container">
                                 <div class="product-top">
-                                    <img th:attr="src=@{|/media/images/thietbi${mtb.maTB.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
+                                    <img th:attr="src=@{|/media/images/thietbi${mtb.maTB.maTB.toString().charAt(0)}.jpg|}" alt="" class="image-product"/>
                                 </div>
                                 <div class="product-bottom mt-5">
                                     <div class="ui-data">

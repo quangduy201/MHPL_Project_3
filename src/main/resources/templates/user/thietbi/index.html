@@ -86,7 +86,7 @@
                         <div th:each="tb : ${tbList}">
                             <div class="product-container">
                                 <div class="product-top">
-                                    <img th:attr="src=@{|/media/images/thietbi${tb.maTB / 1000000}.jpg|}" alt="" class="image-product"/>
+                                    <img th:attr="src=@{|/media/images/thietbi${tb.maTB.toString().charAt(0)}.jpg|}" alt="" class="image-product"/>
                                 </div>
                                 <div class="product-bottom mt-5">
                                     <div class="ui-data">
@@ -111,7 +111,7 @@
                     </div>
                     <div class="ui-bottom">
                         <div th:replace="~{fragments/pagination :: pagination(
-                        urlPrefix = ${params.isEmpty() ? '/user/thietbi?' : '/user/thietbi?' + params + '&'},
+                        urlPrefix = ${params.isEmpty() ? '/user/thiet-bi?' : '/user/thiet-bi?' + params + '&'},
                         totalPages = ${tbList.totalPages},
                         currentPage = ${tbList.number + 1},
                         pageSize = ${tbList.size},
@@ -198,7 +198,7 @@
                 url: "/thong-tin/dat-cho",
                 data: { maTV: maTV, maTB: maTB, date: date },
                 success: function(response) {
-                    alert(response);
+                    alert("Đặt chỗ thiết bị thành công");
                     window.location.reload();
                 },
                 error: function(xhr) {
@@ -215,7 +215,7 @@
                 url: "/thong-tin/muon",
                 data: { maTV: maTV, maTB: maTB, date: date},
                 success: function(response) {
-                    alert(response);
+                    alert("Mượn thiết bị thành công");
                     window.location.reload();
                 },
                 error: function(xhr) {

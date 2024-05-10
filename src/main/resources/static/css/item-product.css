@@ -90,6 +90,7 @@ table {
     max-width: inherit;
     mix-blend-mode: multiply;
 }
+
 .product-container .product-bottom {
     width: 90%;
     display: flex;
