@@ -196,7 +196,7 @@
     function deleteThietBi(maTB) {
         if (confirm('Bạn có chắc chắn muốn xóa thiết bị này?')) {
             $.ajax({
-                type: "GET",
+                type: "DELETE",
                 url: "/admin/thiet-bi/delete",
                 data: { maTB: maTB },
                 success: function(response) {
@@ -231,7 +231,7 @@
         var id = document.getElementById("maTBi").value;
         if (confirm('Bạn có chắc chắn muốn xóa các thiết bị này?')) {
             $.ajax({
-                type: "GET",
+                type: "DELETE",
                 url: "/admin/thiet-bi/deleteMultiple",
                 data: { maTB: id },
                 success: function(response) {
@@ -344,18 +344,27 @@
 
         $("#file-input").on("change", (e) => {
             const file = e.target.files[0];
-            console.log("alo")
             readXlsxFile(file).then((rows) => {
                 rows.shift()
-                const isInvalid = rows.find(row => row.length > 3 || isNaN(row[0]) || (typeof row[1] !== 'string' && row[1].length <= 0) || (typeof row[2] !== 'string' && row[2].length <= 0))
-                if (isInvalid) {
-                    return;
+                const newRows = [];
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+
+                    // Kiểm tra tính hợp lệ của hàng
+                    const isInvalid = row.length > 3 || isNaN(row[0]) || (typeof row[1] !== 'string' && row[1].length <= 0) || (typeof row[2] !== 'string' && row[2].length <= 0);
+
+                    if (!isInvalid) {
+                        newRows.push(row); // Thêm hàng hợp lệ vào mảng mới
+                    }
                 }
-                console.log("hello")
+
+                const jsonData = JSON.stringify(newRows);
+
                 $.ajax({
                     type: "POST",
                     url: "/admin/thiet-bi/excel",
-                    data: rows,
+                    contentType: "application/json", // Xác định kiểu dữ liệu của yêu cầu
+                    data: jsonData, // Gửi dữ liệu JSON
                     success: response => {
                         alert("Nhập excel thành công");
                         window.location.reload();

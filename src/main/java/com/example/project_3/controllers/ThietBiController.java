@@ -95,10 +95,10 @@ public class ThietBiController {
     }
 
     @PostMapping("/excel")
-    public String excel(@RequestParam Object[][] rows) {
+    public String excel(@RequestBody String[][] rows) {
         try {
-            for (Object[] row : rows) {
-                ThietBi tb = new ThietBi(Long.parseLong(row[0].toString()), row[1].toString(), row[2].toString());
+            for (String[] row : rows) {
+                ThietBi tb = new ThietBi(Long.parseLong(row[0]), row[1], row[2]);
                 thietBiService.saveThietBi(tb);
             }
         } catch (Exception e) {

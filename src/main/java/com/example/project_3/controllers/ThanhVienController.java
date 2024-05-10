@@ -89,9 +89,9 @@ public class ThanhVienController {
     }
 
     @PostMapping("/excel")
-    public String excel(@RequestParam Object[][] rows) {
+    public String excel(@RequestBody String[][] rows) {
         try {
-            for (Object[] row : rows) {
+            for (String[] row : rows) {
                 ThanhVien tv = ThanhVien.builder()
                         .maTV(Long.parseLong(row[0].toString()))
                         .hoTen(row[1].toString())
