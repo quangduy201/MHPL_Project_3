@@ -97,7 +97,7 @@ public class AuthController {
         }
 
         if (thanhVienService.getThanhVienById(Long.valueOf(tv.getMaTV())) != null) {
-            bindingResult.rejectValue("credentials", "invalid.credentials", "Email đã tồn tại trong hệ thống");
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Mã thành viên đã tồn tại trong hệ thống");
 
             model.addAttribute("tv", tv);
             return "register/index";
