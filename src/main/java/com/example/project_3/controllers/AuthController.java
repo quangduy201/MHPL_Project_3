@@ -68,7 +68,7 @@ public class AuthController {
 
         ThanhVienResponse thanhVienResponse = authService.login(tv.getEmail(), tv.getPassword());
 
-        if (thanhVienResponse == null) {
+        if (thanhVienResponse == null || thanhVienResponse.getMaTV() == 0) {
             bindingResult.rejectValue("credentials", "invalid.credentials", "Email hoặc mật khẩu không đúng.");
             return "login/index";
         }
@@ -82,14 +82,6 @@ public class AuthController {
             session.setAttribute("user", thanhVienResponse);
             return "redirect:/user";
         }
-//        Page<XuLy> xuLyPage = xuLyService.getViPhamByMaTV(thanhVienResponse.getMaTV());
-//        if(xuLyPage.hasContent()) {
-//            XuLy xuLy = xuLyPage.getContent().get(0);
-//            bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
-//            return "login/index";
-//        }
-//        session.setAttribute("user", thanhVienResponse);
-//        return "redirect:/user";
     }
 
     @GetMapping({"/register", "/register/"})

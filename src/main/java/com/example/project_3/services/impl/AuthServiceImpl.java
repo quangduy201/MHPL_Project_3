@@ -1,13 +1,17 @@
 package com.example.project_3.services.impl;
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.ThongTinSD;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.repositories.ForgotPassReponsitory;
 import com.example.project_3.repositories.ThanhVienRepository;
+import com.example.project_3.repositories.ThongTinSDRepository;
 import com.example.project_3.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -16,6 +20,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private ForgotPassReponsitory forgotPassReponsitory;
+
+    @Autowired
+    private ThongTinSDRepository thongTinSDRepository;
 
     @Override
     public ThanhVien register(ThanhVien tv) {
@@ -41,6 +48,10 @@ public class AuthServiceImpl implements AuthService {
                 tv.getSdt(),
                 tv.getEmail()
         );
+
+        ThongTinSD ttsd = new ThongTinSD(0, tv, null, Instant.now(), null, null, null);
+
+        thongTinSDRepository.save(ttsd);
 
         return tvResponse;
     }

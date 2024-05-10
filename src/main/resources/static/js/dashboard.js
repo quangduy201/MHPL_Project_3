@@ -37,7 +37,7 @@ $(document).ready(function() {
         var nums = newData.map(i => i[1]);
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
@@ -144,7 +144,7 @@ $(document).ready(function() {
         var nums = newData.map(i => i[1]);
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
@@ -237,7 +237,7 @@ $(document).ready(function() {
         var nums = newData.map(i => i[1]);
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
@@ -325,7 +325,7 @@ $(document).ready(function() {
         $("#total").html(`Tổng tiền: ${total} VNĐ`)
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
@@ -406,7 +406,7 @@ $(document).ready(function() {
         var nums = newData.map(i => i[1]);
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
