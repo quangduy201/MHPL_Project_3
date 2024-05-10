@@ -13,4 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface XuLyRepository extends JpaRepository<XuLy, Integer> {
     @Query("SELECT xl FROM XuLy xl WHERE xl.maTV.maTV = ?1")
     Page<XuLy> findViPhamByMaTVEquals(Long maTV, Pageable pageable);
+
+    @Query("SELECT xl FROM XuLy xl WHERE xl.maTV.maTV = ?1 AND (xl.hinhThucXL LIKE '%Khóa thẻ%' OR xl.trangThaiXL = 0)")
+    List<XuLy> findViPhamKhoaTaiKhoanByMaTV(Long maTV);
 }
