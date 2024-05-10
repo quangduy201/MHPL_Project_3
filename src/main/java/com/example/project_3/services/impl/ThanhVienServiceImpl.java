@@ -91,6 +91,11 @@ public class ThanhVienServiceImpl implements ThanhVienService {
     }
 
     @Override
+    public ThanhVien getThanhVienByEmail(String email) {
+        return thanhVienRepository.findByEmail(email).orElse(null);
+    }
+
+    @Override
     public ThanhVien saveThanhVien(ThanhVien tv) {
         return thanhVienRepository.save(tv);
     }

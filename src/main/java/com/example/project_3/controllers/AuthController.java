@@ -110,6 +110,13 @@ public class AuthController {
             return "register/index";
         }
 
+        if (thanhVienService.getThanhVienByEmail(tv.getEmail()) != null) {
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Email đã tồn tại trong hệ thống");
+
+            model.addAttribute("tv", tv);
+            return "register/index";
+        }
+
         if (!tv.isXacNhanMatKhauValid()) {
             bindingResult.rejectValue("xacNhanMatKhau", "password.mismatch", "Trường này không khớp với trường mật khẩu");
             bindingResult.rejectValue("matKhau", "password.mismatch", "Trường này không khớp với trường xác nhận mật khẩu");
