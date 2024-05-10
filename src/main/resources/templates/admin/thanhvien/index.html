@@ -361,7 +361,7 @@
                     const row = rows[i];
 
                     // Kiểm tra tính hợp lệ của hàng
-                    const isInvalid = rows.find(row => row.length > 6 || isNaN(row[0]) || (typeof row[1] !== 'string' && row[1].length <= 0) || (typeof row[2] !== 'string' && row[2].length <= 0) || (typeof row[3] !== 'string' && row[3].length <= 0) || (typeof row[4] !== 'string' && row[4].length <= 0) || (typeof row[5] !== 'string' && row[5].length <= 0))
+                    const isInvalid = rows.find(row => row.length > 7 || isNaN(row[0]) || (typeof row[1] !== 'string' && row[1].length <= 0) || (typeof row[2] !== 'string' && row[2].length <= 0) || (typeof row[3] !== 'string' && row[3].length <= 0) || (typeof row[4] !== 'string' && row[4].length <= 0) || (typeof row[5] !== 'string' && row[5].length <= 0) || (typeof row[6] !== 'string' && row[6].length <= 0))
 
                     if (!isInvalid) {
                         newRows.push(row); // Thêm hàng hợp lệ vào mảng mới

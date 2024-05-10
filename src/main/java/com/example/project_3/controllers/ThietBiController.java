@@ -36,18 +36,17 @@ public class ThietBiController {
     }
 
     @GetMapping({"", "/"})
-    public String showAllThietBi(Model model, @RequestParam(value = "type", defaultValue = "") String type, HttpSession session) {
+    public String showAllThietBi(HttpSession session, Model model) {
         if (session.getAttribute("admin") != null) {
-            List<ThietBi> thietBiList = thietBiService.getAllThietBiByType(type);
+            List<ThietBi> thietBiList = thietBiService.getAllThietBiByType("");
 
             model.addAttribute("tb", new ThietBiRequest());
             model.addAttribute("thietBiList", thietBiList);
-            model.addAttribute("type", type);
             model.addAttribute("showForm", false);
-            return "/admin/thietbi/index";
+            return "admin/thietbi/index";
         }
 
-            return "redirect:/admin/login";
+        return "redirect:/admin/login";
     }
 
     @GetMapping("/edit")
@@ -142,14 +141,14 @@ public class ThietBiController {
             if (result.hasErrors()) {
                 addThietBiListToModel(model);
                 model.addAttribute("showForm", true);
-                return "/admin/thietbi/index";
+                return "admin/thietbi/index";
             }
 
             if (existsByMaTB(tb.getMaTB().toString())) {
                 result.rejectValue("maTB", "error.tb", "Mã thiết bị đã tồn tại");
                 addThietBiListToModel(model);
                 model.addAttribute("showForm", true);
-                return "/admin/thietbi/index";
+                return "admin/thietbi/index";
             }
             ThietBi thietBi = new ThietBi();
             thietBi.setMaTB(tb.getMaTB());
