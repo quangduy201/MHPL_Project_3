@@ -1,15 +1,26 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.LoginRequest;
 import com.example.project_3.payloads.requests.RegisterRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.AuthService;
+import com.example.project_3.services.XuLyService;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import com.example.project_3.services.ThanhVienService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +28,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
+import java.util.List;
+import java.util.Properties;
 
 @Controller
 @RequestMapping("/")
@@ -26,6 +42,8 @@ public class AuthController {
 
     @Autowired
     private ThanhVienService thanhVienService;
+    @Autowired
+    private XuLyService xuLyService;
 
     @GetMapping({"/login", "/login/"})
     public String loginForm(Model model) {
@@ -47,6 +65,13 @@ public class AuthController {
 
         if (thanhVienResponse == null) {
             bindingResult.rejectValue("credentials", "invalid.credentials", "Email hoặc mật khẩu không đúng.");
+            return "login/index";
+        }
+
+        List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTV(thanhVienResponse.getMaTV());
+        if(!xuLyList.isEmpty()) {
+            XuLy xuLy = xuLyList.get(0);
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
             return "login/index";
         } else {
             session.setAttribute("user", thanhVienResponse);
@@ -152,17 +177,107 @@ public class AuthController {
         return "/quenmatkhau/index";
     }
 
-    @PostMapping({"/quen-mat-khau", "/quen-mat-khau/"})
-    public String forgotPasswordPost(Model model, HttpSession session) {
-        if (session.getAttribute("user") != null) {
-            // Nếu có session với attribute là "user", chuyển hướng người dùng đến trang index
-            // TODO SOMETHING ELSE
-            return "quenmatkhau/index";
-        } else {
-            // Nếu không có session "user", chuyển hướng người dùng đến trang đăng nhập
-            // TODO SOMETHING ELSE
-            return "redirect:/quen-mat-khau/index";
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final SecureRandom RANDOM = new SecureRandom();
+
+    public static String generateRandomString(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = RANDOM.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(randomIndex));
         }
+        return sb.toString();
+    }
+
+    public void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException {
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("hoavt313@gmail.com", "pxjyzoqelijelurn");
+            }
+        };
+
+        Session session = Session.getInstance(props, auth);
+
+        MimeMessage message = new MimeMessage(session);
+
+        String subject = "Here's the link to reset your password";
+        String content = "<html>"
+                + "<body>"
+                + "<p>Hello,</p>"
+                + "<p>You have requested to reset your password.</p>"
+                + "<p>Click the link below to change your password:</p>"
+                + "<p><a href=\"" + link + "\">Change my password</a></p>"
+                + "<br>"
+                + "<p>Ignore this email if you do remember your password, "
+                + "or you have not made the request.</p>"
+                + "</body>"
+                + "</html>";
+
+        message.setFrom(new InternetAddress("hoavt313@gmail.com"));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
+        message.setSubject(subject);
+        message.setContent(content, "text/html");
+
+        Transport.send(message);
+    }
+
+
+    @PostMapping({"/quen-mat-khau", "/quen-mat-khau/"})
+    public String forgotPasswordPost(Model model, HttpServletRequest request) {
+        String email = request.getParameter("email");
+        String token = generateRandomString(30);
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String resetPasswordLink = null;
+        try {
+            authService.updateResetPasswordToken(token, email);
+            resetPasswordLink = baseUrl + "/lay-lai-mat-khau?token=" + token;
+            sendEmail(email, resetPasswordLink);
+            model.addAttribute("message", "Chúng tôi đã gửi một đường dẫn lấy lại mật khẩu vào email của bạn. Vui lòng kiểm tra.");
+
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+            model.addAttribute("error", "Email của bạn không tồn tại trong hệ thống");
+        } return "/quenmatkhau/index";
+    }
+    @GetMapping({"/lay-lai-mat-khau", "/lay-lai-mat-khau/"})
+    public String showResetPasswordForm(@Param(value = "token") String token, Model model) {
+        ThanhVien customer = authService.getByResetPasswordToken(token);
+        model.addAttribute("token", token);
+
+        if (customer == null) {
+            model.addAttribute("message", "Mã token không đúng");
+            return "message";
+        }
+
+        return "/quenmatkhau/reset_password_form";
+    }
+
+    @PostMapping({"/lay-lai-mat-khau", "/lay-lai-mat-khau/"})
+    public String processResetPassword(HttpServletRequest request, Model model) {
+        String token = request.getParameter("token");
+        String password = request.getParameter("matKhau");
+
+        ThanhVien customer = authService.getByResetPasswordToken(token);
+        model.addAttribute("title", "Lấy lại mật khẩu");
+
+        if (customer == null) {
+            model.addAttribute("message", "Mã token không đúng");
+            return "message";
+        } else {
+            authService.updatePassword(customer, password);
+
+            model.addAttribute("message", "Bạn đã thay đổi mật khẩu thành công.");
+        }
+
+        return "/quenmatkhau/index";
     }
 
     @GetMapping({"/logout", "/logout/"})

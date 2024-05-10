@@ -34,15 +34,22 @@
             >
         </li>
 
-        <!-- Nav Item - Charts -->
         <li class="nav-item" th:classappend="${active == 3 ? 'active' : ''}">
+            <a class="nav-link" href="/user/thiet-bi/">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Các thiết bị</span></a
+            >
+        </li>
+
+        <!-- Nav Item - Charts -->
+        <li class="nav-item" th:classappend="${active == 4 ? 'active' : ''}">
             <a class="nav-link" href="/user/muon-thiet-bi/">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Các thiết bị đang mượn</span></a
             >
         </li>
 
-        <li class="nav-item" th:classappend="${active == 4 ? 'active' : ''}">
+        <li class="nav-item" th:classappend="${active == 5 ? 'active' : ''}">
             <a class="nav-link" href="/user/dat-cho-thiet-bi/">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Các thiết bị đang đặt chỗ</span></a
@@ -51,3 +58,6 @@
     </ul>
     <!-- End of Sidebar -->
 </div>
+<script>
+
+</script>
