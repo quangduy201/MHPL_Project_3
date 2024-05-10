@@ -23,6 +23,7 @@ import java.util.Map;
 @RequestMapping("/admin/thiet-bi")
 public class ThietBiController {
     private final ThietBiService thietBiService;
+
     @Autowired
     public ThietBiController(ThietBiService thietBiService) {
         this.thietBiService = thietBiService;
@@ -35,11 +36,18 @@ public class ThietBiController {
     }
 
     @GetMapping({"", "/"})
-    public String showAllThietBi(Model model) {
-        addThietBiListToModel(model);
-        model.addAttribute("tb", new ThietBiRequest());
-        model.addAttribute("showForm", false);
-        return "/admin/thietbi/index";
+    public String showAllThietBi(Model model, @RequestParam(value = "type", defaultValue = "") String type, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            List<ThietBi> thietBiList = thietBiService.getAllThietBiByType(type);
+
+            model.addAttribute("tb", new ThietBiRequest());
+            model.addAttribute("thietBiList", thietBiList);
+            model.addAttribute("type", type);
+            model.addAttribute("showForm", false);
+            return "/admin/thietbi/index";
+        }
+
+            return "redirect:/admin/login";
     }
 
     @GetMapping("/edit")
@@ -87,10 +95,10 @@ public class ThietBiController {
     }
 
     @PostMapping("/excel")
-    public String excel(@RequestParam Object[][] rows) {
+    public String excel(@RequestBody String[][] rows) {
         try {
-            for (Object[] row : rows) {
-                ThietBi tb = new ThietBi(Long.parseLong(row[0].toString()), row[1].toString(), row[2].toString());
+            for (String[] row : rows) {
+                ThietBi tb = new ThietBi(Long.parseLong(row[0]), row[1], row[2]);
                 thietBiService.saveThietBi(tb);
             }
         } catch (Exception e) {
@@ -99,7 +107,7 @@ public class ThietBiController {
         return "redirect:/admin/thiet-bi";
     }
 
-    @DeleteMapping("/delete")
+    @GetMapping("/delete")
     public String deleteThietBi(@RequestParam String maTB) {
         try {
             Long id = Long.parseLong(maTB);
@@ -110,7 +118,7 @@ public class ThietBiController {
         return "redirect:/admin/thiet-bi";
     }
 
-    @DeleteMapping("/deleteMultiple")
+    @GetMapping("/deleteMultiple")
     public String deleteMultipleThietBi(@RequestParam String maTB) {
         try {
             Long id = Long.parseLong(maTB);

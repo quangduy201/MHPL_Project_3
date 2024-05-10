@@ -7,9 +7,7 @@ import com.example.project_3.repositories.ThongTinSDRepository;
 import com.example.project_3.services.ThongTinSDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -17,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ThongTinSDServiceImpl implements ThongTinSDService {
@@ -96,5 +95,15 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
     @Override
     public ThongTinSD saveThongTinSD(ThongTinSD tinSD) {
         return thongTinSDRepository.save(tinSD);
+    }
+
+    @Override
+    public List<ThongTinSD> getAllThongTinSD() {
+        return thongTinSDRepository.findAll();
+    }
+
+    @Override
+    public Optional<ThongTinSD> getThongTinSDById(Integer maTT) {
+        return thongTinSDRepository.findById(maTT);
     }
 }

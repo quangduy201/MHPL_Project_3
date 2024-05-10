@@ -55,15 +55,15 @@
         <div id="content">
             <!-- Topbar -->
             <div th:replace="~{fragments/user_topbar :: topbar(
-                    userName=${session.user.hoTen},
-                    userAvatar='/media/images/poodle.jpg'
+                    userName = ${session.user.hoTen},
+                    userAvatar = '/media/images/user_default.png'
                  )}">
             </div>
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <!-- Member Statistic -->
-                <div class="ui-borrow-equipment">
+                <div class="ui-borrow-equipment" th:if="${#lists.isEmpty(xlList)}">
                     <div class="ui-top d-flex justify-content-between">
                         <div class="div-button-form-control d-flex flex-grow-1 search">
                             <div class="col">
@@ -116,6 +116,17 @@
                         currentPage = ${tbList.number + 1},
                         pageSize = ${tbList.size},
                         totalItems = ${tbList.totalElements})}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row" th:if="${!#lists.isEmpty(xlList)}">
+                    <div class="col-md-3" th:each="xl : ${xlList}">
+                        <div class="card text-white bg-danger mb-3">
+                            <div class="card-header" th:text="${xl.maXL}"></div>
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${xl.hinhThucXL}"></h5>
+                                <p class="card-text" th:text="${xl.ngayXL}"></p>
+                            </div>
                         </div>
                     </div>
                 </div>

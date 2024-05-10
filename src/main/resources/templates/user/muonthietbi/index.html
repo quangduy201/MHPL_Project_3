@@ -38,10 +38,11 @@
         <div id="content">
             <!-- Topbar -->
             <div th:replace="~{fragments/user_topbar :: topbar(
-                    userName='Nhóm 1',
-                    userAvatar='/media/images/poodle.jpg'
+                    userName = ${session.user.hoTen},
+                    userAvatar = '/media/images/user_default.png'
                  )}">
             </div>
+
 
             <!-- Begin Page Content -->
             <div class="container-fluid">

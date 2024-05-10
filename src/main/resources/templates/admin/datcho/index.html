@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | Quản lý thông tin sử dụng</title>
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet"/>
+    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/lib/prism.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" rel="stylesheet"/>
+    <!-- Custom styles for this template-->
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet" />
+    <link href="/css/dashboard.css" rel="stylesheet" />
+</head>
+<body id="page-top">
+    <div id="wrapper" class="row">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/admin_sidebar :: sidebar(active=5)}"></div>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
+        <!--         Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <div th:replace="~{fragments/admin_topbar :: topbar(
+                        userName='Nhóm 1',
+                        userAvatar='/media/images/poodle.jpg'
+                     )}">
+                </div>
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <h1 class="text-center my-4">Quản lý thông tin sử dụng</h1>
+                    <table id="thietbiTable" class="table">
+                        <thead>
+                        <tr>
+                            <th>Mã TT</th>
+                            <th>Mã TV</th>
+                            <th>Tên TV</th>
+                            <th>Mã TB</th>
+                            <th>Tên TB</th>
+                            <th>Thời gian mượn</th>
+                            <th>Thời gian trả</th>
+                            <th>Thời gian đặt chỗ</th>
+                            <th>Tùy chọn</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="t : ${ttsd}">
+                                <td th:text="${t.maTT}"></td>
+                                <td th:text="${t.maTV != null ? t.maTV.maTV : ''}"></td>
+                                <td th:text="${t.maTV != null ? t.maTV.hoTen : ''}"></td>
+                                <td th:text="${t.maTB != null ? t.maTB.maTB : ''}"></td>
+                                <td th:text="${t.maTB != null ? t.maTB.tenTB : ''}"></td>
+                                <td th:text="${#temporals.format(t.tgMuon, 'dd/MM/yyyy - HH:mm')}"></td>
+                                <td th:text="${#temporals.format(t.tgTra, 'dd/MM/yyyy - HH:mm')}"></td>
+                                <td th:text="${#temporals.format(t.tgDatcho, 'dd/MM/yyyy - HH:mm')}"></td>
+                                <td style="white-space: nowrap">
+                                    <a class="btn btn-primary btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='muon(\'' + ${t.maTT} + '\')'">Mượn</a>
+                                    <a class="btn btn-secondary btn-sm" th:if="${t.maTB != null and t.tgMuon != null and t.tgTra == null and t.tgDatcho == null}" th:attr="onclick='tra(\'' + ${t.maTT} + '\')'">Trả</a>
+                                    <a class="btn btn-info btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='huy(\'' + ${t.maTT} + '\')'">Hủy đặt chỗ</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+     </div>
+        <!-- End of Content Wrapper -->
+    </div>
+<!-- End of Page Wrapper -->
+
+<!-- Bootstrap core JavaScript-->
+<script src="../../vendor/jquery/jquery.min.js"></script>
+<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Datatables -->
+<script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Read Excel -->
+<script src="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/read-excel-file.min.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+        $('#thietbiTable').DataTable();
+
+        $("#file-input").on("change", (e) => {
+            const file = e.target.files[0];
+            readXlsxFile(file).then((rows) => {
+                rows.shift()
+                const isInvalid = rows.find(row => row.length > 3 || isNaN(row[0]) || (typeof row[1] !== 'string' && row[1].length <= 0) || (typeof row[2] !== 'string' && row[2].length <= 0))
+                if (isInvalid) {
+                    return;
+                }
+                $.post("/admin/thiet-bi/excel", {
+                    data: rows,
+                }, function(responseData) {
+                });
+            })
+        })
+
+
+    });
+
+    function search() {
+        window.location.href = window.location.href.split('?')[0] + `?type=${$("#type").val()}`;
+    }
+
+    function muon(maTT) {
+        $.ajax({
+            type: 'GET',
+            url: '/thong-tin/admin/muon?maTT=' + maTT,
+            success: function(response) {
+                // Hiển thị thông báo khi mượn thành công
+                alert("Mượn thành công!");
+                // Nếu cần, bạn có thể thực hiện các hành động khác sau khi mượn thành công
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                // Hiển thị thông báo lỗi khi xảy ra lỗi
+                alert("Đã xảy ra lỗi khi mượn thiết bị. Vui lòng thử lại sau!");
+            }
+        });
+    }
+
+    function tra(maTT) {
+        $.ajax({
+            type: 'GET',
+            url: '/thong-tin/admin/tra?maTT=' + maTT,
+            success: function(response) {
+                // Hiển thị thông báo khi trả thành công
+                alert("Trả thành công!");
+                // Nếu cần, bạn có thể thực hiện các hành động khác sau khi trả thành công
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                // Hiển thị thông báo lỗi khi xảy ra lỗi
+                alert("Đã xảy ra lỗi khi trả thiết bị. Vui lòng thử lại sau!");
+            }
+        });
+    }
+
+    function huy(maTT) {
+        $.ajax({
+            type: 'GET',
+            url: '/thong-tin/admin/huy?maTT=' + maTT,
+            success: function(response) {
+                // Hiển thị thông báo khi hủy thành công
+                alert("Hủy thành công!");
+                // Nếu cần, bạn có thể thực hiện các hành động khác sau khi hủy thành công
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                // Hiển thị thông báo lỗi khi xảy ra lỗi
+                alert("Đã xảy ra lỗi khi hủy đặt chỗ thiết bị. Vui lòng thử lại sau!");
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

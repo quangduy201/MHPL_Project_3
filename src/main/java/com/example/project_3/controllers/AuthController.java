@@ -22,7 +22,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Properties;
 
 @Controller
@@ -73,14 +73,24 @@ public class AuthController {
             bindingResult.rejectValue("credentials", "invalid.credentials", "Email hoặc mật khẩu không đúng.");
             return "login/index";
         }
-        Page<XuLy> xuLyPage = xuLyService.getViPhamByMaTV(thanhVienResponse.getMaTV());
-        if(xuLyPage.hasContent()) {
-            XuLy xuLy = xuLyPage.getContent().get(0);
+
+        List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTV(thanhVienResponse.getMaTV());
+        if(!xuLyList.isEmpty()) {
+            XuLy xuLy = xuLyList.get(0);
             bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
             return "login/index";
+        } else {
+            session.setAttribute("user", thanhVienResponse);
+            return "redirect:/user";
         }
-        session.setAttribute("user", thanhVienResponse);
-        return "redirect:/user";
+//        Page<XuLy> xuLyPage = xuLyService.getViPhamByMaTV(thanhVienResponse.getMaTV());
+//        if(xuLyPage.hasContent()) {
+//            XuLy xuLy = xuLyPage.getContent().get(0);
+//            bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
+//            return "login/index";
+//        }
+//        session.setAttribute("user", thanhVienResponse);
+//        return "redirect:/user";
     }
 
     @GetMapping({"/register", "/register/"})
@@ -101,7 +111,7 @@ public class AuthController {
         }
 
         if (thanhVienService.getThanhVienById(Long.valueOf(tv.getMaTV())) != null) {
-            bindingResult.rejectValue("credentials", "invalid.credentials", "Email đã tồn tại trong hệ thống");
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Mã thành viên đã tồn tại trong hệ thống");
 
             model.addAttribute("tv", tv);
             return "register/index";
@@ -109,6 +119,13 @@ public class AuthController {
 
         if (thanhVienService.getThanhVienBySdt(tv.getSdt()) != null) {
             bindingResult.rejectValue("credentials", "invalid.credentials", "Số điện thoại đã tồn tại trong hệ thống");
+
+            model.addAttribute("tv", tv);
+            return "register/index";
+        }
+
+        if (thanhVienService.getThanhVienByEmail(tv.getEmail()) != null) {
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Email đã tồn tại trong hệ thống");
 
             model.addAttribute("tv", tv);
             return "register/index";

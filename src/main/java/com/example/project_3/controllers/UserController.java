@@ -93,6 +93,8 @@ public class UserController {
     @GetMapping({"/thiet-bi", "/thiet-bi/"})
     public String showThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
         if (session.getAttribute("user") != null) {
+
+
             String dateParam = requestParam.get("date");
 
             Page<ThietBi> thietBiList = thietBiService.getAllThietBi(requestParam);
@@ -126,6 +128,12 @@ public class UserController {
             String formattedDateTime = dateTime.format(formatter);
 
             model.addAttribute("date", formattedDateTime);
+
+            ThanhVienResponse thanhVienResponse = (ThanhVienResponse) session.getAttribute("user");
+
+            List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTV(thanhVienResponse.getMaTV());
+
+            model.addAttribute("xlList", xuLyList);
 
             return "user/thietbi/index";
         } else {
@@ -185,8 +193,6 @@ public class UserController {
         if (result.hasErrors()) {
             model.addAttribute("tv", tvRequest);
             model.addAttribute("tvChangePassword", new QuenMatKhauRequest());
-
-            System.out.println(objectMapper.writeValueAsString(tvRequest));
 
             return "user/index";
         }

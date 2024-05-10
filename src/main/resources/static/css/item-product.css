@@ -242,7 +242,7 @@ table {
     display: grid;
     padding-top: 2rem;
     width: 100%;
-    grid-template-columns: repeat(8, auto);
+    grid-template-columns: repeat(4, auto);
     gap: 20px;
 }
 .ui-bottom {

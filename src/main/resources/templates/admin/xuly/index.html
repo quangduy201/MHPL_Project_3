@@ -56,7 +56,7 @@
                         <td th:text="${xl.maTV.getHoTen()}"></td>
                         <td th:text="${xl.hinhThucXL}"></td>
                         <td th:text="${xl.soTien} ? ${xl.soTien} + ' VNĐ' : 'O VNĐ'"></td>
-                        <td th:text="${xl.ngayXL}"></td>
+                        <td th:text="${#temporals.format(xl.ngayXL, 'dd/MM/yyyy - HH:mm')}"></td>
                         <td th:text="${xl.trangThaiXL} ? 'Đã xử lý' : 'Đang xử lý'"></td>
                         <td style="white-space: nowrap">
                             <a class="btn btn-primary btn-sm" th:onclick="'showEdit(\'' + ${xl.maXL} + '\')'">Sửa</a>
@@ -81,10 +81,13 @@
                         <label for="thanhVien" class="block mb-2 text-sm font-medium text-white">Thành viên</label>
                         <select name="thanhVien" id="thanhVien" class="form-control"th:field="${xly.maTV}">
                             <option value="" >Chọn thành viên</option>
-                            <option th:each="thanhVien : ${thanhVienList.content}" th:value="${thanhVien.maTV}" th:text="${thanhVien.maTV + ' - ' + thanhVien.hoTen}"></option>
+                            <option th:each="thanhVien : ${thanhVienList.content}" th:if="${thanhVien.maTV != 0}" th:value="${thanhVien.maTV}" th:text="${thanhVien.maTV + ' - ' + thanhVien.hoTen}">
+                            </option>
+
                         </select>
                         <p th:if="${#fields.hasErrors('maTV')}" class="text-danger" th:errors="${xly.maTV}"></p>
                     </div>
+
                     <div class="form-group">
                         <label for="ht" class="block mb-2 text-sm font-medium text-white">Hình thức</label>
                         <select name="ht" id="ht" class="form-control" onchange="initTienBoiThuong(this)"th:field="${xly.hinhThucXL}">
@@ -185,9 +188,9 @@
 <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 <!-- Core plugin JavaScript-->
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-</body>
-</html>
 
+<!-- SELECT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
 <script>
     var now = new Date();
@@ -376,19 +379,50 @@
 
     $(document).ready(function() {
         $('#xuLyTable').DataTable();
-        $("#file-input").on("change", (e) => {
+        $('#thanhVien').selectize({
+            sortField: 'text'
+        });
+
+
+        $('#file-input').on("change", (e) => {
             const file = e.target.files[0];
             readXlsxFile(file).then((rows) => {
                 rows.shift()
-                const isInvalid = rows.find(row => row.length > 6 || isNaN(row[0]) || isNaN(row[1]) || (typeof row[2] !== 'string' && row[2].length <= 0) || isNaN(row[3]) || (typeof row[4] !== 'string' && row[4].length <= 0) || isNaN(row[5]))
-                if (isInvalid) {
-                    return;
+
+                const newRows = [];
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+
+                    // Kiểm tra tính hợp lệ của hàng
+                    const isInvalid = rows.find(row => row.length > 6 || isNaN(row[0]) || isNaN(row[1]) || (typeof row[2] !== 'string' && row[2].length <= 0) || (typeof row[3] !== 'string' && row[3].length <= 0) || isNaN(row[4]) || (typeof row[5] !== 'string' && row[5].length <= 0 && (row[5] === "1" || row[5] === "0")))
+
+                    if (!isInvalid) {
+                        newRows.push(row); // Thêm hàng hợp lệ vào mảng mới
+                    }
                 }
-                $.post("/admin/thiet-bi/excel", {
-                    data: rows,
-                }, function(responseData) {
-                });
+
+                const jsonData = JSON.stringify(newRows);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/xu-ly/excel",
+                    contentType: "application/json", // Xác định kiểu dữ liệu của yêu cầu
+                    data: jsonData, // Gửi dữ liệu JSON
+                    success: response => {
+                        alert("Nhập excel thành công");
+                        window.location.reload();
+                    },
+                    error: xhr => {
+                        console.log("Lỗi khi nhập excel: " + xhr.responseText);
+                    }
+                })
             })
-        })
+        });
     });
 </script>
+
+</body>
+</html>
+
+
+

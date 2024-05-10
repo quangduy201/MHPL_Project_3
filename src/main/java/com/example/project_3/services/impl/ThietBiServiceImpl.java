@@ -108,6 +108,20 @@ public class ThietBiServiceImpl implements ThietBiService {
     public List<ThietBi> getAllThietBi() {
         return thietBiRepository.findAll();
     }
+
+    @Override
+    public List<ThietBi> getAllThietBiByType(String type) {
+        if (type.equals("muon")) {
+            return thongTinSDRepository.findThietBiDangMuon();
+        }
+
+        if (type.equals("datcho")) {
+            return thongTinSDRepository.findThietBiDangDatCho();
+        }
+
+        return getAllThietBi();
+    }
+
     @Override
     public ThietBi getThietBiById(Long maTB) {
         return thietBiRepository.findById(maTB).orElse(null);
