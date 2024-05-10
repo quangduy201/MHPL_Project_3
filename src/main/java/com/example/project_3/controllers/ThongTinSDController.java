@@ -47,7 +47,6 @@ public class ThongTinSDController {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
 
-            // Define the DateTimeFormatter for the expected date format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
             LocalDateTime dateTime = LocalDateTime.parse(date, formatter);

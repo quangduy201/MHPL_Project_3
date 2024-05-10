@@ -1,10 +1,12 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
+import com.example.project_3.models.XuLy;
 import com.example.project_3.payloads.requests.LoginRequest;
 import com.example.project_3.payloads.requests.RegisterRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.AuthService;
+import com.example.project_3.services.XuLyService;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -19,7 +21,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Properties;
 
 @Controller
@@ -40,6 +42,8 @@ public class AuthController {
 
     @Autowired
     private ThanhVienService thanhVienService;
+    @Autowired
+    private XuLyService xuLyService;
 
     @GetMapping({"/login", "/login/"})
     public String loginForm(Model model) {
@@ -61,6 +65,13 @@ public class AuthController {
 
         if (thanhVienResponse == null) {
             bindingResult.rejectValue("credentials", "invalid.credentials", "Email hoặc mật khẩu không đúng.");
+            return "login/index";
+        }
+
+        List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTV(thanhVienResponse.getMaTV());
+        if(!xuLyList.isEmpty()) {
+            XuLy xuLy = xuLyList.get(0);
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
             return "login/index";
         } else {
             session.setAttribute("user", thanhVienResponse);
