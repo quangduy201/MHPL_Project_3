@@ -161,6 +161,14 @@ table {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+.product-container .product-bottom .button-cart-datcho {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    .button {
+        background-color: #e02d1b;
+    }
+}
 .product-container .product-bottom .button-cart .button {
     display: flex;
     padding: 5px 10px;

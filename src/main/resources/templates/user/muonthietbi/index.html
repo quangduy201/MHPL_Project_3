@@ -83,8 +83,8 @@
                                     <div class="time">
                                         <p th:text="${#temporals.format(mtb.tgMuon, 'dd/MM/yyyy - HH:mm:ss')}"></p>
                                     </div>
-                                    <div class="button-cart">
-                                        <div class="button-reservation button bg-primary p-3 text-white border border-primary" th:onclick="'giveBackThietBi(\'' + ${session.user.maTV} + '\', \'' + ${mtb.maTB.maTB} + '\')'">
+                                    <div class="button-cart button-cart-datcho">
+                                        <div class="button-reservation button  p-3 text-white " th:onclick="'giveBackThietBi(\'' + ${session.user.maTV} + '\', \'' + ${mtb.maTB.maTB} + '\')'">
                                             <p>Trả</p>
                                         </div>
                                     </div>
