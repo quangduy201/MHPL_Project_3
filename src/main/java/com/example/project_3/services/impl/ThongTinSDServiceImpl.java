@@ -76,7 +76,7 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
     @Override
     public Page<ThongTinSD> showAllMuonThietBi(Map<String, String> requestParams, Long maTV) {
         String page = requestParams.get("page");
-        Pageable pageable = Pageable.ofSize(10).withPage(0);
+        Pageable pageable = Pageable.ofSize(4).withPage(0);
         if (page != null && page.trim().matches("^\\d+$"))
             pageable = pageable.withPage(Integer.parseInt(page) - 1);
         return thongTinSDRepository.findThietBiByMaTVEqualsANDTgMuonNotNullAndTgTraNull(pageable, maTV);
@@ -85,7 +85,7 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
     @Override
     public Page<ThongTinSD> showAllDatThietBi(Map<String, String> requestParams, Long maTV) {
         String page = requestParams.get("page");
-        Pageable pageable = Pageable.ofSize(10).withPage(0);
+        Pageable pageable = Pageable.ofSize(4).withPage(0);
         if (page != null && page.trim().matches("^\\d+$"))
             pageable = pageable.withPage(Integer.parseInt(page) - 1);
         return thongTinSDRepository.findThietBiByMaTVEqualsTgDatchoNotNull(pageable, maTV);

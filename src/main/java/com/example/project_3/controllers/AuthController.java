@@ -74,7 +74,7 @@ public class AuthController {
             return "login/index";
         }
 
-        List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTV(thanhVienResponse.getMaTV());
+        List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTVAnd(thanhVienResponse.getMaTV());
         if(!xuLyList.isEmpty()) {
             XuLy xuLy = xuLyList.get(0);
             bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
