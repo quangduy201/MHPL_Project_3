@@ -4,6 +4,7 @@ import com.example.project_3.utils.Resource;
 import com.example.project_3.utils.Settings;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 public class MhplProject3Application {

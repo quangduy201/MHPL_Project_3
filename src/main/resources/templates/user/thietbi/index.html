@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>User | Các thiết bị</title>
+
+    <!-- Custom fonts for this template-->
+    <link
+            href="../../vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet"
+    />
+    <link
+            href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
+            rel="stylesheet"
+    />
+    <link
+            href="../../vendor/datatables/dataTables.bootstrap4.min.css"
+            rel="stylesheet"
+    />
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+            rel="stylesheet"
+            integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg="
+            crossorigin="anonymous"
+    />
+
+    <!-- Custom styles for this template-->
+    <link href="../../css/sb-admin-2.min.css" rel="stylesheet" />
+    <link href="../../css/dashboard.css" rel="stylesheet" />
+    <link href="../../css/item-product.css" rel="stylesheet" />
+</head>
+
+<body id="page-top">
+
+<div id="wrapper" class="row">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/user_sidebar :: sidebar(active=3)}"></div>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/user_topbar :: topbar(
+                    userName=${session.user.hoTen},
+                    userAvatar='/media/images/poodle.jpg'
+                 )}">
+            </div>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Member Statistic -->
+                <div class="ui-borrow-equipment">
+                    <div class="ui-top d-flex justify-content-between">
+                        <div class="d-flex flex-grow-1 search">
+                            <input type="text"
+                                   class="mr-2"
+                                   id="txt-search"
+                                   placeholder="Nhập vào đây để tìm kiếm"
+                                   aria-label=""
+                            >
+                            <button class="btn btn-secondary" onclick="searchThietBi()">Tìm kiếm</button>
+                        </div>
+                        <div class="d-flex justify-content-between flex-shrink-0">
+                            <input type="datetime-local" name="date" id="date" class="form-control" onchange="searchThietBi()" th:value="${date}">
+                        </div>
+                    </div>
+                    <div class="ui-center">
+                        <div th:each="tb : ${tbList}">
+                            <div class="product-container">
+                                <div class="product-top">
+                                    <img th:attr="src=@{|/media/images/thietbi${tb.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
+                                </div>
+                                <div class="product-bottom mt-5">
+                                    <div class="ui-data">
+                                        <div class="name-laptop text-primary font-weight-bold d-flex flex-column justify-content-center align-items-center">
+                                            <span th:text="${tb.maTB}"></span>
+                                            <br/>
+                                            <span th:text="${tb.tenTB}"></span>
+                                        </div>
+                                    </div>
+                                    <p class="describe" th:text="${tb.moTaTB}"></p>
+                                    <div class="button-cart">
+                                        <p class="button-reservation button bg-primary p-3 text-white border border-primary" th:onclick="'reservationThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
+                                            Đặt chỗ
+                                        </p>
+                                        <p class="button-borrow button border border-primary p-3 text-primary" th:onclick="'borrowThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
+                                            Mượn chỗ
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-bottom">
+                        <div th:replace="~{fragments/pagination :: pagination(
+                        urlPrefix = ${params.isEmpty() ? '/user/thietbi?' : '/user/thietbi?' + params + '&'},
+                        totalPages = ${tbList.totalPages},
+                        currentPage = ${tbList.number + 1},
+                        pageSize = ${tbList.size},
+                        totalItems = ${tbList.totalElements})}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+<script src="../../vendor/jquery/jquery.min.js"></script>
+<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Datatables -->
+<script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="../../js/demo/datatables-demo.js"></script>
+
+<!--Date Range Picker -->
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+<!-- SELECT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+
+<script src="../../js/utils.js" type="module"></script>
+<script>
+    function searchThietBi() {
+        const searchText = document.getElementById("txt-search").value;
+        const currentDate = new Date(); // Lấy thời gian hiện tại
+        const dateInput = document.getElementById("date");
+        const selectedDate = new Date(dateInput.value); // Lấy thời gian đã chọn từ input
+
+        // Nếu thời gian đã chọn là trong quá khứ, cập nhật lại giá trị là thời gian hiện tại
+        if (selectedDate < currentDate) {
+            dateInput.value = formatDate(currentDate);
+        }
+
+        // Cập nhật URL với các tham số tìm kiếm
+        const newUrl = window.location.href.split('?')[0] + `?tenTB=${searchText}&date=${dateInput.value}`;
+        window.location.href = newUrl;
+    }
+
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    document.getElementById("txt-search").addEventListener("keydown", function (event) {
+        if (event.key === 'Enter') {
+            searchThietBi();
+        }
+    })
+    function reservationThietBi(maTV, maTB) {
+        var date = $("#date").val(); // Lấy giá trị của input#date
+        if (confirm('Bạn có chắc chắn muốn đặt chỗ thiết bị này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/thong-tin/dat-cho",
+                data: { maTV: maTV, maTB: maTB, date: date }, // Truyền giá trị date vào data
+                success: function(response) {
+                    alert(response);
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        }
+    }
+    function borrowThietBi(maTV, maTB) {
+        var date = $("#date").val(); // Lấy giá trị của input#date
+        if (confirm('Bạn có chắc chắn muốn mượn thiết bị này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/thong-tin/muon",
+                data: { maTV: maTV, maTB: maTB, date: date},
+                success: function(response) {
+                    alert(response);
+                    window.location.reload();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
+                }
+            });
+        }
+    }
+
+</script>
+</script>
+</body>
+</html>

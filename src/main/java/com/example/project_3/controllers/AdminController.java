@@ -1,9 +1,11 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThietBi;
+import com.example.project_3.models.ThongTinSD;
 import com.example.project_3.services.ThanhVienService;
 import com.example.project_3.services.ThietBiService;
 import com.example.project_3.services.ThongKeService;
+import com.example.project_3.services.ThongTinSDService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,8 @@ public class AdminController {
 
     @Autowired
     private ThanhVienService thanhVienService;
+    @Autowired
+    private ThongTinSDService thongTinSDService;
 
     @Autowired
     private ThietBiService thietBiService;
@@ -40,6 +44,22 @@ public class AdminController {
             model.addAttribute("thietbi", thietBis);
 
             return "/admin/index";
+        } else {
+            // Nếu không có session "user", chuyển hướng người dùng đến trang đăng nhập
+            // TODO SOMETHING ELSE
+            return "redirect:/admin/login";
+        }
+    }
+
+    @GetMapping({"/thong-tin-su-dung", "/thong-tin-su-dung/"})
+    public String ttsd(Model model, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            // Nếu có session với attribute là "admin", chuyển hướng người dùng đến trang index
+            List<ThongTinSD> thongTinSD = thongTinSDService.getAllThongTinSD();
+
+            model.addAttribute("ttsd", thongTinSD);
+
+            return "admin/datcho/index";
         } else {
             // Nếu không có session "user", chuyển hướng người dùng đến trang đăng nhập
             // TODO SOMETHING ELSE

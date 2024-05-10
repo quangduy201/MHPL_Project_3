@@ -1,191 +1,185 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
+    <title>User | Các thiết bị đang đặt chỗ</title>
 
-        <title>User | Các thiết bị đang đặt chỗ</title>
+    <!-- Custom fonts for this template-->
+    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="../../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+          rel="stylesheet" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 
-        <!-- Custom fonts for this template-->
-        <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
-        <link
-            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-            rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet" />
-        <link href="../../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
-              rel="stylesheet" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+<!-- Custom styles for this template-->
+<link href="../../css/sb-admin-2.min.css" rel="stylesheet" />
+<link href="../../css/dashboard.css" rel="stylesheet" />
+<link href="../../css/item-product.css" rel="stylesheet" />
 
-        <!-- Custom styles for this template-->
-        <link href="../../css/sb-admin-2.min.css" rel="stylesheet" />
-        <link href="../../css/dashboard.css" rel="stylesheet" />
-        <link href="../../css/item-product.css" rel="stylesheet" />
-    </head>
+</head>
+<body id="page-top">
+<div id="wrapper" class="row">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/user_sidebar :: sidebar(active=5)}"></div>
 
-    <body id="page-top">
+    <!-- Content Wrapper -->
+    <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/user_topbar :: topbar(
+                    userName = ${session.user.hoTen},
+                    userAvatar = '/media/images/poodle.jpg'
+                 )}">
+            </div>
 
-        <div id="wrapper" class="row">
-            <!-- Sidebar -->
-            <div th:replace="~{fragments/user_sidebar :: sidebar(active=4)}"></div>
-
-            <!-- Content Wrapper -->
-            <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
-                <!-- Main Content -->
-                <div id="content">
-                    <!-- Topbar -->
-                    <div th:replace="~{fragments/user_topbar :: topbar(
-                         userName='Nhóm 1',
-                         userAvatar='/media/images/poodle.jpg'
-                         )}">
-                    </div>
-
-                    <!-- Begin Page Content -->
-                    <div class="container-fluid">
-                        <!-- Member Statistic -->
-                        <div class="ui-borrow-equipment">
-                            <div class="ui-top">
-                                <div class="mb-3 row">
-                                    <div class="col-2">
-                                        <select id="select-by" class="form-select" aria-label="">
-                                            <option value="all" >Tất cả</option>
-                                            <option value="maTB" >Mã thiết bị</option>
-                                            <option value="tenTB" >Tên thiết bị</option>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text"
-                                               class="form-control"
-                                               id="txt-search"
-                                               placeholder="Nhập vào đây để tìm kiếm"
-                                               aria-label=""
-                                               >
-                                    </div>
-                                    <div class="col">
-                                        <button class="btn btn-secondary" onclick="searchByMaThietBi()">Tìm kiếm</button>
-                                    </div>
-                                </div>
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Member Statistic -->
+                <div class="ui-borrow-equipment">
+                    <div class="ui-top">
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <input type="text"
+                                       class="form-control"
+                                       id="txt-search"
+                                       placeholder="Nhập vào đây để tìm kiếm"
+                                       aria-label=""
+                                >
                             </div>
-
-                            <div class="ui-center">
-                                <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}"class="product-container-wrapper">
-                                    <!-- Các mã HTML để hiển thị danh sách thietBiDatCho -->
-                                    <div th:if="${thietBiDatCho != null and not thietBiDatCho.empty}" class="product-container-wrapper">
-                                    <div th:each="thietBi : ${thietBiDatCho.content}" class="product-container">
-                                        <div class="product-item">
-                                            <div class="product-top">
-                                                <img src="" alt="" class="image-product"/>
-                                            </div>
-                                            <div class="product-bottom">
-                                                <div class="ui-data">
-                                                    <div class="id">
-                                                        <p th:text="${thietBi.maTB}"></p>
-                                                    </div>
-                                                </div>
-                                                <div class="name">
-                                                    <p th:text="${thietBi.tenTB}"></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div th:if="${thietBiDatCho == null or thietBiDatCho.empty}">
-                                    Thành viên chưa đặt chỗ thiết bị.
-                                </div>
-                                
-                                <div class="ui-bottom">
-                                    <!--                        <div th:replace="~{fragments/pagination :: pagination(
-                                                            urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
-                                                            totalPages = ${tvList.totalPages},
-                                                            currentPage = ${tvList.number + 1},
-                                                            pageSize = ${tvList.size},
-                                                            totalItems = ${tvList.totalElements}-->
-                                    <!--                     )}">-->
-                                    <!--                        </div>-->
-                                </div>
+                            <div class="col">
+                                <button class="btn btn-secondary" onclick="searchByMaThietBi()">Tìm kiếm</button>
                             </div>
-                            <!-- /.container-fluid -->
                         </div>
                     </div>
-                    <!-- End of Content Wrapper -->
+                    <div class="ui-center">
+                        <div th:each="dtb : ${dtbList}">
+                            <div class="product-container">
+                                <div class="product-top">
+                                    <img th:attr="src=@{|/media/images/thietbi${dtb.maTB.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
+                                </div>
+                                <div class="product-bottom mt-5">
+                                    <div class="ui-data">
+                                        <div class="name-laptop text-primary font-weight-bold d-flex flex-column justify-content-center align-items-center">
+                                            <span th:text="${dtb.maTB}"></span>
+                                            <br/>
+                                            <span th:text="${dtb.tenTB}"></span>
+                                        </div>
+                                    </div>
+                                    <div class="describe">
+                                        <p th:text="${dtb.maTB.moTaTB}"></p>
+                                    </div>
+                                    <div class="button-cart d-flex justify-content-center align-items-center">
+                                        <p class="button-return button text-center bg-danger p-3 text-white"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB} + '\')'">
+                                            Hủy đặt chỗ
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-bottom">
+                        <div th:replace="~{fragments/pagination :: pagination(
+                        urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
+                        totalPages = ${dtbList.totalPages},
+                        currentPage = ${dtbList.number + 1},
+                        pageSize = ${dtbList.size},
+                        totalItems = ${dtbList.totalElements}
+                     )}">
+                        </div>
+                    </div>
                 </div>
-                <!-- End of Page Wrapper -->
-                <script src="../../vendor/jquery/jquery.min.js"></script>
-                <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End of Page Wrapper -->
+<script src="../../vendor/jquery/jquery.min.js"></script>
+<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-                <!-- Core plugin JavaScript-->
-                <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
 
-                <!-- Datatables -->
-                <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
-                <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!-- Datatables -->
+<script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-                <!-- Page level custom scripts -->
-                <script src="../../js/demo/datatables-demo.js"></script>
-                <!--Date Range Picker -->
-                <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<!-- Page level custom scripts -->
+<script src="../../js/demo/datatables-demo.js"></script>
+<!--Date Range Picker -->
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-                <!-- SELECT -->
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
-                integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+<!-- SELECT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
-                <script src="../../js/utils.js" type="module"></script>
-                <script>
-                    // Lắng nghe sự kiện keypress trên ô input
-                const searchInput = document.getElementById("txt-search");
-                searchInput.addEventListener("keypress", function(event) {
-                if (event.keyCode === 13) {
-                    searchByMaThietBi(); 
+<script src="../../js/utils.js" type="module"></script>
+<script>
+    // Lắng nghe sự kiện keypress trên ô input
+    const searchInput = document.getElementById("txt-search");
+    searchInput.addEventListener("keypress", function(event) {
+    if (event.keyCode === 13) {
+        searchByMaThietBi();
+    }
+    });
+</script>
+
+<script src="../../js/utils.js" type="module"></script>
+<script>
+    function searchThietBi() {
+        const searchText = document.getElementById("txt-search").value
+        window.location.href = window.location.href.split('?')[0] + `?tenTB=${searchText}`
+    }
+    document.getElementById("txt-search").addEventListener("keydown", function (event) {
+        if (event.key === 'Enter') {
+            searchThietBi();
+        }
+    })
+    function cancelThietBi(maTV, maTB) {
+        if (confirm('Bạn có chắc chắn muốn trả thiết bị này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/thong-tin/xoa",
+                data: { maTV: maTV, maTB: maTB},
+                success: function(response) {
+                    alert("Hủy thiết bị thành công");
+                    window.location.reload(true);
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
                 }
-                });
+            });
+        }
+    }
+</script>
+<script>
+// Lắng nghe sự kiện change trên select-by
+    const selectBy = document.getElementById("select-by");
+    selectBy.addEventListener("change", function(event) {
+        searchByMaThietBi();
+    });
 
-                // Lắng nghe sự kiện change trên select-by
-                const selectBy = document.getElementById("select-by");
-                selectBy.addEventListener("change", function(event) {
-                    searchByMaThietBi(); 
-                });
-
-                function searchByMaThietBi() {
-                    const searchText = document.getElementById("txt-search").value;
-                    const searchBy = document.getElementById("select-by").value;
-                    const productContainers = document.querySelectorAll(".product-container");
-                    productContainers.forEach(container => {
-                        const maThietBi = container.querySelector(".id p").textContent;
-                        const tenThietBi = container.querySelector(".name p").textContent;
-                        if (searchBy === "maTB") {
-                            if (maThietBi.includes(searchText)) {
-                                container.style.display = "block";
-                            } else {
-                                container.style.display = "none";
-                            }
-                        } else if (searchBy === "tenTB") {
-                            if (tenThietBi.includes(searchText)) {
-                            container.style.display = "block";
-                            } else {
-                                container.style.display = "none";
-                            }
-                        }else if (searchBy === "all") {
-                                if (maThietBi.includes(searchText) || tenThietBi.includes(searchText)) {
-                                container.style.display = "block";
-                            } else {
-                                container.style.display = "none";
-                        }
-                }
-                });
-                }
-                </script>
-                <script>
-                    window.onload = function() {
-                    const images = document.getElementsByClassName('image-product');
-                    for(let i = 0; i < images.length; i++) {
-                    images[i].src = '../../../media/images/user_default.png';
-                    }
-                    };
-                </script>
-                </body>
-
-                </html>
+    function searchByMaThietBi() {
+        const searchText = document.getElementById("txt-search").value;
+        const productContainers = document.querySelectorAll(".product-container");
+        productContainers.forEach(container => {
+            const tenThietBi = container.querySelector(".name-laptop p").textContent;
+            if (tenThietBi.includes(searchText)) {
+                container.style.display = "block";
+            } else {
+                container.style.display = "none";
+            }
+        });
+    }
+</script>
+</body>
+</html>

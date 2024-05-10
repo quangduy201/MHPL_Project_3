@@ -8,5 +8,9 @@ public interface AuthService {
     ThanhVienResponse login(String email, String password);
     ThanhVienResponse adminLogin(String email, String password);
 
-    void resetPassword(String email, String oldPassword, String newPassword);
+    void updateResetPasswordToken(String token, String email) throws Exception;
+
+    void updatePassword(ThanhVien tv, String newPassword);
+
+    ThanhVien getByResetPasswordToken(String token);
 }

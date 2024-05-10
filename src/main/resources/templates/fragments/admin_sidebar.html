@@ -28,44 +28,12 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item" th:classappend="${active == 2 ? 'active' : ''}">
-            <a
-                    th:class="${active == 2 ? 'nav-link' : 'nav-link collapsed'}"
-                    href="#"
-                    data-toggle="collapse"
-                    data-target="#collapseTwo"
-                    th:attr="aria-expanded=${active == 2}"
-                    aria-controls="collapseTwo"
+            <a class="nav-link"
+                    href="/admin/thanh-vien"
             >
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Quản lý thành viên</span>
             </a>
-            <div
-                    id="collapseTwo"
-                    class="collapse z-3"
-                    aria-labelledby="headingTwo"
-                    data-parent="#accordionSidebar"
-            >
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="/admin/thanh-vien/"
-                    >Xem chi tiết thành viên</a
-                    >
-                    <a class="collapse-item" href="/admin/thanh-vien/"
-                    >Xem chi tiết thành viên</a
-                    >
-                    <a class="collapse-item" href="/admin/thanh-vien/"
-                    >Xem chi tiết thành viên</a
-                    >
-                    <a class="collapse-item" href="/admin/thanh-vien/"
-                    >Xem chi tiết thành viên</a
-                    >
-                    <a class="collapse-item" href="/admin/thanh-vien/"
-                    >Xem chi tiết thành viên</a
-                    >
-                    <a class="collapse-item" href="/admin/thanh-vien/"
-                    >Xem chi tiết thành viên</a
-                    >
-                </div>
-            </div>
         </li>
 
         <!-- Nav Item - Utilities Collapse Menu -->
@@ -81,6 +49,13 @@
             <a class="nav-link" href="/admin/xu-ly/">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Quản lý vi phạm</span></a
+            >
+        </li>
+
+        <li class="nav-item" th:classappend="${active == 5 ? 'active' : ''}">
+            <a class="nav-link" href="/admin/thong-tin-su-dung/">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Quản lý thông tin sử dụng</span></a
             >
         </li>
     </ul>

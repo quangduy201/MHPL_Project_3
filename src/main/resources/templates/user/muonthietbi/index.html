@@ -28,163 +28,156 @@
 
     <body id="page-top">
 
-        <div id="wrapper" class="row">
-            <!-- Sidebar -->
-            <div th:replace="~{fragments/user_sidebar :: sidebar(active=3)}"></div>
+<div id="wrapper" class="row">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/user_sidebar :: sidebar(active=4)}"></div>
 
-            <!-- Content Wrapper -->
-            <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
-                <!-- Main Content -->
-                <div id="content">
-                    <!-- Topbar -->
-                    <div th:replace="~{fragments/user_topbar :: topbar(
-                         userName='Nhóm 1',
-                         userAvatar='/media/images/poodle.jpg'
-                         )}">
-                    </div>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <div th:replace="~{fragments/user_topbar :: topbar(
+                    userName='Nhóm 1',
+                    userAvatar='/media/images/poodle.jpg'
+                 )}">
+            </div>
 
-                    <!-- Begin Page Content -->
-                    <div class="container-fluid">
-                        <!-- Member Statistic -->
-                        <div class="ui-borrow-equipment">
-                            <div class="ui-top">
-                                <div class="mb-3 row">
-                                    <div class="col-2">
-                                        <select id="select-by" class="form-select" aria-label="">
-                                            <option value="all" >Tất cả</option>
-                                            <option value="maTB" >Mã thiết bị</option>
-                                            <option value="tenTB" >Tên thiết bị</option>
-                                        </select>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text"
-                                               class="form-control"
-                                               id="txt-search"
-                                               placeholder="Nhập vào đây để tìm kiếm"
-                                               aria-label=""
-                                               >
-                                    </div>
-                                    <div class="col">
-                                        <button class="btn btn-secondary" onclick="searchByMaThietBi()">Tìm kiếm</button>
-                                    </div>
-                                </div>
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- Member Statistic -->
+                <div class="ui-borrow-equipment">
+                    <div class="ui-top">
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <input type="text"
+                                       class="form-control"
+                                       id="txt-search"
+                                       placeholder="Nhập vào đây để tìm kiếm"
+                                       aria-label=""
+                                >
                             </div>
-
-                            <div class="ui-center">
-                                <div th:if="${thietBiDangMuon != null and not thietBiDangMuon.empty}" class="product-container-wrapper">
-                                    <div th:each="thietBi : ${thietBiDangMuon.content}" class="product-container">
-                                        <div class="product-item">
-                                            <div class="product-top">
-                                                <img src="" alt="" class="image-product"/>
-                                            </div>
-                                            <div class="product-bottom">
-                                                <div class="ui-data">
-                                                    <div class="id">
-                                                        <p th:text="${thietBi.maTB}"></p>
-                                                    </div>
-                                                </div>
-                                                <div class="name">
-                                                    <p th:text="${thietBi.tenTB}"></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div th:if="${thietBiDangMuon == null or thietBiDangMuon.empty}">
-                                    Thành viên không mượn thiết bị nào.
-                                </div>
-                            </div>
-                            <div class="ui-bottom">
-                                <!--                        <div th:replace="~{fragments/pagination :: pagination(
-                                                        urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
-                                                        totalPages = ${tvList.totalPages},
-                                                        currentPage = ${tvList.number + 1},
-                                                        pageSize = ${tvList.size},
-                                                        totalItems = ${tvList.totalElements}-->
-                                <!--                     )}">-->
-                                <!--                        </div>-->
+                            <div class="col">
+                                <button class="btn btn-secondary" onclick="searchByMaThietBi()">Tìm kiếm</button>
                             </div>
                         </div>
-                        <!-- /.container-fluid -->
+                    </div>
+                    <div class="ui-center">
+                        <div th:each="mtb : ${mtbList}">
+                            <div class="product-container">
+                                <div class="product-top">
+                                    <img th:attr="src=@{|/media/images/thietbi${mtb.maTB.maTB - 1000000}.jpg|}" alt="" class="image-product"/>
+                                </div>
+                                <div class="product-bottom mt-5">
+                                    <div class="ui-data">
+                                        <div class="name-laptop text-primary font-weight-bold d-flex flex-column justify-content-center align-items-center">
+                                            <span th:text="${mtb.maTB.maTB}"></span>
+                                            <br/>
+                                            <span th:text="${mtb.maTB.tenTB}"></span>
+                                        </div>
+                                    </div>a
+                                    <div class="describe">
+                                        <p th:text="${mtb.maTB.moTaTB}"></p>
+                                    </div>
+                                    <div class="button-cart d-flex justify-content-center align-items-center">
+                                        <p class="button-return button px-5 py-3 text-white bg-info" th:onclick="'giveBackThietBi(\'' + ${session.user.maTV} + '\', \'' + ${mtb.maTB.maTB} + '\')'">
+                                            Trả
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-bottom">
+                        <div th:replace="~{fragments/pagination :: pagination(
+                        urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
+                        totalPages = ${mtbList.totalPages},
+                        currentPage = ${mtbList.number + 1},
+                        pageSize = ${mtbList.size},
+                        totalItems = ${mtbList.totalElements}
+                     )}">
+                        </div>
                     </div>
                 </div>
-                <!-- End of Content Wrapper -->
             </div>
-            <!-- End of Page Wrapper -->
-            <script src="../../vendor/jquery/jquery.min.js"></script>
-            <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        </div>
+    </div>
+</div>
+<script src="../../vendor/jquery/jquery.min.js"></script>
+<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-            <!-- Core plugin JavaScript-->
-            <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
 
-            <!-- Datatables -->
-            <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
-            <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!-- Datatables -->
+<script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-            <!-- Page level custom scripts -->
-            <script src="../../js/demo/datatables-demo.js"></script>
-            <!--Date Range Picker -->
-            <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<!-- Page level custom scripts -->
+<script src="../../js/demo/datatables-demo.js"></script>
+<!--Date Range Picker -->
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-            <!-- SELECT -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
-            integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+<!-- SELECT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
-            <script src="../../js/utils.js" type="module"></script>
-            <script>
-
-                // Lắng nghe sự kiện keypress trên ô input
-                const searchInput = document.getElementById("txt-search");
-                searchInput.addEventListener("keypress", function(event) {
-                if (event.keyCode === 13) {
-                    searchByMaThietBi(); 
+<script src="../../js/utils.js" type="module"></script>
+<script>
+    function searchThietBi() {
+        const searchText = document.getElementById("txt-search").value
+        window.location.href = window.location.href.split('?')[0] + `?tenTB=${searchText}`
+    }
+    document.getElementById("txt-search").addEventListener("keydown", function (event) {
+        if (event.key === 'Enter') {
+            searchThietBi();
+        }
+    })
+    function giveBackThietBi(maTV, maTB) {
+        if (confirm('Bạn có chắc chắn muốn trả thiết bị này?')) {
+            $.ajax({
+                type: "GET",
+                url: "/thong-tin/tra",
+                data: { maTV: maTV, maTB: maTB},
+                success: function(response) {
+                    window.location.reload(true);
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
                 }
-                });
+            });
+        }
+    }
+</script>
+<script>
 
-                // Lắng nghe sự kiện change trên select-by
-                const selectBy = document.getElementById("select-by");
-                selectBy.addEventListener("change", function(event) {
-                    searchByMaThietBi(); 
-                });
+    // Lắng nghe sự kiện keypress trên ô input
+    const searchInput = document.getElementById("txt-search");
+    searchInput.addEventListener("keypress", function(event) {
+    if (event.keyCode === 13) {
+        searchByMaThietBi();
+    }
+    });
 
-                function searchByMaThietBi() {
-                    const searchText = document.getElementById("txt-search").value;
-                    const searchBy = document.getElementById("select-by").value;
-                    const productContainers = document.querySelectorAll(".product-container");
-                    productContainers.forEach(container => {
-                        const maThietBi = container.querySelector(".id p").textContent;
-                        const tenThietBi = container.querySelector(".name p").textContent;
-                        if (searchBy === "maTB") {
-                            if (maThietBi.includes(searchText)) {
-                                container.style.display = "block";
-                            } else {
-                                container.style.display = "none";
-                            }
-                        } else if (searchBy === "tenTB") {
-                            if (tenThietBi.includes(searchText)) {
-                            container.style.display = "block";
-                            } else {
-                                container.style.display = "none";
-                            }
-                        }else if (searchBy === "all") {
-                                if (maThietBi.includes(searchText) || tenThietBi.includes(searchText)) {
-                                container.style.display = "block";
-                            } else {
-                                container.style.display = "none";
-                        }
-                }
-                });
-                }
-            </script>
-            <script>
-                window.onload = function() {
-                const images = document.getElementsByClassName('image-product');
-                for(let i = 0; i < images.length; i++) {
-                images[i].src = '../../../media/images/user_default.png';
-                }
-                };
-            </script>
-    </body>
+    // Lắng nghe sự kiện change trên select-by
+    const selectBy = document.getElementById("select-by");
+    selectBy.addEventListener("change", function(event) {
+        searchByMaThietBi();
+    });
 
+    function searchByMaThietBi() {
+        const searchText = document.getElementById("txt-search").value;
+        const productContainers = document.querySelectorAll(".product-container");
+        productContainers.forEach(container => {
+            const tenThietBi = container.querySelector(".name-laptop p").textContent;
+            if (tenThietBi.includes(searchText)) {
+                container.style.display = "block";
+            } else {
+                container.style.display = "none";
+            }
+        });
+    }
+</script>
+</body>
 </html>

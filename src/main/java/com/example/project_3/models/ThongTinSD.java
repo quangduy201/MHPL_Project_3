@@ -18,6 +18,7 @@ import java.time.Instant;
 public class ThongTinSD {
     @Id
     @Column(name = "MaTT", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer maTT;
 
     @NotNull

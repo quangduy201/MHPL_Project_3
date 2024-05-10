@@ -1,12 +1,10 @@
 package com.example.project_3.controllers;
 
 import com.example.project_3.models.ThanhVien;
-import com.example.project_3.payloads.requests.LayLaiMatKhauRequest;
 import com.example.project_3.payloads.requests.LoginRequest;
 import com.example.project_3.payloads.requests.RegisterRequest;
 import com.example.project_3.payloads.responses.ThanhVienResponse;
 import com.example.project_3.services.AuthService;
-import com.example.project_3.services.CustomerService;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -39,9 +37,6 @@ import java.util.Properties;
 public class AuthController {
     @Autowired
     private AuthService authService;
-    @Autowired
-    private CustomerService customerService;
-
 
     @Autowired
     private ThanhVienService thanhVienService;
@@ -171,9 +166,6 @@ public class AuthController {
         return "/quenmatkhau/index";
     }
 
-
-
-
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -234,7 +226,7 @@ public class AuthController {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         String resetPasswordLink = null;
         try {
-            customerService.updateResetPasswordToken(token, email);
+            authService.updateResetPasswordToken(token, email);
             resetPasswordLink = baseUrl + "/lay-lai-mat-khau?token=" + token;
             sendEmail(email, resetPasswordLink);
             model.addAttribute("message", "Chúng tôi đã gửi một đường dẫn lấy lại mật khẩu vào email của bạn. Vui lòng kiểm tra.");
@@ -246,7 +238,7 @@ public class AuthController {
     }
     @GetMapping({"/lay-lai-mat-khau", "/lay-lai-mat-khau/"})
     public String showResetPasswordForm(@Param(value = "token") String token, Model model) {
-        ThanhVien customer = customerService.getByResetPasswordToken(token);
+        ThanhVien customer = authService.getByResetPasswordToken(token);
         model.addAttribute("token", token);
 
         if (customer == null) {
@@ -262,14 +254,14 @@ public class AuthController {
         String token = request.getParameter("token");
         String password = request.getParameter("matKhau");
 
-        ThanhVien customer = customerService.getByResetPasswordToken(token);
+        ThanhVien customer = authService.getByResetPasswordToken(token);
         model.addAttribute("title", "Lấy lại mật khẩu");
 
         if (customer == null) {
             model.addAttribute("message", "Mã token không đúng");
             return "message";
         } else {
-            customerService.updatePassword(customer, password);
+            authService.updatePassword(customer, password);
 
             model.addAttribute("message", "Bạn đã thay đổi mật khẩu thành công.");
         }

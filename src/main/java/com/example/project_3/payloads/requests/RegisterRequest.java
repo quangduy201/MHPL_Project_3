@@ -42,9 +42,13 @@ public class RegisterRequest {
     private String maTV;
 
     @NotBlank(message = "Mật khẩu không được để trống.")
+    @Size(min = 2, message = "Họ tên phải chứa ít nhất 2 kí tự.")
+    @Size(max = 9, message = "Họ tên phải chứa ít nhất 9 kí tự.")
     private String matKhau;
 
     @NotBlank(message = "Xác nhận mật khẩu không được để trống.")
+    @Size(min = 2, message = "Họ tên phải chứa ít nhất 2 kí tự.")
+    @Size(max = 9, message = "Họ tên phải chứa ít nhất 9 kí tự.")
     private String xacNhanMatKhau;
 
     public boolean isXacNhanMatKhauValid() {

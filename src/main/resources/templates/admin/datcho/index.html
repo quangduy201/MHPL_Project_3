@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard | Quản lý thiết bị</title>
+    <title>Dashboard | Quản lý thông tin sử dụng</title>
     <!-- Custom fonts for this template-->
     <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"/>
@@ -18,7 +18,7 @@
 <body id="page-top">
     <div id="wrapper" class="row">
         <!-- Sidebar -->
-        <div th:replace="~{fragments/admin_sidebar :: sidebar(active=3)}"></div>
+        <div th:replace="~{fragments/admin_sidebar :: sidebar(active=5)}"></div>
         <!-- Content Wrapper -->
         <div id="content-wrapper " class="col-12 col-md-10 d-flex flex-column flex-grow-1">
         <!--         Main Content -->
@@ -32,125 +32,34 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <h1 class="text-center my-4">Quản lý thiết bị</h1>
-                    <div class="d-flex justify-content-between my-5 align-items-center">
-                        <select id="type" class="flex-shrink-0 form-control mr-3 filter" onchange="search()" th:value="${type}">
-                            <option value="">Tất cả thiết bị</option>
-                            <option value="muon">Đang mượn</option>
-                            <option value="datcho">Đang đặt chỗ</option>
-                        </select>
-
-                        <div class="d-flex justify-content-end align-items-center">
-                            <p class="btn btn-primary btn-sm mr-2 m-0" onclick="openForm()"> Thêm </p>
-                            <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
-                            <p class="btn text-white btn-sm  m-0 bg-danger" onclick="openFormDelete()"> Xóa nhiều dòng </p>
-                            <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
-                        </div>
-                    </div>
-                    <!-- Table -->
                     <table id="thietbiTable" class="table">
                         <thead>
                         <tr>
+                            <th>Mã thông tin</th>
+                            <th>Mã thành viên</th>
+                            <th>Tên thành viên</th>
                             <th>Mã thiết bị</th>
-                            <th>Tên thiết bị</th>
-                            <th>Mô tả</th>
-                            <th>Tùy chọn</th>
+                            <th>Mã tên thiết bị</th>
+                            <th>Thời gian mượn</th>
+                            <th>Thời gian trả</th>
+                            <th>Thời gian đặt chỗ</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="tbi : ${thietBiList}">
-                            <td th:text="${tbi.maTB}"></td>
-                            <td th:text="${tbi.tenTB}"></td>
-                            <td th:text="${tbi.moTaTB}"></td>
-                            <td style="white-space: nowrap">
-                                <a class="btn btn-primary btn-sm" th:onclick="'showEdit(\'' + ${tbi.maTB} + '\')'">Sửa</a>
-                                <a class="btn btn-danger btn-sm" th:onclick="'deleteThietBi(\'' + ${tbi.maTB} + '\')'">Xóa</a>
-                            </td>
-                        </tr>
+                            <tr th:each="t : ${ttsd}">
+                                <td th:text="${t.maTT}"></td>
+                                <td th:text="${t.maTV != null ? t.maTV.maTV : ''}"></td>
+                                <td th:text="${t.maTV != null ? t.maTV.hoTen : ''}"></td>
+                                <td th:text="${t.maTB != null ? t.maTB.maTB : ''}"></td>
+                                <td th:text="${t.maTB != null ? t.maTB.tenTB : ''}"></td>
+                                <td th:text="${t.tgMuon}"></td>
+                                <td th:text="${t.tgTra}"></td>
+                                <td th:text="${t.tgDatcho}"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
                 <!-- /.container-fluid -->
-            </div>
-            <div id="addDiv" class="rounded-lg shadow bg-dark" th:style="${showForm} ? 'display: block;' : 'display: none;'">
-                <div class="p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="text-xl font-bold text-center mx-auto text-white">THÊM THIẾT BỊ</h2>
-                        <button type="button" class="btn btn-sm btn-light" onclick="closeForm()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/thiet-bi/" th:object="${tb}">
-                        <div class="form-group">
-                            <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
-                            <input type="text" name="maTB" id="maTB" class="form-control" placeholder="Nhập mã thiết bị" th:field="${tb.maTB}">
-                            <p th:if="${#fields.hasErrors('maTB')}" class="text-danger" th:errors="${tb.maTB}"></p>
-                        </div>
-                        <div class="form-group">
-                            <label for="tenTB" class="block mb-2 text-sm font-medium text-white">Tên thiết bị</label>
-                            <input type="text" name="tenTB" id="tenTB" class="form-control" placeholder="Nhập tên thiết bị" th:field="${tb.tenTB}">
-                            <p th:if="${#fields.hasErrors('tenTB')}" class="text-danger" th:errors="${tb.tenTB}"></p>
-                        </div>
-                        <div class="form-group">
-                            <label for="moTaTB" class="block mb-2 text-sm font-medium text-white">Mô tả</label>
-                            <textarea name="moTaTB" id="moTaTB" class="form-control" rows="3" placeholder="Nhập mô tả" th:field="${tb.moTaTB}"></textarea>
-                            <p th:if="${#fields.hasErrors('moTaTB')}" class="text-danger" th:errors="${tb.moTaTB}"></p>
-                        </div>
-                        <div class="text-center">
-                            <button type="button" class="btn btn-secondary btn-lg" onclick="resetFormAdd()">Làm mới</button>
-                            <button type="submit" class="btn btn-primary btn-lg ml-3">Thêm</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div id="editDiv" class="rounded-lg shadow bg-dark" th:style="${showFormEdit} ? 'display: block;' : 'display: none;'">
-                <div class="p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="text-xl font-bold text-center mx-auto text-white">SỬA THIẾT BỊ</h2>
-                        <button type="button" class="btn btn-sm btn-light" onclick="closeFormEdit()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <form class="space-y-4" id="editThietBiForm" method="POST" action="/admin/thiet-bi/edit" th:object="${tb}">
-                        <div class="form-group">
-                            <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
-                            <input type="text" name="maTB" id="ma" class="form-control" placeholder="Nhập mã thiết bị" th:field="${tb.maTB}">
-                            <p th:if="${#fields.hasErrors('maTB')}" class="text-danger" th:errors="${tb.maTB}"></p>
-                        </div>
-                        <div class="form-group">
-                            <label for="tenTB" class="block mb-2 text-sm font-medium text-white">Tên thiết bị</label>
-                            <input type="text" name="tenTB" id="ten" class="form-control" placeholder="Nhập tên thiết bị" th:field="${tb.tenTB}">
-                            <p th:if="${#fields.hasErrors('tenTB')}" class="text-danger" th:errors="${tb.tenTB}"></p>
-                        </div>
-                        <div class="form-group">
-                            <label for="moTaTB" class="block mb-2 text-sm font-medium text-white">Mô tả</label>
-                            <textarea name="moTaTB" id="moTa" class="form-control" rows="3" placeholder="Nhập mô tả" th:field="${tb.moTaTB}"></textarea>
-                            <p th:if="${#fields.hasErrors('moTaTB')}" class="text-danger" th:errors="${tb.moTaTB}"></p>
-                        </div>
-                        <div class="text-center">
-                            <button type="button" class="btn btn-secondary btn-lg" onclick="resetForm()">Làm mới</button>
-                            <button type="submit" class="btn btn-primary btn-lg ml-3">SỬA</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div id="deleteDiv" class="mx-auto rounded-lg shadow mt-5 bg-dark" style="width: 500px;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);display: none;">
-                <div class="p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="text-xl font-bold text-center mx-auto text-white">XÓA NHIỀU THIẾT BỊ</h4>
-                        <button type="button" class="btn btn-sm btn-light" onclick="closeFormDelete()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <form class="space-y-4">
-                        <div class="form-group">
-                            <label for="maTB" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
-                            <input type="text" name="maTB" id="maTBi" class="form-control" placeholder="Nhập mã thiết bị" required>
-                        </div>
-                        <div class="text-center">
-                            <button type="button" class="btn btn-primary btn-lg" onclick="deleteMultipleThietBi()">XÓA</button>
-                        </div>
-                    </form>
-                </div>
             </div>
      </div>
         <!-- End of Content Wrapper -->
