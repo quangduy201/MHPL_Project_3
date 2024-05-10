@@ -96,7 +96,7 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <form class="space-y-4" id="addThanhVienForm" method="POST" action="/admin/thanhvien/" th:object="${tv}">
+                <form class="space-y-4" id="addThanhVienForm" method="POST" action="/admin/thanh-vien/" th:object="${tv}">
                     <div class="form-group">
                         <label for="maTV-add" class="block mb-2 text-sm font-medium text-white">Mã thành viên</label>
                         <input type="text" name="maTV" id="maTV-add" class="form-control" placeholder="Nhập mã thành viên" th:field="${tv.maTV}">
@@ -142,7 +142,7 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <form class="space-y-4" id="editThanhVienForm" method="POST" action="/admin/thanhvien/edit" th:object="${tv}">
+                <form class="space-y-4" id="editThanhVienForm" method="POST" action="/admin/thanh-vien/edit" th:object="${tv}">
                     <div class="form-group">
                         <label for="maTV-edit" class="block mb-2 text-sm font-medium text-white">Mã thành viên</label>
                         <input type="text" name="maTV" id="maTV-edit" class="form-control" placeholder="Nhập mã thành viên" th:field="${tv.maTV}">
@@ -190,11 +190,11 @@
                 </div>
                 <form class="space-y-4">
                     <div class="form-group">
-                        <label for="maTV-delete" class="block mb-2 text-sm font-medium text-white">Mã thiết bị</label>
-                        <input type="text" name="maTV" id="maTV-delete" class="form-control" placeholder="Năm nhập học. VD: 2024" required>
+                        <label for="namNhapHoc" class="block mb-2 text-sm font-medium text-white">Năm nhập học</label>
+                        <input type="text" name="namNhapHoc" id="namNhapHoc" class="form-control" placeholder="Năm nhập học. VD: 2024" required>
                     </div>
                     <div class="text-center">
-                        <button type="button" class="btn btn-primary btn-lg" onclick="deleteMultipleThietBi()">XÓA</button>
+                        <button type="button" class="btn btn-primary btn-lg" onclick="deleteMultipleThanhVien()">XÓA</button>
                     </div>
                 </form>
             </div>
@@ -311,16 +311,42 @@
         }
     }
 
-    function searchThanhVien() {
-        const selectBy = document.getElementById("select-by").value
-        const searchText = document.getElementById("txt-search").value
-        window.location.href = window.location.href.split('?')[0] + `?${selectBy}=${searchText}`
-    }
-    document.getElementById("txt-search").addEventListener("keydown", function (event) {
-        if (event.key === 'Enter') {
-            searchThanhVien();
+    function deleteMultipleThanhVien() {
+        let namString = document.getElementById('namNhapHoc').value.trim();
+
+        if (namString === "") {
+            alert("Vui lòng nhập năm nhập học");
+            return;
         }
-    })
+
+        if (isNaN(namString)) {
+            alert("Vui lòng chỉ nhập số");
+            return;
+        }
+
+        let nam = parseInt(namString);
+        let namHienTai = new Date().getFullYear();
+        if (nam < namHienTai - 10 || nam > namHienTai) {
+            alert("Năm không hợp lệ.");
+            return;
+        }
+
+        if (confirm("Bạn có chắc chắn muốn xóa các thành viên này?")) {
+            $.ajax({
+                type: "GET",
+                url: "/admin/thanh-vien/deleteMultiple",
+                data: { namNhapHoc: namString.substring(2) },
+                success: response => {
+                    alert("Xóa thành viên thành công");
+                    document.getElementById("namNhapHoc").value = "";
+                    window.location.reload();
+                },
+                error: xhr => {
+                    console.log("Lỗi khi xóa thành viên: " + xhr.responseText);
+                }
+            })
+        }
+    }
 
     $(document).ready(function() {
         $('#thanhVienTable').DataTable();

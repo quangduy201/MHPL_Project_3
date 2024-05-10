@@ -23,6 +23,7 @@ import java.util.Map;
 @RequestMapping("/admin/thiet-bi")
 public class ThietBiController {
     private final ThietBiService thietBiService;
+
     @Autowired
     public ThietBiController(ThietBiService thietBiService) {
         this.thietBiService = thietBiService;
@@ -35,14 +36,18 @@ public class ThietBiController {
     }
 
     @GetMapping({"", "/"})
-    public String showAllThietBi(Model model, @RequestParam(value = "type", defaultValue = "") String type) {
-        List<ThietBi> thietBiList = thietBiService.getAllThietBiByType(type);
+    public String showAllThietBi(Model model, @RequestParam(value = "type", defaultValue = "") String type, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            List<ThietBi> thietBiList = thietBiService.getAllThietBiByType(type);
 
-        model.addAttribute("tb", new ThietBiRequest());
-        model.addAttribute("thietBiList", thietBiList);
-        model.addAttribute("type", type);
-        model.addAttribute("showForm", false);
-        return "/admin/thietbi/index";
+            model.addAttribute("tb", new ThietBiRequest());
+            model.addAttribute("thietBiList", thietBiList);
+            model.addAttribute("type", type);
+            model.addAttribute("showForm", false);
+            return "/admin/thietbi/index";
+        }
+
+            return "redirect:/admin/login";
     }
 
     @GetMapping("/edit")
