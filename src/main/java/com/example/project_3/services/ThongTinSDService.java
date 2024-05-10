@@ -1,13 +1,12 @@
 package com.example.project_3.services;
 
-import com.example.project_3.models.ThanhVien;
-import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.ThongTinSD;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ThongTinSDService {
     String checkThietBiDaDatCho(Long maTB, LocalDateTime date);
@@ -19,4 +18,6 @@ public interface ThongTinSDService {
     void deleteThongTinSD(ThongTinSD thongTinSD);
     ThongTinSD saveThongTinSD(ThongTinSD tinSD);
     List<ThongTinSD> getAllThongTinSD();
+
+    Optional<ThongTinSD> getThongTinSDById(Integer maTT);
 }

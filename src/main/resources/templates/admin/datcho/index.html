@@ -31,18 +31,19 @@
                 </div>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    <h1 class="text-center my-4">Quản lý thiết bị</h1>
+                    <h1 class="text-center my-4">Quản lý thông tin sử dụng</h1>
                     <table id="thietbiTable" class="table">
                         <thead>
                         <tr>
-                            <th>Mã thông tin</th>
-                            <th>Mã thành viên</th>
-                            <th>Tên thành viên</th>
-                            <th>Mã thiết bị</th>
-                            <th>Mã tên thiết bị</th>
+                            <th>Mã TT</th>
+                            <th>Mã TV</th>
+                            <th>Tên TV</th>
+                            <th>Mã TB</th>
+                            <th>Tên TB</th>
                             <th>Thời gian mượn</th>
                             <th>Thời gian trả</th>
                             <th>Thời gian đặt chỗ</th>
+                            <th>Tùy chọn</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -55,6 +56,11 @@
                                 <td th:text="${t.tgMuon}"></td>
                                 <td th:text="${t.tgTra}"></td>
                                 <td th:text="${t.tgDatcho}"></td>
+                                <td style="white-space: nowrap">
+                                    <a class="btn btn-primary btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='tra(\'' + ${t.maTT} + '\')'">Mượn</a>
+                                    <a class="btn btn-secondary btn-sm" th:if="${t.maTB != null and t.tgMuon != null and t.tgTra == null and t.tgDatcho == null}" th:attr="onclick='tra(\'' + ${t.maTT} + '\')'">Trả</a>
+                                    <a class="btn btn-info btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='huy(\'' + ${t.maTT} + '\')'">Hủy đặt chỗ</a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -272,6 +278,58 @@
     function search() {
         window.location.href = window.location.href.split('?')[0] + `?type=${$("#type").val()}`;
     }
+
+    function muon(maTT) {
+        $.ajax({
+            type: 'GET',
+            url: '/thong-tin/muon/' + maTT,
+            success: function(response) {
+                // Hiển thị thông báo khi mượn thành công
+                alert("Mượn thành công!");
+                // Nếu cần, bạn có thể thực hiện các hành động khác sau khi mượn thành công
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                // Hiển thị thông báo lỗi khi xảy ra lỗi
+                alert("Đã xảy ra lỗi khi mượn thiết bị. Vui lòng thử lại sau!");
+            }
+        });
+    }
+
+    function tra(maTT) {
+        $.ajax({
+            type: 'GET',
+            url: '/tra/' + maTT,
+            success: function(response) {
+                // Hiển thị thông báo khi trả thành công
+                alert("Trả thành công!");
+                // Nếu cần, bạn có thể thực hiện các hành động khác sau khi trả thành công
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                // Hiển thị thông báo lỗi khi xảy ra lỗi
+                alert("Đã xảy ra lỗi khi trả thiết bị. Vui lòng thử lại sau!");
+            }
+        });
+    }
+
+    function huy(maTT) {
+        $.ajax({
+            type: 'GET',
+            url: '/huy/' + maTT,
+            success: function(response) {
+                // Hiển thị thông báo khi hủy thành công
+                alert("Hủy thành công!");
+                // Nếu cần, bạn có thể thực hiện các hành động khác sau khi hủy thành công
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                // Hiển thị thông báo lỗi khi xảy ra lỗi
+                alert("Đã xảy ra lỗi khi hủy đặt chỗ thiết bị. Vui lòng thử lại sau!");
+            }
+        });
+    }
+
 </script>
 </body>
 </html>

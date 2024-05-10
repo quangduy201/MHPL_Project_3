@@ -156,4 +156,64 @@ public class ThongTinSDController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("/admin/muon")
+    public ResponseEntity<?> muon(@RequestParam String maTT) {
+        try {
+            Integer idTT = Integer.parseInt(maTT);
+            ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
+            if (thongTinSD != null && thongTinSD.getTgMuon() == null) {
+                Instant muonInstant = Instant.now();
+                thongTinSD.setTgMuon(muonInstant);
+                thongTinSDService.saveThongTinSD(thongTinSD);
+                return ResponseEntity.ok("Mượn thành công");
+            } else {
+                return ResponseEntity.badRequest().body("Không thể mượn thiết bị");
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Mã thiết bị không hợp lệ");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Server Error: " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/admin/tra")
+    public ResponseEntity<?> tra(@RequestParam String maTT) {
+        try {
+            Integer idTT = Integer.parseInt(maTT);
+            ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
+            if (thongTinSD != null && thongTinSD.getTgMuon() != null && thongTinSD.getTgTra() == null) {
+                Instant traInstant = Instant.now();
+                thongTinSD.setTgTra(traInstant);
+                thongTinSDService.saveThongTinSD(thongTinSD);
+                return ResponseEntity.ok("Trả thành công");
+            } else {
+                return ResponseEntity.badRequest().body("Không thể trả thiết bị");
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Mã thiết bị không hợp lệ");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/admin/huy")
+    public ResponseEntity<?> huy(@RequestParam String maTT) {
+        try {
+            Integer idTT = Integer.parseInt(maTT);
+            ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
+            if (thongTinSD != null && thongTinSD.getTgMuon() == null) {
+                thongTinSDService.deleteThongTinSD(thongTinSD);
+                return ResponseEntity.ok("Hủy đặt chỗ thành công");
+            } else {
+                return ResponseEntity.badRequest().body("Không thể hủy đặt chỗ thiết bị");
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Mã thiết bị không hợp lệ");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
+        }
+    }
 }

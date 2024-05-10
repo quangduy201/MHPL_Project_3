@@ -63,7 +63,7 @@
             <!-- Begin Page Content -->
             <div class="container-fluid">
                 <!-- Member Statistic -->
-                <div class="ui-borrow-equipment" th:if="xlList.isEmpty()">
+                <div class="ui-borrow-equipment" th:if="${#lists.isEmpty(xlList)}">
                     <div class="ui-top d-flex justify-content-between">
                         <div class="d-flex flex-grow-1 search">
                             <input type="text"
@@ -115,7 +115,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" th:if="!xlList.isEmpty()">
+                <div class="row" th:if="${!#lists.isEmpty(xlList)}">
                     <div class="col-md-3" th:each="xl : ${xlList}">
                         <div class="card text-white bg-danger mb-3">
                             <div class="card-header" th:text="${xl.maXL}"></div>
