@@ -37,6 +37,7 @@ public class ThongTinSDController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss'Z'");
         return zdtPlusSevenHours.format(formatter);
     }
+
     @GetMapping("/dat-cho")
     public ResponseEntity<?> datCho(@RequestParam String maTV,
                                     @RequestParam String maTB,
@@ -139,8 +140,9 @@ public class ThongTinSDController {
             Integer idTT = Integer.parseInt(maTT);
             ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
             if (thongTinSD != null && thongTinSD.getTgMuon() == null) {
-                Instant muonInstant = Instant.now();
-                thongTinSD.setTgMuon(muonInstant);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm'Z'");
+                ZonedDateTime zonedDateTime = ZonedDateTime.parse(getTime(), formatter);
+                thongTinSD.setTgMuon(zonedDateTime.toInstant());
                 thongTinSD.setTgDatcho(null);
                 thongTinSDService.saveThongTinSD(thongTinSD);
                 return ResponseEntity.ok("Mượn thành công");
@@ -162,8 +164,9 @@ public class ThongTinSDController {
             Integer idTT = Integer.parseInt(maTT);
             ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
             if (thongTinSD != null && thongTinSD.getTgMuon() != null && thongTinSD.getTgTra() == null) {
-                Instant traInstant = Instant.now();
-                thongTinSD.setTgTra(traInstant);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm'Z'");
+                ZonedDateTime zonedDateTime = ZonedDateTime.parse(getTime(), formatter);
+                thongTinSD.setTgTra(zonedDateTime.toInstant());
                 thongTinSDService.saveThongTinSD(thongTinSD);
                 return ResponseEntity.ok("Trả thành công");
             } else {

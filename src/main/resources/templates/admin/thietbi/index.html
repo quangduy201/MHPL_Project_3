@@ -32,19 +32,11 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <h1 class="text-center my-4">Quản lý thiết bị</h1>
-                    <div class="d-flex justify-content-between my-5 align-items-center">
-                        <select id="type" class="flex-shrink-0 form-control mr-3 filter" onchange="search()" th:value="${type}">
-                            <option value="">Tất cả thiết bị</option>
-                            <option value="muon">Đang mượn</option>
-                            <option value="datcho">Đang đặt chỗ</option>
-                        </select>
-
-                        <div class="d-flex justify-content-end align-items-center">
-                            <p class="btn btn-primary btn-sm mr-2 m-0" onclick="openForm()"> Thêm </p>
-                            <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
-                            <p class="btn text-white btn-sm  m-0 bg-danger" onclick="openFormDelete()"> Xóa nhiều dòng </p>
-                            <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
-                        </div>
+                    <div class="d-flex justify-content-end align-items-center mb-3">
+                        <p class="btn btn-primary btn-sm mr-2 m-0" onclick="openForm()"> Thêm </p>
+                        <label for="file-input" class="btn btn-primary btn-sm d-block mr-2 m-0"> Nhập từ file excel </label>
+                        <p class="btn text-white btn-sm  m-0 bg-danger" onclick="openFormDelete()"> Xóa nhiều dòng </p>
+                        <input type="file" name="" id="file-input" accept=".xlsx" hidden/>
                     </div>
                     <!-- Table -->
                     <table id="thietbiTable" class="table">
@@ -379,9 +371,6 @@
 
     });
 
-    function search() {
-        window.location.href = window.location.href.split('?')[0] + `?type=${$("#type").val()}`;
-    }
 </script>
 </body>
 </html>

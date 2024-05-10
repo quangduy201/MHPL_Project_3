@@ -93,12 +93,13 @@ public class ThanhVienController {
         try {
             for (String[] row : rows) {
                 ThanhVien tv = ThanhVien.builder()
-                        .maTV(Long.parseLong(row[0].toString()))
-                        .hoTen(row[1].toString())
-                        .khoa(row[2].toString())
-                        .nganh(row[3].toString())
-                        .sdt(row[4].toString())
-                        .email(row[5].toString())
+                        .maTV(Long.parseLong(row[0]))
+                        .hoTen(row[1])
+                        .khoa(row[2])
+                        .nganh(row[3])
+                        .sdt(row[4])
+                        .password(row[5])
+                        .email(row[6])
                         .build();
                 thanhvienService.saveThanhVien(tv);
             }
