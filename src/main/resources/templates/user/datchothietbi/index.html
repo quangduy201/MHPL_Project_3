@@ -81,7 +81,7 @@
                                         <p th:text="${#temporals.format(dtb.tgDatcho, 'dd/MM/yyyy - HH:mm:ss')}"></p>
                                     </div>
                                     <div class="button-cart button-cart-datcho">
-                                        <div class="button-reservation button bg-primary p-3 text-white border border-primary"  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB.maTB} + '\')'">
+                                        <div class="button-reservation button p-3 text-white "  th:onclick="'cancelThietBi(\'' + ${session.user.maTV} + '\', \'' + ${dtb.maTB.maTB} + '\')'">
                                             <p>Hủy đặt chỗ</p>
                                         </div>
                                     </div>
