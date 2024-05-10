@@ -97,7 +97,7 @@ public class AuthController {
         }
 
         if (thanhVienService.getThanhVienById(Long.valueOf(tv.getMaTV())) != null) {
-            bindingResult.rejectValue("credentials", "invalid.credentials", "Email đã tồn tại trong hệ thống");
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Mã thành viên đã tồn tại trong hệ thống");
 
             model.addAttribute("tv", tv);
             return "register/index";
@@ -105,6 +105,13 @@ public class AuthController {
 
         if (thanhVienService.getThanhVienBySdt(tv.getSdt()) != null) {
             bindingResult.rejectValue("credentials", "invalid.credentials", "Số điện thoại đã tồn tại trong hệ thống");
+
+            model.addAttribute("tv", tv);
+            return "register/index";
+        }
+
+        if (thanhVienService.getThanhVienByEmail(tv.getEmail()) != null) {
+            bindingResult.rejectValue("credentials", "invalid.credentials", "Email đã tồn tại trong hệ thống");
 
             model.addAttribute("tv", tv);
             return "register/index";

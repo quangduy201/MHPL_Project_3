@@ -107,7 +107,7 @@ public class ThietBiController {
         return "redirect:/admin/thiet-bi";
     }
 
-    @DeleteMapping("/delete")
+    @GetMapping("/delete")
     public String deleteThietBi(@RequestParam String maTB) {
         try {
             Long id = Long.parseLong(maTB);
@@ -118,7 +118,7 @@ public class ThietBiController {
         return "redirect:/admin/thiet-bi";
     }
 
-    @DeleteMapping("/deleteMultiple")
+    @GetMapping("/deleteMultiple")
     public String deleteMultipleThietBi(@RequestParam String maTB) {
         try {
             Long id = Long.parseLong(maTB);

@@ -13,6 +13,7 @@ public interface ThanhVienService {
     List<String> getNganhList();
     ThanhVien getThanhVienById(Long maTV);
     ThanhVien getThanhVienBySdt(String sdt);
+    ThanhVien getThanhVienByEmail(String email);
     ThanhVien saveThanhVien(ThanhVien tv);
     void deleteThanhVienById(Long tv);
 }
