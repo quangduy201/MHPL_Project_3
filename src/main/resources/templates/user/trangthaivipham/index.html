@@ -82,7 +82,7 @@
                                     <td th:text="${vp.maXL}"></td>
                                     <td th:text="${vp.hinhThucXL}"></td>
                                     <td th:text="${vp.soTien}"></td>
-                                    <td th:text="${vp.ngayXL}"></td>
+                                    <td th:text="${#temporals.format(vp.ngayXL, 'dd/MM/yyyy - HH:mm')}"></td>
                                 </tr>
                             </tbody>
                         </table>
