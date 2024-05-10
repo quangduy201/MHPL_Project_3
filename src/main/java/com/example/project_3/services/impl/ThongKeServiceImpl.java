@@ -2,187 +2,241 @@ package com.example.project_3.services.impl;
 
 import com.example.project_3.models.ThongTinSD;
 import com.example.project_3.models.XuLy;
+import com.example.project_3.repositories.ThongTinSDRepository;
+import com.example.project_3.repositories.XuLyRepository;
 import com.example.project_3.services.ThongKeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ThongKeServiceImpl implements ThongKeService {
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private ThongTinSDRepository thongTinSDRepository;
 
-    @Override
+    @Autowired
+    private XuLyRepository xuLyRepository;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    private List<XuLy> filterDateXLVP(List<XuLy> thongTinSDList, LocalDateTime startTime, LocalDateTime endTime) {
+        OffsetDateTime offsetStartTime = startTime.atOffset(ZoneOffset.ofHours(7));
+        OffsetDateTime offsetEndTime = endTime.atOffset(ZoneOffset.ofHours(7));
+
+        Instant startInstant = offsetStartTime.toLocalDate().atTime(0, 0, 0)
+                .atOffset(ZoneOffset.ofHours(7)).toInstant();
+        Instant endInstant = offsetEndTime.toLocalDate().atTime(23, 59, 59)
+                .atOffset(ZoneOffset.ofHours(7)).toInstant();
+
+        return thongTinSDList.stream()
+                .filter(tt -> tt.getNgayXL().compareTo(startInstant) >= 0 && tt.getNgayXL().compareTo(endInstant) <= 0)
+                .sorted(Comparator.comparing(tt -> tt.getNgayXL().atZone(ZoneId.of("UTC+7")).toLocalDate()))
+                .toList();
+    }
+
+
     public List<Object[]> thongKeThanhVienVaoKhuHocTap(LocalDateTime startTime, LocalDateTime endTime, String khoa, String nganh, boolean isTable) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
-        Root<ThongTinSD> root = cq.from(ThongTinSD.class);
+        List<ThongTinSD> thongTinSDList = thongTinSDRepository.findAllThongTinSDOnlyTGVao();
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(cb.between(root.get("tgVao"), startTime, endTime));
+        OffsetDateTime offsetStartTime = startTime.atOffset(ZoneOffset.ofHours(7));
+        OffsetDateTime offsetEndTime = endTime.atOffset(ZoneOffset.ofHours(7));
 
-        if (khoa != null && !khoa.isEmpty() && !"tatca".equals(khoa)) {
-            predicates.add(cb.equal(root.get("maTV").get("khoa"), khoa));
+        Instant startInstant = offsetStartTime.toLocalDate().atTime(0, 0, 0)
+                .atOffset(ZoneOffset.ofHours(7)).toInstant();
+        Instant endInstant = offsetEndTime.toLocalDate().atTime(23, 59, 59)
+                .atOffset(ZoneOffset.ofHours(7)).toInstant();
+
+        List<ThongTinSD> newThongTinSDList = thongTinSDList.stream()
+                .filter(tt -> (tt.getTgVao().compareTo(startInstant) >= 0 && tt.getTgVao().compareTo(endInstant) <= 0) && ((Objects.equals(tt.getMaTV().getKhoa(), khoa) || Objects.equals(khoa, "tatca")) && (Objects.equals(tt.getMaTV().getNganh(), nganh) || Objects.equals(nganh, "tatca"))))
+                .sorted(Comparator.comparing(tt -> tt.getTgVao().atZone(ZoneId.of("UTC+7")).toLocalDate()))
+                .toList();
+
+        List<Object[]> list = new ArrayList<>();
+
+        if (isTable) {
+            newThongTinSDList.forEach(tt -> list.add(
+                new Object[] {
+                    tt.getMaTV().getMaTV(),
+                    tt.getMaTV().getHoTen(),
+                    tt.getMaTV().getKhoa(),
+                    tt.getMaTV().getNganh(),
+                    tt.getTgVao().atZone(ZoneId.of("UTC+7")).toLocalDateTime().format(formatter)
+                }
+            ));
+            return list;
         }
 
-        if (nganh != null && !nganh.isEmpty() && !"tatca".equals(nganh)) {
-            predicates.add(cb.equal(root.get("maTV").get("nganh"), nganh));
+        Map<LocalDate, Long> countByDate = newThongTinSDList.stream()
+                .map(thongTinSD -> thongTinSD.getTgVao().atZone(ZoneId.of("UTC+7")).toLocalDate())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        List<Map.Entry<LocalDate, Long>> sortedEntries = new ArrayList<>(countByDate.entrySet());
+
+        // Sắp xếp danh sách theo ngày tăng dần
+        sortedEntries.sort(Map.Entry.comparingByKey());
+
+        // In ra số lần xuất hiện của mỗi ngày, đã sắp xếp theo ngày tăng dần
+        for (Map.Entry<LocalDate, Long> entry : sortedEntries) {
+            list.add(new Object[] {entry.getKey(), entry.getValue()});
         }
 
-        cq.select(isTable
-                        ? cb.array(
-                        root.get("maTV").get("maTV"),
-                        root.get("maTV").get("hoTen"),
-                        root.get("maTV").get("khoa"),
-                        root.get("maTV").get("nganh"),
-                        cb.function("DATE_FORMAT", String.class, root.get("tgVao"), cb.literal("%d-%m-%Y %H:%i:%s"))
-                )
-                        : cb.array(
-                        cb.function("DATE_FORMAT", String.class, root.get("tgVao"), cb.literal("%d-%m-%Y")),
-                        cb.count(root)
-                )
-        );
-
-        if (!isTable) {
-            cq.groupBy(
-                    cb.function("DATE_FORMAT", String.class, root.get("tgVao"), cb.literal("%d-%m-%Y")),
-                    root.get("tgVao")
-            );
-        }
-        cq.where(predicates.toArray(new Predicate[0]));
-        cq.orderBy(cb.asc(cb.function("DATE_FORMAT", String.class, root.get("tgVao"), cb.literal("%d-%m-%Y %H:%i:%s"))));
-
-        return entityManager.createQuery(cq).getResultList();
+        return list;
     }
 
     @Override
     public List<Object[]> thongKeThietBiDaDuocMuon(LocalDateTime startTime, LocalDateTime endTime, String maTB, boolean isTable) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
-        Root<ThongTinSD> root = cq.from(ThongTinSD.class);
+        List<ThongTinSD> thongTinSDList = thongTinSDRepository.findAllThongTinSDOnlyThietBiDaMuon();
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(cb.between(root.get("tgMuon"), startTime, endTime));
-        predicates.add(cb.and(cb.isNotNull(root.get("tgMuon")), cb.isNotNull(root.get("tgTra"))));
+        OffsetDateTime offsetStartTime = startTime.atOffset(ZoneOffset.ofHours(7));
+        OffsetDateTime offsetEndTime = endTime.atOffset(ZoneOffset.ofHours(7));
 
-        if (!"tatca".equals(maTB) && maTB != null && !maTB.isBlank() && !maTB.isEmpty()) {
-            predicates.add(cb.equal(root.get("maTB").get("maTB"), maTB));
+        Instant startInstant = offsetStartTime.toLocalDate().atTime(0, 0, 0)
+                .atOffset(ZoneOffset.ofHours(7)).toInstant();
+        Instant endInstant = offsetEndTime.toLocalDate().atTime(23, 59, 59)
+                .atOffset(ZoneOffset.ofHours(7)).toInstant();
+
+        List<ThongTinSD> newThongTinSDList = thongTinSDList.stream()
+                .filter(tt -> tt.getTgMuon().compareTo(startInstant) >= 0 && tt.getTgMuon().compareTo(endInstant) <= 0 && (Objects.equals(maTB, "tatca") || tt.getMaTB().getMaTB().toString().equals(maTB)))
+                .sorted(Comparator.comparing(tt -> tt.getTgMuon().atZone(ZoneId.of("UTC+7")).toLocalDate()))
+                .toList();
+
+        List<Object[]> list = new ArrayList<>();
+
+        if (isTable) {
+            newThongTinSDList.forEach(tt -> list.add(
+                    new Object[] {
+                            tt.getMaTB().getMaTB(),
+                            tt.getMaTB().getTenTB(),
+                            tt.getMaTV().getMaTV(),
+                            tt.getMaTV().getHoTen(),
+                            tt.getTgMuon().atZone(ZoneId.of("UTC+7")).toLocalDateTime().format(formatter),
+                            tt.getTgTra().atZone(ZoneId.of("UTC+7")).toLocalDateTime().format(formatter)
+                    }
+            ));
+            return list;
         }
 
-        cq.select(isTable
-                        ? cb.array(
-                        root.get("maTB").get("maTB"),
-                        root.get("maTB").get("tenTB"),
-                        root.get("maTV").get("maTV"),
-                        root.get("maTV").get("hoTen"),
-                        cb.function("DATE_FORMAT", String.class, root.get("tgMuon"), cb.literal("%d-%m-%Y %H:%i:%s")),
-                        cb.function("DATE_FORMAT", String.class, root.get("tgTra"), cb.literal("%d-%m-%Y %H:%i:%s"))
-                )
-                        : cb.array(
-                        cb.function("DATE_FORMAT", String.class, root.get("tgMuon"), cb.literal("%d-%m-%Y")),
-                        cb.count(root)
-                )
-        );
+        Map<LocalDate, Long> countByDate = newThongTinSDList.stream()
+                .map(thongTinSD -> thongTinSD.getTgMuon().atZone(ZoneId.of("UTC+7")).toLocalDate())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        if (!isTable) {
-            cq.groupBy(
-                    cb.function("DATE_FORMAT", String.class, root.get("tgMuon"), cb.literal("%d-%m-%Y")),
-                    root.get("tgMuon")
-            );
+        List<Map.Entry<LocalDate, Long>> sortedEntries = new ArrayList<>(countByDate.entrySet());
+
+        // Sắp xếp danh sách theo ngày tăng dần
+        sortedEntries.sort(Map.Entry.comparingByKey());
+
+        // In ra số lần xuất hiện của mỗi ngày, đã sắp xếp theo ngày tăng dần
+        for (Map.Entry<LocalDate, Long> entry : sortedEntries) {
+            list.add(new Object[] {entry.getKey(), entry.getValue()});
         }
-        cq.where(predicates.toArray(new Predicate[0]));
-        cq.orderBy(cb.asc(cb.function("DATE_FORMAT", String.class, root.get("tgMuon"), cb.literal("%d-%m-%Y %H:%i:%s"))));
 
-        System.out.println(entityManager.createQuery(cq).getResultList());
-
-        return entityManager.createQuery(cq).getResultList();
+        return list;
     }
 
     @Override
     public List<Object[]> thongKeThietBiDangDuocMuon(LocalDateTime startTime, LocalDateTime endTime, String maTB, boolean isTable) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
-        Root<ThongTinSD> root = cq.from(ThongTinSD.class);
+        List<ThongTinSD> thongTinSDList = thongTinSDRepository.findAllThongTinSDOnlyThietBiDangMuon();
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(cb.between(root.get("tgMuon"), startTime, endTime));
-        predicates.add(cb.and(cb.isNotNull(root.get("tgMuon")), cb.isNull(root.get("tgTra"))));
+        OffsetDateTime offsetStartTime = startTime.atOffset(ZoneOffset.ofHours(7));
+        OffsetDateTime offsetEndTime = endTime.atOffset(ZoneOffset.ofHours(7));
 
-        if (!"tatca".equals(maTB)) {
-            predicates.add(cb.equal(root.get("maTB").get("maTB"), maTB));
+        Instant startInstant = offsetStartTime.toLocalDate().atTime(0, 0, 0)
+                .atOffset(ZoneOffset.ofHours(7)).toInstant();
+        Instant endInstant = offsetEndTime.toLocalDate().atTime(23, 59, 59)
+                .atOffset(ZoneOffset.ofHours(7)).toInstant();
+
+        List<ThongTinSD> newThongTinSDList = thongTinSDList.stream()
+                .filter(tt -> tt.getTgMuon().compareTo(startInstant) >= 0 && tt.getTgMuon().compareTo(endInstant) <= 0 && (Objects.equals(maTB, "tatca") || tt.getMaTB().getMaTB().toString().equals(maTB)))
+                .sorted(Comparator.comparing(tt -> tt.getTgMuon().atZone(ZoneId.of("UTC+7")).toLocalDate()))
+                .toList();
+
+        List<Object[]> list = new ArrayList<>();
+
+        if (isTable) {
+            newThongTinSDList.forEach(tt -> list.add(
+                    new Object[] {
+                            tt.getMaTB().getMaTB(),
+                            tt.getMaTB().getTenTB(),
+                            tt.getMaTV().getMaTV(),
+                            tt.getMaTV().getHoTen(),
+                            tt.getTgMuon().atZone(ZoneId.of("UTC+7")).toLocalDateTime().format(formatter)
+                    }
+            ));
+            return list;
         }
 
-        cq.select(isTable
-                        ? cb.array(
-                        root.get("maTB").get("maTB"),
-                        root.get("maTB").get("tenTB"),
-                        root.get("maTV").get("maTV"),
-                        root.get("maTV").get("hoTen"),
-                        cb.function("DATE_FORMAT", String.class, root.get("tgMuon"), cb.literal("%d-%m-%Y %H:%i:%s"))
-                )
-                        : cb.array(
-                        cb.function("DATE_FORMAT", String.class, root.get("tgMuon"), cb.literal("%d-%m-%Y")),
-                        cb.count(root)
-                )
-        );
+        Map<LocalDate, Long> countByDate = newThongTinSDList.stream()
+                .map(thongTinSD -> thongTinSD.getTgMuon().atZone(ZoneId.of("UTC+7")).toLocalDate())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        if (!isTable) {
-            cq.groupBy(
-                    cb.function("DATE_FORMAT", String.class, root.get("tgMuon"), cb.literal("%d-%m-%Y")),
-                    root.get("tgMuon")
-            );
+        List<Map.Entry<LocalDate, Long>> sortedEntries = new ArrayList<>(countByDate.entrySet());
+
+        // Sắp xếp danh sách theo ngày tăng dần
+        sortedEntries.sort(Map.Entry.comparingByKey());
+
+        // In ra số lần xuất hiện của mỗi ngày, đã sắp xếp theo ngày tăng dần
+        for (Map.Entry<LocalDate, Long> entry : sortedEntries) {
+            list.add(new Object[] {entry.getKey(), entry.getValue()});
         }
-        cq.where(predicates.toArray(new Predicate[0]));
-        cq.orderBy(cb.asc(cb.function("DATE_FORMAT", String.class, root.get("tgMuon"), cb.literal("%d-%m-%Y %H:%i:%s"))));
 
-        return entityManager.createQuery(cq).getResultList();
+        return list;
     }
 
     @Override
     public List<Object[]> thongKeXuLy(LocalDateTime startTime, LocalDateTime endTime, boolean trangThai, boolean isTable) {
 
-        // Criteria API approach
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
-        Root<XuLy> root = cq.from(XuLy.class);
+        List<XuLy> xuLyList = xuLyRepository.findAllXuLyViPham(trangThai ? 1 : 0);
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.add(cb.between(root.get("ngayXL"), startTime, endTime));
+        List<XuLy> newXuLyList = filterDateXLVP(xuLyList, startTime, endTime);
 
-        predicates.add(cb.equal(root.get("trangThaiXL"), trangThai ? 1 : 0));
+        List<Object[]> list = new ArrayList<>();
 
-        cq.select(isTable
-                        ? cb.array(
-                        root.get("maXL"),
-                        root.get("maTV").get("hoTen"),
-                        root.get("hinhThucXL"),
-                        root.get("soTien"),
-                        cb.function("DATE_FORMAT", String.class, root.get("ngayXL"), cb.literal("%d-%m-%Y"))
-                )
-                        : cb.array(
-                        cb.function("DATE_FORMAT", String.class, root.get("ngayXL"), cb.literal("%d-%m-%Y")),
-                        cb.count(root.get("maXL")),
-                        cb.sum(root.get("soTien"))
-                )
-        );
-
-        if (!isTable) {
-            cq.groupBy(
-                    cb.function("DATE_FORMAT", String.class, root.get("ngayXL"), cb.literal("%d-%m-%Y")),
-                    root.get("ngayXL")
-            );
+        if (isTable) {
+            newXuLyList.forEach(tt -> list.add(
+                    new Object[] {
+                            tt.getMaXL(),
+                            tt.getMaTV().getMaTV(),
+                            tt.getMaTV().getHoTen(),
+                            tt.getHinhThucXL(),
+                            tt.getSoTien(),
+                            tt.getNgayXL().atZone(ZoneId.of("UTC+7")).toLocalDateTime().format(formatter)
+                    }
+            ));
+            return list;
         }
-        cq.where(predicates.toArray(new Predicate[0]));
-        cq.orderBy(cb.asc(cb.function("DATE_FORMAT", String.class, root.get("ngayXL"), cb.literal("%d-%m-%Y"))));
 
-        return entityManager.createQuery(cq).getResultList();
+        Map<LocalDate, Long> countByDate = newXuLyList.stream()
+                .map(thongTinSD -> thongTinSD.getNgayXL().atZone(ZoneId.of("UTC+7")).toLocalDate())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        long totalCount = newXuLyList.stream()
+                .mapToLong(item -> Optional.ofNullable(item.getSoTien()).orElse(0))
+                .sum();
+
+        List<Map.Entry<LocalDate, Long>> sortedEntries = new ArrayList<>(countByDate.entrySet());
+
+        // Sắp xếp danh sách theo ngày tăng dần
+        sortedEntries.sort(Map.Entry.comparingByKey());
+
+        // In ra số lần xuất hiện của mỗi ngày, đã sắp xếp theo ngày tăng dần
+        for (Map.Entry<LocalDate, Long> entry : sortedEntries) {
+            list.add(new Object[] {entry.getKey(), entry.getValue(), totalCount});
+        }
+
+        return list;
     }
 }

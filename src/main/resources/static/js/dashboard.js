@@ -37,7 +37,7 @@ $(document).ready(function() {
         var nums = newData.map(i => i[1]);
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
@@ -144,7 +144,7 @@ $(document).ready(function() {
         var nums = newData.map(i => i[1]);
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
@@ -237,7 +237,7 @@ $(document).ready(function() {
         var nums = newData.map(i => i[1]);
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
@@ -291,8 +291,7 @@ $(document).ready(function() {
 
     $.post('/admin/dashboard/equipment-2', {
         dateRange: startDate + ' - ' + endDate,
-        khoa: $('#khoa').val(),
-        nganh: $('#nganh').val()
+        maTB: $('#equipment-select-state-2').val()
     }, function(responseData) {
         updateChart(responseData[0]);
         updateTable(responseData[1]);
@@ -304,8 +303,7 @@ $(document).ready(function() {
 
         $.post('/admin/dashboard/equipment-2', {
             dateRange: startDate + ' - ' + endDate,
-            khoa: $('#khoa').val(),
-            nganh: $('#nganh').val()
+            maTB: $('#equipment-select-state-2').val()
         }, function(responseData) {
             updateChart(responseData[0]);
             updateTable(responseData[1]);
@@ -325,7 +323,7 @@ $(document).ready(function() {
         $("#total").html(`Tổng tiền: ${total} VNĐ`)
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];
@@ -406,7 +404,7 @@ $(document).ready(function() {
         var nums = newData.map(i => i[1]);
 
         var currentDate = moment();
-        var formattedDate = currentDate.format('DD-MM-YYYY');
+        var formattedDate = currentDate.format('YYYY-MM-DD');
 
         if (newData.length === 0) {
             labels = [];

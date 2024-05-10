@@ -19,4 +19,7 @@ public interface XuLyRepository extends JpaRepository<XuLy, Integer> {
 
     @Query("SELECT xl FROM XuLy xl WHERE xl.maTV.maTV = ?1 AND ((xl.hinhThucXL LIKE '%Khóa thẻ%' AND xl.trangThaiXL = 0) OR (xl.hinhThucXL LIKE '%Bồi thường%' AND xl.trangThaiXL = 0))")
     List<XuLy> findViPhamKhoaTaiKhoanByMaTVOr(Long maTV);
+
+    @Query("SELECT xl FROM XuLy xl WHERE xl.trangThaiXL = ?1")
+    List<XuLy> findAllXuLyViPham(Integer trangThai);
 }

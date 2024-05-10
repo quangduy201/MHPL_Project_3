@@ -49,6 +49,15 @@ public interface ThongTinSDRepository extends JpaRepository<ThongTinSD, Integer>
     @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV.maTV = ?1 AND tt.maTB.maTB = ?2 AND tt.tgDatcho IS NOT NULL ")
     List<ThongTinSD> findThongTinSDByMaTBEqualsAndTgDatchoNotNull(Long maTV, Long maTB);
 
+    @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV IS NOT NULL AND tt.maTB IS NULL AND tt.tgVao IS NOT NULL AND tt.tgMuon IS NULL AND tt.tgDatcho IS NULL AND tt.tgTra IS NULL ")
+    List<ThongTinSD> findAllThongTinSDOnlyTGVao();
+
+    @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV IS NOT NULL AND tt.maTB IS NOT NULL AND tt.tgVao IS NULL AND tt.tgMuon IS NOT NULL AND tt.tgDatcho IS NULL AND tt.tgTra IS NOT NULL ")
+    List<ThongTinSD> findAllThongTinSDOnlyThietBiDaMuon();
+
+    @Query("SELECT tt FROM ThongTinSD tt WHERE tt.maTV IS NOT NULL AND tt.maTB IS NOT NULL AND tt.tgVao IS NULL AND tt.tgMuon IS NOT NULL AND tt.tgDatcho IS NULL AND tt.tgTra IS NULL ")
+    List<ThongTinSD> findAllThongTinSDOnlyThietBiDangMuon();
+
     @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTB IS NOT NULL AND ((tt.tgDatcho BETWEEN ?1 AND ?2))")
     List<ThietBi> findThietBiByDate(Instant date1, Instant date2);
 
