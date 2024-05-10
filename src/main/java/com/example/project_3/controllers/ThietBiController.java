@@ -91,6 +91,7 @@ public class ThietBiController {
 
     @PostMapping("/excel")
     public String excel(@RequestParam Object[][] rows) {
+        System.out.println(rows);
         try {
             for (Object[] row : rows) {
                 ThietBi tb = new ThietBi(Long.parseLong(row[0].toString()), row[1].toString(), row[2].toString());

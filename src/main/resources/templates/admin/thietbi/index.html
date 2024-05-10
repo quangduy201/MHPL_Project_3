@@ -196,7 +196,7 @@
     function deleteThietBi(maTB) {
         if (confirm('Bạn có chắc chắn muốn xóa thiết bị này?')) {
             $.ajax({
-                type: "GET",
+                type: "DELETE",
                 url: "/admin/thiet-bi/delete",
                 data: { maTB: maTB },
                 success: function(response) {
@@ -231,7 +231,7 @@
         var id = document.getElementById("maTBi").value;
         if (confirm('Bạn có chắc chắn muốn xóa các thiết bị này?')) {
             $.ajax({
-                type: "GET",
+                type: "DELETE",
                 url: "/admin/thiet-bi/deleteMultiple",
                 data: { maTB: id },
                 success: function(response) {
@@ -354,6 +354,7 @@
                     data: rows,
                 }, function(responseData) {
                 });
+
             })
         })
 
