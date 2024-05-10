@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +25,18 @@ public class ThanhVienServiceImpl implements ThanhVienService {
 
     @Override
     public List<ThanhVien> getAllThanhVien() {
-        return thanhVienRepository.findAll();
+        List<ThanhVien> allThanhVien = thanhVienRepository.findAll();
+        List<ThanhVien> thanhVienLoai0 = new ArrayList<>();
+
+        for (ThanhVien thanhVien : allThanhVien) {
+            if (thanhVien.getMaTV() != 0) {
+                thanhVienLoai0.add(thanhVien);
+            }
+        }
+
+        return thanhVienLoai0;
     }
+
 
     @Override
     public Page<ThanhVien> getThanhVien(Map<String, String> requestParams) {
