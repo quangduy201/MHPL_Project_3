@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.*;
 import java.time.Instant;
@@ -215,5 +213,26 @@ public class ThongTinSDController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/excel")
+    public String excel(@RequestBody String[][] rows) {
+        try {
+            for (String[] row : rows) {
+                ThongTinSD tt = ThongTinSD.builder()
+                        .maTT(Integer.parseInt(row[0]))
+                        .maTV(thanhVienService.getThanhVienById(Long.parseLong(row[1])))
+                        .maTB(thietBiService.getThietBiById(Long.parseLong(row[2])))
+                        .tgVao(Instant.parse(row[3]))
+                        .tgMuon(Instant.parse(row[4]))
+                        .tgTra(Instant.parse(row[5]))
+                        .tgDatcho(Instant.parse(row[6]))
+                        .build();
+                thongTinSDService.saveThongTinSD(tt);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "redirect:/admin/thanh-vien";
     }
 }
