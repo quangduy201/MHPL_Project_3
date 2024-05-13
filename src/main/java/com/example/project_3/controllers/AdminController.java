@@ -1,20 +1,25 @@
 package com.example.project_3.controllers;
 
+import com.example.project_3.models.ThanhVien;
 import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.ThongTinSD;
-import com.example.project_3.services.ThanhVienService;
-import com.example.project_3.services.ThietBiService;
-import com.example.project_3.services.ThongKeService;
-import com.example.project_3.services.ThongTinSDService;
+import com.example.project_3.models.XuLy;
+import com.example.project_3.payloads.requests.XuLyRequest;
+import com.example.project_3.services.*;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -30,6 +35,9 @@ public class AdminController {
 
     @Autowired
     private ThietBiService thietBiService;
+
+    @Autowired
+    private XuLyService xuLyService;
 
     @GetMapping({"", "/"})
     public String index(Model model, HttpSession session) {
@@ -56,7 +64,19 @@ public class AdminController {
         if (session.getAttribute("admin") != null) {
             // Nếu có session với attribute là "admin", chuyển hướng người dùng đến trang index
             List<ThongTinSD> thongTinSD = thongTinSDService.getAllThongTinSD();
-
+            List<XuLy> xuLyList = xuLyService.getAllXuLy();
+            Page<ThanhVien> thanhVienPage = thanhVienService.getThanhVien(Collections.singletonMap("all", ""));
+            List<String> htList = List.of(
+                    "Khóa thẻ 1 tháng",
+                    "Khóa thẻ 2 tháng",
+                    "Khóa thẻ 3 tháng",
+                    "Bồi thường mất tài sản",
+                    "Khóa thẻ 1 tháng và bồi thường"
+            );
+            model.addAttribute("thanhVienList", thanhVienPage);
+            model.addAttribute("htList", htList);
+            model.addAttribute("xly", new XuLyRequest());
+            model.addAttribute("showForm", false);
             model.addAttribute("ttsd", thongTinSD);
 
             return "admin/datcho/index";
@@ -65,6 +85,49 @@ public class AdminController {
             // TODO SOMETHING ELSE
             return "redirect:/admin/login";
         }
+    }
+
+    @PostMapping({"/thong-tin-su-dung", "/thong-tin-su-dung/"})
+    public String addXuLy(Model model, @Valid @ModelAttribute("xly") XuLyRequest xly, BindingResult result, HttpSession session) {
+        if (session.getAttribute("admin") != null) {
+            try {
+                if (result.hasErrors()) {
+                    addXuLyListToModel(model);
+                    model.addAttribute("showForm", true);
+                    return "admin/datcho/index";
+                }
+                XuLy xuLy = new XuLy();
+                ThanhVien thanhVien = thanhVienService.getThanhVienById(Long.valueOf(xly.getMaTV()));
+                xuLy.setMaTV(thanhVien);
+                xuLy.setHinhThucXL(xly.getHinhThucXL());
+                xuLy.setSoTien(Integer.valueOf(xly.getSoTien()));
+                xuLy.setNgayXL(xly.getNgayXL().atZone(ZoneId.systemDefault()).toInstant());
+                xuLy.setTrangThaiXL(xly.getTrangThaiXL() != null ? (xly.getTrangThaiXL() ? 1 : 0) : 0);
+                xuLyService.saveXuLy(xuLy);
+                model.addAttribute("showForm", false);
+                return "admin/datcho/index";
+            } catch (Exception e) {
+                System.out.println("Lỗi khi thêm mới xu ly: " + e.getMessage());
+            }
+        }
+        return "redirect:/admin/login";
+    }
+
+    private void addXuLyListToModel(Model model) {
+        List<XuLy> xuLyList = xuLyService.getAllXuLy();
+        Page<ThanhVien> thanhVienPage = thanhVienService.getThanhVien(Collections.singletonMap("all", ""));
+        List<ThongTinSD> thongTinSD = thongTinSDService.getAllThongTinSD();
+        List<String> htList = List.of(
+                "Khóa thẻ 1 tháng",
+                "Khóa thẻ 2 tháng",
+                "Khóa thẻ 3 tháng",
+                "Bồi thường mất tài sản",
+                "Khóa thẻ 1 tháng và bồi thường"
+        );
+        model.addAttribute("xuLyList", xuLyList);
+        model.addAttribute("thanhVienList", thanhVienPage);
+        model.addAttribute("htList", htList);
+        model.addAttribute("ttsd", thongTinSD);
     }
 
     @PostMapping("/dashboard/member")

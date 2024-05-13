@@ -165,6 +165,29 @@ public class UserController {
         }
     }
 
+
+    @GetMapping({"/lich-su-dung-thiet-bi", "/lich-su-dung-thiet-bi/"})
+    public String lichSuDungThietBi(Model model, @RequestParam Map<String, String> requestParam, HttpSession session) {
+        if(session.getAttribute("user") != null) {
+            ThanhVienResponse tvResponse = (ThanhVienResponse) session.getAttribute("user");
+            Page<ThongTinSD> thongTinSD = thongTinSDService.getThongTinSDByMaTV(requestParam, tvResponse.getMaTV());
+            requestParam.remove("page");
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<String, String> entry: requestParam.entrySet())
+                builder.append(entry.getKey())
+                        .append("=")
+                        .append(entry.getValue())
+                        .append("&");
+            if(!builder.isEmpty())
+                builder.setLength(builder.length() -1);
+            model.addAttribute("lsList", thongTinSD);
+            model.addAttribute("params", builder.toString());
+            return "/user/lichsudungthietbi/index";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
     @GetMapping({"/trang-thai-vi-pham", "/trang-thai-vi-pham/"})
     public String trangThaiViPham(Model model, HttpSession session) {
         // TODO SOMETHING ELSE

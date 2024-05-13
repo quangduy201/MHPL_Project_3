@@ -157,7 +157,7 @@ table {
     width: 100%;
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -452,4 +452,21 @@ table {
 }
 .button-form-control {
     width: 80vh;
+}
+.container-fluid .my-4 {
+    font-size: 40px;
+    font-weight: 400;
+}
+.form-group .ui-text {
+    background-color: #ffffff;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #6e707e;
+    background-clip: padding-box;
+    border: 1px solid #d1d3e2;
+    border-radius: .35rem;
 }

@@ -44,6 +44,9 @@ public class ThongTinSD {
     @Column(name = "TGDatcho")
     private Instant tgDatcho;
 
+    @Column(name = "TrangThai")
+    private Integer trangThai;
+
     // Phương thức toString để in ra giá trị của tất cả các thuộc tính
     @Override
     public String toString() {
@@ -55,6 +58,7 @@ public class ThongTinSD {
                 ", tgMuon=" + tgMuon +
                 ", tgTra=" + tgTra +
                 ", tgDatcho=" + tgDatcho +
+                ", trangThai=" + trangThai +
                 '}';
     }
 }

@@ -101,9 +101,6 @@
                                         <p class="button-reservation button bg-primary p-3 text-white border border-primary" th:onclick="'reservationThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
                                             Đặt chỗ
                                         </p>
-                                        <p class="button-borrow button border border-primary p-3 text-primary" th:onclick="'borrowThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
-                                            Mượn chỗ
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -198,7 +195,7 @@
                 url: "/thong-tin/dat-cho",
                 data: { maTV: maTV, maTB: maTB, date: date },
                 success: function(response) {
-                    alert("Đặt chỗ thiết bị thành công");
+                    alert(response);
                     window.location.reload();
                 },
                 error: function(xhr) {
@@ -215,7 +212,7 @@
                 url: "/thong-tin/muon",
                 data: { maTV: maTV, maTB: maTB, date: date},
                 success: function(response) {
-                    alert("Mượn thiết bị thành công");
+                    alert(response);
                     window.location.reload();
                 },
                 error: function(xhr) {

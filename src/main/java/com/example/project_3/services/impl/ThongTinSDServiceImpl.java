@@ -29,16 +29,17 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
 
     @Override
     public String checkThietBiDaDatCho(Long maTV, Long maTB, LocalDateTime date) {
-        ZoneOffset zoneOffset = ZoneOffset.ofHours(0);
-        Instant instant = date.toInstant(zoneOffset);
-        List<ThietBi> thietBiDatCho = thongTinSDRepository.findThietBiByMaTBEqualsAndTgDatchoNotNull(maTB, instant);
-        List<ThietBi> thietBiMuon = thongTinSDRepository.findThietBiByMaTBEqualsAndTgMuonNotNullAndTgTraNull(maTB);
+        List<ThietBi> thietBiDatCho = thongTinSDRepository.findThietBiByMaTBEqualsAndTgDatchoNotNull(maTB, date.toLocalDate());
+//        List<ThietBi> thietBiMuon = thongTinSDRepository.findThietBiByMaTBEqualsAndTgMuonNotNullAndTgTraNull(maTB);
         List<XuLy> xuly = thongTinSDRepository.findXuLyByMaTVEqualsAndTrangThaiXuLyEquals(maTV);
         if(!thietBiDatCho.isEmpty()) {
             return "Thiết bị này đã được đặt chỗ";
-        } else if(!thietBiMuon.isEmpty()) {
-            return "Thiết bị này đã được muợn";
-        } else if(!xuly.isEmpty()) {
+        }
+//       else if(!thietBiMuon.isEmpty()) {
+//            return "Thiết bị này đã được muợn";
+//        }
+//        else
+        if(!xuly.isEmpty()) {
             return xuly.get(0).getHinhThucXL();
         }
         return null;
@@ -100,6 +101,15 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
     @Override
     public List<ThongTinSD> getAllThongTinSD() {
         return thongTinSDRepository.findAll();
+    }
+
+    @Override
+    public Page<ThongTinSD> getThongTinSDByMaTV(Map<String, String> requestParams, Long maTV) {
+        String page = requestParams.get("page");
+        Pageable pageable = Pageable.ofSize(5).withPage(0);
+        if (page != null && page.trim().matches("^\\d+$"))
+            pageable = pageable.withPage(Integer.parseInt(page) - 1);
+        return thongTinSDRepository.findThongTinSDByMaTVEquals(pageable, maTV);
     }
 
     @Override

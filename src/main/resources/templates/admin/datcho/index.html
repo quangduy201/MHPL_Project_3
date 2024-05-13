@@ -14,6 +14,7 @@
     <!-- Custom styles for this template-->
     <link href="/css/sb-admin-2.min.css" rel="stylesheet" />
     <link href="/css/dashboard.css" rel="stylesheet" />
+    <link href="/css/item-product.css" rel="stylesheet" />
 </head>
 <body id="page-top">
     <div id="wrapper" class="row">
@@ -28,8 +29,7 @@
                         userName='Nhóm 1',
                         userAvatar='/media/images/poodle.jpg'
                      )}">
-                </div>
-                <!-- Begin Page Content -->
+                </div><!-- Begin Page Content -->
                 <div class="container-fluid">
                     <h1 class="text-center my-4">Quản lý thông tin sử dụng</h1>
                     <table id="thietbiTable" class="table">
@@ -59,6 +59,7 @@
                                 <td style="white-space: nowrap">
                                     <a class="btn btn-primary btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='muon(\'' + ${t.maTT} + '\')'">Mượn</a>
                                     <a class="btn btn-secondary btn-sm" th:if="${t.maTB != null and t.tgMuon != null and t.tgTra == null and t.tgDatcho == null}" th:attr="onclick='tra(\'' + ${t.maTT} + '\')'">Trả</a>
+                                    <a class="btn btn-secondary btn-sm" th:if="${t.maTB != null and t.tgMuon != null and t.tgTra == null and t.tgDatcho == null}" th:attr="onclick='openForm(\'' + ${t.maTV.maTV} + '\', \'' + ${t.maTV.hoTen} + '\')'">Làm mất</a>
                                     <a class="btn btn-info btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='huy(\'' + ${t.maTT} + '\')'">Hủy đặt chỗ</a>
                                 </td>
                             </tr>
@@ -67,7 +68,56 @@
                 </div>
                 <!-- /.container-fluid -->
             </div>
-     </div>
+            <div id="addDiv" class="rounded-lg shadow bg-dark" th:style="${showForm} ? 'display: block;' : 'display: none;'">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="text-xl font-bold text-center mx-auto text-white">THÊM XỬ LÝ</h2>
+                        <button type="button" class="btn btn-sm btn-light" onclick="closeForm()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/thong-tin-su-dung" th:object="${xly}">
+                        <div class="form-group">
+                            <label class="block mb-2 text-sm font-medium text-white">Thành viên</label>
+                            <div class="ui-text">
+                                <input id="thanh-vien-data" th:field="${xly.maTV}" style="display: none"/>
+                                <span id="thanh-vien"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ht" class="block mb-2 text-sm font-medium text-white">Hình thức</label>
+                            <select name="ht" id="ht" class="form-control" onchange="initTienBoiThuong(this)"th:field="${xly.hinhThucXL}">
+                                <option value="" >Chọn hình thức xử lý</option>
+                                <option th:each="ht : ${htList}" th:value="${ht}" th:text="${ht}"></option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('hinhThucXL')}" class="text-danger" th:errors="${xly.hinhThucXL}"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="soTien" class="block mb-2 text-sm font-medium text-white">Tiền bồi thường</label>
+                            <input type="text" name="soTien" id="soTien" class="form-control" placeholder="Nhập tiền bồi thường" th:field="${xly.soTien}">
+                            <p th:if="${#fields.hasErrors('soTien')}" class="text-danger" th:errors="${xly.soTien}"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="ngayXL" class="block mb-2 text-sm font-medium text-white">Thời gian</label>
+                            <input type="datetime-local" name="ngayXL" id="ngayXL" class="form-control" onchange="validateDateTime()" th:field="${xly.ngayXL}">
+                            <p th:if="${#fields.hasErrors('ngayXL')}" class="text-danger" th:errors="${xly.ngayXL}"></p>
+                        </div>
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="trangThaiXL" name="trangThaiXL" class="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out" th:checked="${xly.trangThaiXL}" th:value="${xly.trangThaiXL}" th:field="${xly.trangThaiXL}">
+                                <label th:if="${xly.trangThaiXL}" for="trangThaiXL" class="ml-2 text-sm text-white">Đã xử lý</label>
+                                <label th:unless="${xly.trangThaiXL}" for="trangThaiXL" class="ml-2 text-sm text-white">Đang xử lý</label>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-secondary btn-lg" onclick="resetFormAdd()">Làm mới</button>
+                            <button type="submit" class="btn btn-primary btn-lg ml-3">Thêm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
         <!-- End of Content Wrapper -->
     </div>
 <!-- End of Page Wrapper -->
@@ -133,6 +183,95 @@
         });
     }
 
+    function openForm(maTV, hoTen) {
+        var form = document.getElementById('addDiv');
+        var thanhvien = document.getElementById('thanh-vien');
+        var thanhviendata = document.getElementById('thanh-vien-data');
+        thanhvien.textContent = maTV + "-" + hoTen;
+        thanhviendata.value = maTV;
+        form.style.display = 'block';
+    }
+
+    function closeForm() {
+        var form = document.getElementById('addDiv');
+        form.style.display = 'none';
+        document.getElementById("thanhVien").textContent = "";
+        document.getElementById("ht").value = "";
+        document.getElementById("soTien").value = "";
+        document.getElementById("trangThaiXL").checked = false;
+        document.getElementById("addDiv").style.display = "none";
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+    }
+
+    function initTienBoiThuong(selectElement) {
+        var selectedOption, soTien;
+        var htSelect = document.getElementById("ht");
+        var hthucSelect = document.getElementById("hthuc");
+        if (htSelect && htSelect.value !== "") {
+            selectedOption = htSelect.value;
+            soTien = document.getElementById("soTien");
+        } else if (hthucSelect && hthucSelect.value !== "") {
+            selectedOption = hthucSelect.value;
+            soTien = document.getElementById("sTien");
+        }
+
+        switch (selectedOption) {
+            case "Chọn hình thức xử lý":
+            case "Khóa thẻ 1 tháng":
+            case "Khóa thẻ 2 tháng":
+            case "Khóa thẻ 3 tháng":
+                soTien.value = "0";
+                soTien.readOnly = true;
+                break;
+            case "Bồi thường mất tài sản":
+            case "Khóa thẻ 1 tháng và bồi thường":
+                var previousSoTien = soTien.value;
+                if (previousSoTien === null || previousSoTien === "0") {
+                    soTien.value = "";
+                }else {
+                    soTien.value = previousSoTien;
+                }
+                soTien.disabled = false;
+                break;
+        }
+    }
+
+    window.onload = function() {
+        initTienBoiThuong();
+    };
+
+
+    function validateDateTime() {
+        var thoiGianInput = document.getElementById("ngayXL");
+        var selectedDateTime = new Date(thoiGianInput.value);
+        var now = new Date();
+        if (selectedDateTime > now) {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = String(now.getMonth() + 1).padStart(2, '0');
+            var day = String(now.getDate()).padStart(2, '0');
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var formattedNow = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+            ngayXL.value = formattedNow;
+        }
+    }
+
+    function resetFormAdd() {
+        document.getElementById("ht").value = "";
+        document.getElementById("soTien").value = "";
+        document.getElementById("trangThaiXL").checked = false;
+        var form = document.getElementById("addThietBiForm");
+        var errorMessages = form.getElementsByClassName("text-danger");
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].innerHTML = "";
+        }
+    }
+
     function tra(maTT) {
         $.ajax({
             type: 'GET',
@@ -149,6 +288,21 @@
             }
         });
     }
+
+    function boithuong(maTT) {
+        $.ajax({
+            type: 'GET',
+            url: '/thong-tin/admin/boithuong?maTT=' + maTT,
+            success: function(response) {
+                window.location.reload();
+            },
+            error: function(xhr, status, error) {
+                // Hiển thị thông báo lỗi khi xảy ra lỗi
+                alert("Đã xảy ra lỗi. Vui lòng thử lại sau!");
+            }
+        });
+    }
+
 
     function huy(maTT) {
         $.ajax({

@@ -132,7 +132,7 @@ public class XuLyController {
                 if (result.hasErrors()) {
                     addXuLyListToModel(model);
                     model.addAttribute("showForm", true);
-                    return "admin/xuly/index";
+                    return "admin/datcho/index";
                 }
                 XuLy xuLy = new XuLy();
                 ThanhVien thanhVien = thanhVienService.getThanhVienById(Long.valueOf(xly.getMaTV()));
@@ -146,9 +146,8 @@ public class XuLyController {
             } catch (Exception e) {
                 System.out.println("Lỗi khi thêm mới xu ly: " + e.getMessage());
             }
-            return "redirect:/admin/xu-ly";
+            return "redirect:/admin/thong-tin-su-dung";
         }
-
         return "redirect:/admin/login";
     }
 

@@ -91,7 +91,7 @@
                     </div>
                     <div class="ui-bottom">
                         <div th:replace="~{fragments/pagination :: pagination(
-                        urlPrefix = ${params.isEmpty() ? '/admin/thanhvien?' : '/admin/thanhvien?' + params + '&'},
+                        urlPrefix = ${params.isEmpty() ? '/user/dat-cho-thiet-bi?' : '/user/dat-cho-thiet-bi?' + params + '&'},
                         totalPages = ${dtbList.totalPages},
                         currentPage = ${dtbList.number + 1},
                         pageSize = ${dtbList.size},

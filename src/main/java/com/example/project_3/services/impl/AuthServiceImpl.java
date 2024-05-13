@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
                 tv.getEmail()
         );
 
-        ThongTinSD ttsd = new ThongTinSD(0, tv, null, Instant.now(), null, null, null);
+        ThongTinSD ttsd = new ThongTinSD(0, tv, null, Instant.now(), null, null, null,null);
 
         thongTinSDRepository.save(ttsd);
 

@@ -3,13 +3,21 @@ package com.example.project_3.controllers;
 import com.example.project_3.models.ThanhVien;
 import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.ThongTinSD;
+import com.example.project_3.models.XuLy;
+import com.example.project_3.payloads.requests.XuLyRequest;
 import com.example.project_3.services.ThanhVienService;
 import com.example.project_3.services.ThietBiService;
 import com.example.project_3.services.ThongTinSDService;
+import com.example.project_3.services.XuLyService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.*;
@@ -17,6 +25,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping("/thong-tin")
@@ -29,6 +39,9 @@ public class ThongTinSDController {
 
     @Autowired
     private ThietBiService thietBiService;
+
+    @Autowired
+    private XuLyService xuLyService;
 
     public String getTime() {
         ZoneId vietnamZoneId = ZoneId.of("Asia/Ho_Chi_Minh");
@@ -54,10 +67,13 @@ public class ThongTinSDController {
             } else {
                 ThanhVien thanhVien = thanhVienService.getThanhVienById(idTV);
                 ThietBi thietBi = thietBiService.getThietBiById(idTB);
+                ZoneId zoneId = ZoneId.systemDefault();
+                Instant instant = dateTime.atZone(zoneId).toInstant();
                 ThongTinSD thongTinSD = ThongTinSD.builder()
                         .maTV(thanhVien)
                         .maTB(thietBi)
-                        .tgDatcho(Instant.parse(getTime()))
+                        .trangThai(0)
+                        .tgDatcho(instant)
                         .build();
                 thongTinSDService.saveThongTinSD(thongTinSD);
                 return ResponseEntity.ok("Đặt chỗ thành công");
@@ -83,10 +99,13 @@ public class ThongTinSDController {
             } else {
                 ThanhVien thanhVien = thanhVienService.getThanhVienById(idTV);
                 ThietBi thietBi = thietBiService.getThietBiById(idTB);
+                ZoneId zoneId = ZoneId.systemDefault();
+                Instant instant = dateTime.atZone(zoneId).toInstant();
                 ThongTinSD thongTinSD = ThongTinSD.builder()
                         .maTV(thanhVien)
                         .maTB(thietBi)
-                        .tgMuon(Instant.parse(getTime()))
+                        .trangThai(0)
+                        .tgMuon(instant)
                         .build();
 
                 thongTinSDService.saveThongTinSD(thongTinSD);
@@ -142,6 +161,7 @@ public class ThongTinSDController {
             if (thongTinSD != null && thongTinSD.getTgMuon() == null) {
                 thongTinSD.setTgMuon(Instant.now());
                 thongTinSD.setTgDatcho(null);
+                thongTinSD.setTrangThai(1);
                 thongTinSDService.saveThongTinSD(thongTinSD);
                 return ResponseEntity.ok("Mượn thành công");
             } else {
@@ -158,6 +178,25 @@ public class ThongTinSDController {
 
     @GetMapping("/admin/tra")
     public ResponseEntity<?> tra(@RequestParam String maTT) {
+        try {
+            Integer idTT = Integer.parseInt(maTT);
+            ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
+            if (thongTinSD != null && thongTinSD.getTgMuon() != null && thongTinSD.getTgTra() == null) {
+                thongTinSD.setTgTra(Instant.now());
+                thongTinSDService.saveThongTinSD(thongTinSD);
+                return ResponseEntity.ok("Trả thành công");
+            } else {
+                return ResponseEntity.badRequest().body("Không thể trả thiết bị");
+            }
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Mã thiết bị không hợp lệ");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/admin/boithuong")
+    public ResponseEntity<?> boithuong(@RequestParam String maTT) {
         try {
             Integer idTT = Integer.parseInt(maTT);
             ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
@@ -213,4 +252,5 @@ public class ThongTinSDController {
         }
         return "redirect:/admin/thanh-vien";
     }
+
 }
