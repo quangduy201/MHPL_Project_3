@@ -106,19 +106,20 @@ CREATE TABLE `thongtinsd`
     `TGVao`    datetime    DEFAULT NULL,
     `TGMuon`   datetime    DEFAULT NULL,
     `TGTra`    datetime    DEFAULT NULL,
-    `TGDatcho` datetime(6) DEFAULT NULL
+    `TGDatcho` datetime(6) DEFAULT NULL,
+    `TrangThai` int(11)    DEFAULT Null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `thongtinsd`
 --
 
-INSERT INTO `thongtinsd` (`MaTT`, `MaTV`, `MaTB`, `TGVao`, `TGMuon`, `TGTra`, `TGDatcho`) VALUES
-                                                                                              (1, 1120150184, NULL, '2024-03-05 09:00:00', NULL, NULL, NULL),
-                                                                                              (2, 1123330257, 1000001, NULL, '2024-02-12 10:00:32', '2024-02-12 14:00:00', NULL),
-                                                                                              (3, 1121530087, NULL, '2024-03-05 09:00:00', NULL, NULL, NULL),
-                                                                                              (4, 2147483647, NULL, '2024-03-10 09:00:00', NULL, NULL, NULL),
-                                                                                              (6, 3121410111, 1000002, NULL, '2024-05-09 06:36:58', NULL, NULL);
+INSERT INTO `thongtinsd` (`MaTT`, `MaTV`, `MaTB`, `TGVao`, `TGMuon`, `TGTra`, `TGDatcho`, `TrangThai`) VALUES
+                                                                                              (1, 1120150184, NULL, '2024-03-05 09:00:00', NULL, NULL, NULL, NULL),
+                                                                                              (2, 1123330257, 1000001, NULL, '2024-02-12 10:00:32', '2024-02-12 14:00:00', '2024-02-12 9:00:00', 1),
+                                                                                              (3, 1121530087, NULL, '2024-03-05 09:00:00', NULL, NULL, NULL, NULL),
+                                                                                              (4, 2147483647, NULL, '2024-03-10 09:00:00', NULL, NULL, NULL, NULL),
+                                                                                              (6, 3121410111, 1000002, NULL, '2024-05-09 06:36:58', NULL, NULL, NULL);
 
 --
 -- Triggers `thongtinsd`

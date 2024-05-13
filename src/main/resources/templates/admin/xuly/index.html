@@ -79,7 +79,7 @@
                 <form class="space-y-4" id="addThietBiForm" method="POST" action="/admin/xu-ly/" th:object="${xly}">
                     <div class="form-group">
                         <label for="thanhVien" class="block mb-2 text-sm font-medium text-white">Thành viên</label>
-                        <select name="thanhVien" id="thanhVien" class="form-control"th:field="${xly.maTV}">
+                        <select name="thanhVien" id="thanhVien" class="form-control" th:field="${xly.maTV}">
                             <option value="" >Chọn thành viên</option>
                             <option th:each="thanhVien : ${thanhVienList.content}" th:if="${thanhVien.maTV != 0}" th:value="${thanhVien.maTV}" th:text="${thanhVien.maTV + ' - ' + thanhVien.hoTen}">
                             </option>

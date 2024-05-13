@@ -1,5 +1,6 @@
 package com.example.project_3.services;
 
+import com.example.project_3.models.ThietBi;
 import com.example.project_3.models.ThongTinSD;
 import org.springframework.data.domain.Page;
 
@@ -18,6 +19,6 @@ public interface ThongTinSDService {
     void deleteThongTinSD(ThongTinSD thongTinSD);
     ThongTinSD saveThongTinSD(ThongTinSD tinSD);
     List<ThongTinSD> getAllThongTinSD();
-
+    Page<ThongTinSD> getThongTinSDByMaTV(Map<String, String> requestParams, Long maTV);
     Optional<ThongTinSD> getThongTinSDById(Integer maTT);
 }
