@@ -160,6 +160,7 @@ table {
     justify-content: center;
     margin-top: 10px;
     margin-bottom: 10px;
+    gap: 10px;
 }
 .product-container .product-bottom .button-cart-datcho {
     display: flex;

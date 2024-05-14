@@ -40,13 +40,11 @@ import java.util.Properties;
 public class AuthController {
     private final AuthService authService;
     private final ThanhVienService thanhVienService;
-    private final XuLyService xuLyService;
 
     @Autowired
-    public AuthController(AuthService authService, ThanhVienService thanhVienService, XuLyService xuLyService) {
+    public AuthController(AuthService authService, ThanhVienService thanhVienService) {
         this.authService = authService;
         this.thanhVienService = thanhVienService;
-        this.xuLyService = xuLyService;
     }
 
 
@@ -73,15 +71,9 @@ public class AuthController {
             return "login/index";
         }
 
-//        List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTVAnd(thanhVienResponse.getMaTV());
-//        if(!xuLyList.isEmpty()) {
-//            XuLy xuLy = xuLyList.get(0);
-//            bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
-//            return "login/index";
-//        } else {
-            session.setAttribute("user", thanhVienResponse);
-            return "redirect:/user";
-//        }
+
+        session.setAttribute("user", thanhVienResponse);
+        return "redirect:/user";
     }
 
     @GetMapping({"/register", "/register/"})

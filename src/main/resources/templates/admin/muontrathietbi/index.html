@@ -98,8 +98,8 @@
                                     </div>
                                     <p class="describe" th:text="${tb.moTaTB}"></p>
                                     <div class="button-cart">
-                                        <p class="button-reservation button bg-primary p-3 text-white border border-primary" th:onclick="'reservationThietBi(\'' + ${session.user.maTV} + '\', \'' + ${tb.maTB} + '\')'">
-                                            Đặt chỗ
+                                        <p class="button-reservation button bg-primary p-3 text-white border border-primary" th:onclick="'borrowThietBi(\'' + ${tb.maTB} + '\')'">
+                                            Mượn
                                         </p>
                                     </div>
                                 </div>
@@ -176,26 +176,16 @@
             searchThietBi();
         }
     })
-    function reservationThietBi(maTV, maTB) {
+    function borrowThietBi(maTB) {
         var date = $("#date").val(); // Lấy giá trị của input#date
-        if (confirm('Bạn có chắc chắn muốn đặt chỗ thiết bị này?')) {
-            $.ajax({
-                type: "GET",
-                url: "/thong-tin/dat-cho",
-                data: { maTV: maTV, maTB: maTB, date: date },
-                success: function(response) {
-                    alert(response);
-                    window.location.reload();
-                },
-                error: function(xhr) {
-                    alert(xhr.responseText);
-                }
-            });
+        var maTV = prompt('Nhập mã thành viên muốn mượn thiết bị này?');
+        if (isNaN(maTV)) {
+            alert("Mã nhân viên phải là số");
+            return;
         }
-    }
-    function borrowThietBi(maTV, maTB) {
-        var date = $("#date").val(); // Lấy giá trị của input#date
-        if (confirm('Bạn có chắc chắn muốn mượn thiết bị này?')) {
+
+        maTV = Number(maTV);
+        if (maTV) {
             $.ajax({
                 type: "GET",
                 url: "/thong-tin/muon",
