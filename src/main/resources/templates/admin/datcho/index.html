@@ -40,9 +40,10 @@
                             <th>Tên TV</th>
                             <th>Mã TB</th>
                             <th>Tên TB</th>
-                            <th>Thời gian mượn</th>
-                            <th>Thời gian trả</th>
-                            <th>Thời gian đặt chỗ</th>
+                            <th>TG vào</th>
+                            <th>TG mượn</th>
+                            <th>TG trả</th>
+                            <th>TG đặt chỗ</th>
                             <th>Tùy chọn</th>
                         </tr>
                         </thead>
@@ -53,9 +54,10 @@
                                 <td th:text="${t.maTV != null ? t.maTV.hoTen : ''}"></td>
                                 <td th:text="${t.maTB != null ? t.maTB.maTB : ''}"></td>
                                 <td th:text="${t.maTB != null ? t.maTB.tenTB : ''}"></td>
-                                <td th:text="${#temporals.format(t.tgMuon, 'dd/MM/yyyy - HH:mm')}"></td>
-                                <td th:text="${#temporals.format(t.tgTra, 'dd/MM/yyyy - HH:mm')}"></td>
-                                <td th:text="${#temporals.format(t.tgDatcho, 'dd/MM/yyyy - HH:mm')}"></td>
+                                <td th:text="${#temporals.format(t.tgVao, 'yyyy/MM/dd - HH:mm')}"></td>
+                                <td th:text="${#temporals.format(t.tgMuon, 'yyyy/MM/dd - HH:mm')}"></td>
+                                <td th:text="${#temporals.format(t.tgTra, 'yyyy/MM/dd - HH:mm')}"></td>
+                                <td th:text="${#temporals.format(t.tgDatcho, 'yyyy/MM/dd - HH:mm')}"></td>
                                 <td style="white-space: nowrap">
                                     <a class="btn btn-primary btn-sm" th:if="${t.maTB != null and t.tgMuon == null and t.tgTra == null and t.tgDatcho != null}" th:attr="onclick='muon(\'' + ${t.maTT} + '\')'">Mượn</a>
                                     <a class="btn btn-secondary btn-sm" th:if="${t.maTB != null and t.tgMuon != null and t.tgTra == null and t.tgDatcho == null}" th:attr="onclick='tra(\'' + ${t.maTT} + '\')'">Trả</a>
