@@ -29,6 +29,26 @@
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item" th:classappend="${active == 2 ? 'active' : ''}">
             <a class="nav-link"
+               href="/admin/vao-khu-hoc-tap"
+            >
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Vào khu tự học</span>
+            </a>
+        </li>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item" th:classappend="${active == 3 ? 'active' : ''}">
+            <a class="nav-link"
+               href="/admin/muon-tra-thiet-bi"
+            >
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Mượn trả thiết bị</span>
+            </a>
+        </li>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item" th:classappend="${active == 4 ? 'active' : ''}">
+            <a class="nav-link"
                     href="/admin/thanh-vien"
             >
                 <i class="fas fa-fw fa-cog"></i>
@@ -37,7 +57,7 @@
         </li>
 
         <!-- Nav Item - Utilities Collapse Menu -->
-        <li class="nav-item" th:classappend="${active == 3 ? 'active' : ''}">
+        <li class="nav-item" th:classappend="${active == 5 ? 'active' : ''}">
             <a class="nav-link" href="/admin/thiet-bi/">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Quản lý thiết bị</span></a
@@ -45,14 +65,14 @@
         </li>
 
         <!-- Nav Item - Charts -->
-        <li class="nav-item" th:classappend="${active == 4 ? 'active' : ''}">
+        <li class="nav-item" th:classappend="${active == 6 ? 'active' : ''}">
             <a class="nav-link" href="/admin/xu-ly/">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Quản lý vi phạm</span></a
             >
         </li>
 
-        <li class="nav-item" th:classappend="${active == 5 ? 'active' : ''}">
+        <li class="nav-item" th:classappend="${active == 7 ? 'active' : ''}">
             <a class="nav-link" href="/admin/thong-tin-su-dung/">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Quản lý thông tin sử dụng</span></a

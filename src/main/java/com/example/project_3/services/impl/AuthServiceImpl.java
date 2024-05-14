@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
             return null;
         }
 
-        ThanhVienResponse tvResponse = new ThanhVienResponse(
+        return new ThanhVienResponse(
                 tv.getMaTV(),
                 tv.getHoTen(),
                 tv.getKhoa(),
@@ -48,12 +48,6 @@ public class AuthServiceImpl implements AuthService {
                 tv.getSdt(),
                 tv.getEmail()
         );
-
-        ThongTinSD ttsd = new ThongTinSD(0, tv, null, Instant.now(), null, null, null,null);
-
-        thongTinSDRepository.save(ttsd);
-
-        return tvResponse;
     }
 
     @Override

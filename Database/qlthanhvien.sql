@@ -63,12 +63,13 @@ CREATE TABLE `thanhvien`
 --
 
 INSERT INTO `thanhvien` (`MaTV`, `HoTen`, `Khoa`, `Nganh`, `SDT`, `Email`, `Password`, `reset_password_token`) VALUES
+                                                                                                                   (0, 'Admin', NULL, NULL, NULL, 'admin@ad.vn', 'admin', NULL),
                                                                                                                    (1120150184, 'Trần Thị Nữ', 'GDTH', 'GDTH', '1111111111', '', NULL, NULL),
                                                                                                                    (1121530087, 'Trần Thiếu Nam', 'CNTT', 'QLGD', '1111111112', '', NULL, NULL),
                                                                                                                    (1123330257, 'Ngô Tuyết Nhi', 'QTKD', 'QTKD', '1111111113', '', NULL, NULL),
                                                                                                                    (2147483647, 'Nguyễn Văn Nam', 'CNTT', 'HTTT', '123456789', '', NULL, NULL),
                                                                                                                    (3121410111, 'Nguyễn Tiến Dũng', 'CNTT', 'KTPM', '0812535278', 'dungboi1029@gmail.com', '12345', NULL),
-                                                                                                                   (3121410116, 'Đinh Quang Duy', 'CNTT', 'KTPM', '0812535279', 'ntd3121410111@gmail.com', '12345', NULL);
+                                                                                                                   (3121410116, 'Đinh Quang Duy', 'CNTT', 'KTPM', '0938111523', 'dinhduy2012003@gmail.com', '123123', NULL);
 
 -- --------------------------------------------------------
 

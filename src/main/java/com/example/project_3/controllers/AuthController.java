@@ -73,15 +73,15 @@ public class AuthController {
             return "login/index";
         }
 
-        List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTVAnd(thanhVienResponse.getMaTV());
-        if(!xuLyList.isEmpty()) {
-            XuLy xuLy = xuLyList.get(0);
-            bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
-            return "login/index";
-        } else {
+//        List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTVAnd(thanhVienResponse.getMaTV());
+//        if(!xuLyList.isEmpty()) {
+//            XuLy xuLy = xuLyList.get(0);
+//            bindingResult.rejectValue("credentials", "invalid.credentials", "Thành viên này đang bị vi phạm: " + xuLy.getHinhThucXL());
+//            return "login/index";
+//        } else {
             session.setAttribute("user", thanhVienResponse);
             return "redirect:/user";
-        }
+//        }
     }
 
     @GetMapping({"/register", "/register/"})
