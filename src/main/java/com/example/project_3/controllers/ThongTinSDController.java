@@ -119,7 +119,7 @@ public class ThongTinSDController {
 
 
     @GetMapping("/tra")
-    public ResponseEntity<?>  tra(@RequestParam String maTV, @RequestParam String maTB) {
+    public ResponseEntity<?> tra(@RequestParam String maTV, @RequestParam String maTB) {
         try {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
@@ -137,7 +137,7 @@ public class ThongTinSDController {
     }
 
     @GetMapping("/xoa")
-    public ResponseEntity<?>  xoa(@RequestParam String maTV, @RequestParam String maTB) {
+    public ResponseEntity<?> xoa(@RequestParam String maTV, @RequestParam String maTB) {
         try {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
