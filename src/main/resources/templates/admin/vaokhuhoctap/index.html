@@ -42,33 +42,39 @@
             </div>
 
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <form class="container-fluid form" th:object="${vkht}" action="/admin/vao-khu-hoc-tap/" method="POST">
                 <h1 class="text-center my-4">Vào khu học tập</h1>
                 <div class="form-group">
                     <label for="maTV" class="block mb-2 text-sm font-medium">Mã thành viên</label>
                     <input type="text" name="maTV" id="maTV" class="form-control" placeholder="Nhập mã thành viên">
+                    <p class="text-danger" th:if="${#fields.hasErrors('maTV')}"
+                       th:errors="${vkht.maTV}"></p>
                 </div>
                 <div class="form-group">
                     <label for="hoTen" class="block mb-2 text-sm font-medium">Tên thành viên</label>
-                    <input type="text" name="hoTen" id="hoTen" class="form-control" disabled>
+                    <input type="text" name="hoTen" id="hoTen" class="form-control" readonly th:value="${vkht.hoTen != null && vkht.hoTen != 'undefined' ? vkht.getHoTen() : ''}">
                 </div>
                 <div class="form-group">
                     <label for="khoa" class="block mb-2 text-sm font-medium">Khoa</label>
-                    <input type="text" name="khoa" id="khoa" class="form-control" disabled>
+                    <input type="text" name="khoa" id="khoa" class="form-control" readonly th:value="${vkht.khoa != null && vkht.khoa != 'undefined' ? vkht.getKhoa() : ''}">
                 </div>
                 <div class="form-group">
                     <label for="nganh" class="block mb-2 text-sm font-medium">Ngành</label>
-                    <input type="text" name="nganh" id="nganh" class="form-control" disabled>
+                    <input type="text" name="nganh" id="nganh" class="form-control" readonly th:value="${vkht.nganh != null && vkht.nganh != 'undefined' ? vkht.getNganh() : ''}">
                 </div>
                 <div class="form-group">
                     <label for="sdt" class="block mb-2 text-sm font-medium">SĐT</label>
-                    <input type="text" name="sdt" id="sdt" class="form-control" disabled>
+                    <input type="text" name="sdt" id="sdt" class="form-control" readonly th:value="${vkht.sdt != null && vkht.sdt != 'undefined' ? vkht.getSdt() : ''}">
                 </div>
                 <div class="form-group">
                     <label for="email" class="block mb-2 text-sm font-medium">Email</label>
-                    <input type="text" name="email" id="email" class="form-control" disabled>
+                    <input type="text" name="email" id="email" class="form-control" readonly th:value="${vkht.email != null && vkht.email != 'undefined' ? vkht.getEmail() : ''}">
                 </div>
-            </div>
+                <p class="text-danger" th:if="${#fields.hasErrors('credentials')}"
+                   th:errors="${vkht.credentials}"></p>
+
+                <button type="submit" class="btn-submit-vkht d-none"></button>
+            </form>
             <!-- /.container-fluid -->
 
         </div>
@@ -95,24 +101,12 @@
 <script src="https://cdn.jsdelivr.net/npm/read-excel-file@5.7.1/bundle/read-excel-file.min.js"></script>
 
 <script>
-    function getThanhVienInfo(maTV) {
-        // TODO: này ví dụ thôi nha
-        $.ajax({
-            type: "GET",
-            url: "/admin/vao-khu-hoc-tap",
-            data: { maTV: maTV },
-            success: function(response) {
-                document.getElementById('hoTen').value = response.hoTen;
-                document.getElementById('khoa').value = response.khoa;
-                document.getElementById('nganh').value = response.nganh;
-                document.getElementById('sdt').value = response.sdt;
-                document.getElementById('email').value = response.email;
-            },
-            error: function(xhr) {
-                console.log("Lỗi khi lấy dữ liệu thành viên: " + xhr.responseText);
-            }
-        });
-    }
+    $("#maTV").keydown(function(event) {
+        // Kiểm tra xem mã phím được nhấn có phải là Enter không (mã phím 13)
+        if (event.keyCode === 13) {
+            $(".btn-submit-vkht").onclick()
+        }
+    });x
 </script>
 </body>
 </html>

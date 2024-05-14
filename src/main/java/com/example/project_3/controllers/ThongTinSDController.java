@@ -59,6 +59,11 @@ public class ThongTinSDController {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
 
+            if (thanhVienService.getThanhVienById(idTV) == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Không có mã thành viên này");
+            }
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
             String tb = thongTinSDService.checkThietBiDaDatCho(idTV, idTB, dateTime);
@@ -91,6 +96,12 @@ public class ThongTinSDController {
         try {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
+
+            if (thanhVienService.getThanhVienById(idTV) == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Không có mã thành viên này");
+            }
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
             String tb = thongTinSDService.checkThietBiDaDatCho(idTV, idTB, dateTime);
@@ -123,6 +134,12 @@ public class ThongTinSDController {
         try {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
+
+            if (thanhVienService.getThanhVienById(idTV) == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Không có mã thành viên này");
+            }
+
             ThongTinSD thongTinSD = thongTinSDService.getThongTinSDMuonByID(idTV, idTB);
             if(thongTinSD != null) {
                 thongTinSD.setTgTra(Instant.parse(getTime()));
