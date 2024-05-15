@@ -26,8 +26,8 @@ public interface ThongTinSDRepository extends JpaRepository<ThongTinSD, Integer>
     @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTB IS NOT NULL AND tt.tgDatcho IS NOT NULL AND tt.tgTra IS NULL AND tt.tgMuon IS NULL")
     List<ThietBi> findThietBiDangDatCho();
 
-    @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTB.maTB = ?1 AND tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL")
-    List<ThietBi> findThietBiByMaTBEqualsAndTgMuonNotNullAndTgTraNull(Long maTB);
+    @Query("SELECT tt.maTB FROM ThongTinSD tt WHERE tt.maTB.maTB = ?1 AND tt.tgMuon IS NOT NULL AND tt.tgTra IS NULL AND FUNCTION('DATE', tt.tgMuon) = ?2")
+    List<ThietBi> findThietBiByMaTBEqualsAndTgMuonNotNullAndTgTraNull(Long maTB, LocalDate date);
 
     @Query("SELECT tt FROM XuLy tt WHERE tt.maTV.maTV = ?1 AND tt.trangThaiXL = 0")
     List<XuLy> findXuLyByMaTVEqualsAndTrangThaiXuLyEquals(Long maTV);
