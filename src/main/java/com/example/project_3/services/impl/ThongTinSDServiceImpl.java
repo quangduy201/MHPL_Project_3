@@ -30,18 +30,17 @@ public class ThongTinSDServiceImpl implements ThongTinSDService {
     @Override
     public String checkThietBiDaDatCho(Long maTV, Long maTB, LocalDateTime date) {
         List<ThietBi> thietBiDatCho = thongTinSDRepository.findThietBiByMaTBEqualsAndTgDatchoNotNull(maTB, date.toLocalDate());
-//        List<ThietBi> thietBiMuon = thongTinSDRepository.findThietBiByMaTBEqualsAndTgMuonNotNullAndTgTraNull(maTB);
+        List<ThietBi> thietBiMuon = thongTinSDRepository.findThietBiByMaTBEqualsAndTgMuonNotNullAndTgTraNull(maTB, date.toLocalDate());
         List<XuLy> xuly = thongTinSDRepository.findXuLyByMaTVEqualsAndTrangThaiXuLyEquals(maTV);
         if(!thietBiDatCho.isEmpty()) {
             return "Thiết bị này đã được đặt chỗ";
         }
-//       else if(!thietBiMuon.isEmpty()) {
-//            return "Thiết bị này đã được muợn";
-//        }
-//        else
-        if(!xuly.isEmpty()) {
-            return xuly.get(0).getHinhThucXL();
+       else if(!thietBiMuon.isEmpty()) {
+            return "Thiết bị này đã được muợn";
         }
+       else if(!xuly.isEmpty()) {
+            return xuly.get(0).getHinhThucXL();
+       }
         return null;
     }
 
