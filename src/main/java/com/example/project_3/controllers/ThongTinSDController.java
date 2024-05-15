@@ -93,6 +93,7 @@ public class ThongTinSDController {
     public ResponseEntity<?> muon(@RequestParam String maTV,
                                   @RequestParam String maTB,
                                   @RequestParam String date) {
+
         try {
             Long idTB = Long.parseLong(maTB);
             Long idTV = Long.parseLong(maTV);
@@ -102,11 +103,21 @@ public class ThongTinSDController {
                         .body("Không có mã thành viên này");
             }
 
+            List<XuLy> xuLyList = xuLyService.getViPhamKhoaTaiKhoanByMaTVAnd(idTV);
+            if(!xuLyList.isEmpty()) {
+                XuLy xuLy = xuLyList.get(0);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Thành viên này đang vi phạm: " + xuLy.getHinhThucXL());
+            }
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+
             String tb = thongTinSDService.checkThietBiDaDatCho(idTV, idTB, dateTime);
-            if (tb != null) {
-                return ResponseEntity.ok(tb);
+            String tb1 = thongTinSDService.checkThietBiDangDuocMuon(idTV, idTB, dateTime);
+
+            if (tb != null || tb1 != null) {
+                return ResponseEntity.ok("Thiết bị này đang đặt chỗ hoặc đang được mượn");
             } else {
                 ThanhVien thanhVien = thanhVienService.getThanhVienById(idTV);
                 ThietBi thietBi = thietBiService.getThietBiById(idTB);
@@ -174,16 +185,33 @@ public class ThongTinSDController {
     public ResponseEntity<?> muon(@RequestParam String maTT) {
         try {
             Integer idTT = Integer.parseInt(maTT);
-            ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
-            if (thongTinSD != null && thongTinSD.getTgMuon() == null) {
-                thongTinSD.setTgMuon(Instant.now());
-                thongTinSD.setTgDatcho(null);
-                thongTinSD.setTrangThai(1);
-                thongTinSDService.saveThongTinSD(thongTinSD);
-                return ResponseEntity.ok("Mượn thành công");
-            } else {
-                return ResponseEntity.badRequest().body("Không thể mượn thiết bị");
+
+            ThongTinSD ttsd = thongTinSDService.getThongTinSDById(idTT).orElse(null);
+
+            if (ttsd != null) {
+                LocalDateTime dateTime = LocalDateTime.now();
+
+                String tb = thongTinSDService.checkThietBiDangDuocMuon(
+                        ttsd.getMaTV().getMaTV(), ttsd.getMaTB().getMaTB(), dateTime
+                );
+
+                if (tb != null) {
+                    return ResponseEntity.ok("Thiết bị này đang được mượn");
+                }
+
+                ThongTinSD thongTinSD = thongTinSDService.getThongTinSDById(idTT).orElse(null);
+                if (thongTinSD != null && thongTinSD.getTgMuon() == null) {
+                    thongTinSD.setTgMuon(Instant.now());
+                    thongTinSD.setTgDatcho(null);
+                    thongTinSD.setTrangThai(1);
+                    thongTinSDService.saveThongTinSD(thongTinSD);
+                    return ResponseEntity.ok("Mượn thành công");
+                } else {
+                    return ResponseEntity.badRequest().body("Không thể mượn thiết bị");
+                }
             }
+
+            return ResponseEntity.badRequest().body("Mã thông tin sử dụng không hợp lệ");
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Mã thiết bị không hợp lệ");
         } catch (Exception e) {
